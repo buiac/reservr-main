@@ -1,6 +1,10 @@
 /* reservr dashboard
  */
 
+body {
+  background: #f3f3f3;
+}
+
 .header {
   border-bottom: 4px solid #ffdd08;
   margin-bottom: 10px;
@@ -173,3 +177,28 @@
   top: 27px;
   left: -17px;
 }
+
+.row-head {
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.row-row {
+  
+  background: #FFF;
+  border-bottom: 1px solid #ccc;
+}
+
+.row-td {
+  padding-top: 9px;
+}
+
+.row-center {
+  text-align: center;
+}
+
+.row-td-btn {
+  padding: 4px 0 0 0;
+}
+

@@ -1,0 +1,54 @@
+<%- include dashboard-header %>
+    
+    <div class="row">
+
+      <div class="col-md-2">
+        <%- include nav-left %>
+      </div>
+      
+      <div class="col-md-10">
+        <h2>Reservations</h2>
+
+        <table class="table-reservations table table-striped">
+          <thead>
+            <tr>
+              <th>
+                Name
+              </th>
+              <th>
+                Email
+              </th>
+              <th>
+                Seats
+              </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% reservations.forEach(function(reservation){ %>
+              <tr>
+                <td>
+                  <%= reservation.name %>
+                </td>
+                <td>
+                  <%= reservation.email %>
+                </td>
+                <td>
+                  <%= reservation.seats %>
+                </td>
+                <td>
+                  <a href="/dashboard/<%= orgId %>/event/<%= eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                    <i class="fa fa-times-circle"></i>
+                    Delete Reservation
+                  </a>
+                </td>
+              </tr>
+            <% });%>
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
+<%- include dashboard-footer %>

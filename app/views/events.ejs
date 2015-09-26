@@ -11,11 +11,53 @@
           Events
         </h2>
 
-        <% events.forEach(function(event){ %>
+        <div class="row row-head">
+          
+          <div class="col-md-4">
+            Numele evenimentului
+          </div>
+
+          <div class="col-md-4">
+            Data
+          </div>
+
+          <div class="col-md-1 row-center">
+            Locuri
+          </div>
+
+          <div class="col-md-1 row-center">
+            Rezervari
+          </div>
+          
+        </div>
         
-          <h4><a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a></h4>
+        <% events.forEach(function(event){ %>
+
+        <div class="row row-row">
+
+          <div class="col-md-4">
+            <h4><a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a></h4>
+          </div>
+          
+          <div class="col-md-4 row-td">
+            <%= moment(event.date).format('LLLL') %>
+          </div>
+
+          <div class="col-md-1 row-td row-center">
+            <%= event.seats %>
+          </div>
+          <div class="col-md-1 row-td row-center">
+            <%= event.reservedSeats %>
+          </div>
+          <div class="col-md-2 row-td-btn">
+            <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>" class="btn btn-primary btn-sm">Vezi rezervari</a>
+          </div>
+          
+
+        </div>
 
         <% }) %>
+
       </div>
 
       

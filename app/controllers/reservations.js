@@ -132,6 +132,80 @@ module.exports = function(config, db) {
 
   };
 
+  // var reservationDelete = function(req, res, next) {
+
+  //   var reservationId = req.params.reservationId;
+  //   var eventId = req.params.eventId;
+    
+  //   db.reservations.remove({
+  //     _id: reservationId
+  //   },function (err, num) {
+
+  //     if (err) {
+  //       res.render('reservations', {
+  //         errors: err,
+  //         reservations: []
+  //       });
+  //     }
+
+  //     // redirect to reservations page
+  //     res.redirect('/reservations/' + eventId);
+
+  //   });
+
+  // };
+
+  var deleteReservation = function (req, res, next) {
+    db.reservations.remove({
+      _id: req.params.reservationId
+    }, function (err, num) {
+      
+      if (err) {
+        res.status(400).json(err);
+        return;
+      }
+
+      db.reservations.find({
+        eventId: req.params.eventId
+      }, function (err, reservations) {
+        if (err) {
+          res.status(400).json(err);
+          return;
+        }
+
+        res.render('reservations-view',{
+          orgId: req.params.orgId,
+          user: req.user,
+          reservations: reservations,
+          eventId: req.params.eventId
+        });
+
+      })
+
+    });
+  };
+
+  var viewReservation = function (req, res, next) {
+
+    db.reservations.find({
+      eventId: req.params.eventId
+    }, function (err, reservations) {
+      if (err) {
+        res.status(400).json(err);
+        return;
+      }
+
+      res.render('reservations-view',{
+        orgId: req.params.orgId,
+        user: req.user,
+        reservations: reservations,
+        eventId: req.params.eventId
+      });
+
+    })
+    
+  };
+
   var updateReservation = function (req, res, next) {
     req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
     req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
@@ -308,7 +382,9 @@ module.exports = function(config, db) {
   return {
     // view: view,
     list: list,
-    updateReservation: updateReservation
+    updateReservation: updateReservation,
+    viewReservation: viewReservation,
+    deleteReservation: deleteReservation
   };
 
 };
