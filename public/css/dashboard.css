@@ -16,6 +16,14 @@ body {
   color: #fff;
 }
 
+.header .logo-client {
+  max-height: 55px;
+  position: relative;
+  top: -6px;
+  left: 0px;
+  margin-left: 13px;
+}
+
 .events-list {
   padding: 0;
 }

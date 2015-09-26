@@ -41,6 +41,7 @@ module.exports = function(config, db) {
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
 
+
     var errors = req.validationErrors();
 
     if (errors) {
@@ -63,7 +64,11 @@ module.exports = function(config, db) {
 
     db.orgs.update({
       _id: orgId
-    }, {$set: { name: orgName, location: location }},  function (err, num) {
+    }, {$set: { 
+      name: orgName, 
+      location: location, 
+      logo: '/media/' + req.files.logo.originalname 
+    }},  function (err, num) {
       
       if (err) {
         res.render('settings', {

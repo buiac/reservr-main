@@ -33,6 +33,17 @@ body {
   vertical-align: middle;
 }
 
+.header {
+  margin: 0 0 30px;
+}
+.header .logo-client {
+  max-height: 55px;
+  position: relative;
+  top: -6px;
+  left: 0px;
+  margin-left: 13px;
+}
+
 /* nav
  */
 
@@ -205,7 +216,7 @@ body {
 
 .container-reserve-btn {
   overflow: hidden;
-  padding: 1rem 2rem;
+  padding: 1.6rem 2rem;
   height: 55px;
   
   text-align: center;
