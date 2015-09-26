@@ -1,0 +1,175 @@
+/* reservr dashboard
+ */
+
+.header {
+  border-bottom: 4px solid #ffdd08;
+  margin-bottom: 10px;
+  padding: 20px 0;
+  background: #000;
+}
+
+.header h2 {
+  color: #fff;
+}
+
+.events-list {
+  padding: 0;
+}
+
+.form-group {
+  clear: both;
+}
+
+.event-images {
+  list-style-type: none;
+  padding: 0;
+}
+.event-images li {
+  float: left;
+
+}
+
+.event-images li a {
+  display: block;
+  border: 4px solid transparent;
+}
+
+.event-images li.active-image a:first-child{
+  border: solid 4px rgb(255, 221, 8);
+}
+
+
+
+.logo img {
+  width: auto;
+  max-height: 14px;
+}
+
+.btn-event-new {
+  float: right;
+  
+  color: #fff;
+  font-size: 30px;
+}
+
+.btn-event-new:hover {
+  color:  #ffdd08;
+}
+
+.event-images {
+  margin-bottom: 1rem;
+}
+
+.event-image-thumb {
+  position: relative;
+}
+
+.btn-delete-image {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 0 7px;
+  background: #fff;
+  
+  font-size: 18px;
+  color: #333;
+  
+  border-radius: 100%;
+  box-shadow: 0 2px 2px #999;
+}
+
+.clearing-blackout .btn-delete-image {
+  display: none;
+}
+
+/* datepicker
+ */
+
+.rd-container .rd-back,
+.rd-container .rd-next {
+  padding: .2em;
+  
+  color: #333;
+}
+
+.rd-container .rd-back:hover,
+.rd-container .rd-next:hover {
+  color: #fff;
+}
+
+/* reservations
+ */
+
+.table-reservations {
+  width: 100%;
+}
+
+.btn-delete-reservation {
+  color: #cf2a0e;
+}
+
+.table-reservations td:nth-child(2) {
+  width: 200px;
+}
+
+.table-reservations td:nth-child(3) {
+  width: 160px;
+}
+
+@media only screen and (max-width: 40.063em) {
+  
+  /* Force table to not be like tables anymore */
+  .table-reservations,
+  .table-reservations thead,
+  .table-reservations tbody,
+  .table-reservations th,
+  .table-reservations td,
+  .table-reservations tr { 
+    display: block; 
+    width: auto !important;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr { 
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  .table-reservations td { 
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee; 
+    position: relative;
+    padding-left: 50%; 
+  }
+
+  .table-reservations td:before { 
+    /* Now like a table header */
+    position: absolute;
+    /* Top/left values mimic padding */
+    top: 6px;
+    left: 6px;
+    width: 45%; 
+    padding-right: 10px; 
+    white-space: nowrap;
+  }
+
+  .table-reservations td:nth-of-type(1):before { content: 'Email'; }
+  .table-reservations td:nth-of-type(2):before { content: 'Seats'; }
+  .table-reservations td:nth-of-type(3):before { content: ''; }
+  
+}
+
+/* Bugfixes
+*/
+.clearing-thumbs li {
+  position: relative;
+  margin: 0 20px 20px 10px;
+}
+
+.clearing-thumbs li input {
+  position: absolute;
+  top: 27px;
+  left: -17px;
+}

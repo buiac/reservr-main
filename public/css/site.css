@@ -1,0 +1,314 @@
+/* reservr
+ */
+
+body {
+  background: #f3f3f3;
+}
+
+.header {
+  padding: 20px 0;
+  background: #000;
+}
+
+.logo {
+  opacity: .9;
+}
+
+.logo:hover {
+  opacity: 1;
+}
+
+.logo-reservr {
+  display: block;
+  width: 80px;
+  margin: 0 8px 0 0;
+  
+  opacity: .5;
+}
+
+.logo-reservr,
+.logo-client {
+  display: inline-block;
+  
+  vertical-align: middle;
+}
+
+/* nav
+ */
+
+.menu-header {
+  background: #ffdd08;
+  
+  color: #333;
+}
+
+.menu-header .sub-nav {
+  margin: 0;
+  padding: 0;
+}
+
+.menu-header .sub-nav dt {
+  text-transform: none;
+  
+  color: #333;
+}
+
+.menu-header .sub-nav dd a {
+  color: #333;
+  font-weight: bold;
+}
+
+.menu-header .sub-nav dd a:hover {
+  text-decoration: underline;
+}
+
+.menu-header .sub-nav dd.active a {
+  background: #333;
+  
+  color: #fff;
+}
+
+/* event
+ */
+
+.events-list {
+  padding-top: 60px;
+}
+
+.event {
+  overflow: hidden;
+  position: relative;
+  padding: 60px 0 30px 0;
+}
+
+.event:first-child {
+  padding-top: 0;
+}
+
+.event:last-child:after {
+  border-bottom: 0 none;
+}
+
+.event:after {
+  content: '';
+  display: block;
+  width: 30%;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  border-bottom: 1px solid #bdc3c7;
+  
+  transform: translateX(-50%);
+}
+
+.event-slider {
+  cursor: pointer;
+}
+
+.event-slider ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-slider img {
+  max-width: 100%;
+}
+
+.event-meta {
+  margin-bottom: 20px;
+  
+  color: #666;
+  font-size: 14px;
+}
+
+.event-meta .fa {
+  opacity: .5;
+}
+
+.event-description {
+  overflow: hidden;
+  max-height: 200px;
+  
+  text-overflow: ellipsis;
+}
+
+.event-description--show {
+  max-height: none;
+}
+
+.event-toggle-description {
+  display: block;
+  position: relative;
+  padding: 5px 0;
+  
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+}
+
+.event-toggle-description:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: 30px;
+  border-bottom: 1px dotted #bdc3c7;
+  
+  transform: translateX(-50%);
+}
+
+.event-toggle-description-hide {
+  display: none;
+}
+
+.event-description--show + .event-toggle-description .event-toggle-description-show {
+  display: none;
+}
+
+.event-description--show + .event-toggle-description .event-toggle-description-hide {
+  display: block;
+}
+
+.row.reserve-actions {
+  margin-top: 1rem;
+}
+
+.container-reserve {
+  display: block;
+  width: 100%;
+  background: #ffdd08;
+  
+  color: #333;
+}
+
+.no-more-seats .container-reserve{
+  background: #CCC;
+}
+
+.hide-if-seats {
+  display: none;
+}
+
+.no-more-seats .hide-if-seats {
+  display: block;
+}
+
+.show-if-seats {
+  display: block;
+}
+
+.no-more-seats .show-if-seats {
+  display: none;
+}
+
+.container-reserve-btn {
+  overflow: hidden;
+  padding: 1rem 2rem;
+  height: 55px;
+  
+  text-align: center;
+  cursor: pointer;
+}
+
+.container-reserve-btn:hover {
+  background: #CDBC53;
+}
+
+.container-reserve-form {
+  position: relative;
+  visibility: hidden;
+  padding: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.container-reserve-form button {
+  margin: 0;
+}
+
+.container-reserve-form,
+.container-reserve-btn { 
+  transition: all .2s ease-out;
+}
+
+.container-reserve--active .container-reserve-form {
+  visibility: visible;
+  height: 340px;
+  padding: 1rem;
+  opacity: 1;
+}
+
+.container-reserve--active .container-reserve-btn {
+  visibility: hidden;
+  height: 0;
+  opacity: 0;
+  padding: 0;
+}
+
+.container-reserve-form-success,
+.container-reserve-form-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 30% 1rem;
+  opacity: 0;
+  visibility: hidden;
+  
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  
+  transform: scale(1.2);
+  transition: all .2s ease-out;
+}
+
+.container-reserve-form--success .container-reserve-form-success,
+.container-reserve-form--error .container-reserve-form-error {
+  visibility: visible;
+  opacity: 1;
+  
+  transform: scale(1);
+}
+
+.container-reserve-form-success {
+  background: #27ae60;
+}
+
+.container-reserve-form-error {
+  background: #c0392b;
+}
+
+.free-seats {
+  color: #666;
+  font-size: 14px;
+  line-height: 3rem;
+  vertical-align: middle;
+}
+
+#container-waiting {
+  background: #ccc;
+}
+
+/* footer
+ */
+
+.footer {
+  padding: 80px 0 40px;
+  
+  color: #bdc3c7;
+  font-size: 14px;
+  text-align: center;
+}
+
+
+/* Bugfixes
+*/
+.clearing-thumbs li {
+  max-width: 100%;
+}

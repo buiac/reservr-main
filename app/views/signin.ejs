@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>
+    Reservr2
+  </title>
+  
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+</head>
+<body class="sign-in">
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <h1>Log in</h1>
+      <form action="/signin" method="POST">
+        <% if (info.length) { %>
+          <div class="alert alert-danger">
+            <%= info %>
+          </div>
+        <% } %>
+        <div class="form-group">
+          <label for="" class="control-label">Email</label>
+          <input type="text" class="form-control" name="username">
+        </div>
+
+        <div class="form-group">
+          <label for="" class="control-label">Password</label>
+          <input type="password" class="form-control" name="password">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

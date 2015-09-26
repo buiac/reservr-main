@@ -1,0 +1,18 @@
+ {
+	"manifest_version": 2,
+	"name": "Apunto",
+	"short_name": "We save time. You save Money",
+	"description": "Apunto helps businesses save money by making sure clients don't forget about meetings.",
+	"version": "0.0.2",
+	"icons": {
+		"16": "apunto-icon-16.png",
+		"48": "apunto-icon-48.png",
+		"128": "apunto-icon-128.png"
+	},
+	"app": {
+		"launch": {
+			"web_url": "http://www.getapunto.com/?utm_source=chromewebstore&utm_medium=app&utm_campaign=chromewebstore"
+		}
+	},
+	"permissions": []
+}	

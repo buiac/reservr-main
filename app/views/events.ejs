@@ -1,0 +1,23 @@
+<%- include dashboard-header %>
+    
+
+    <div class="row">
+      <div class="col-md-2">
+        <%- include nav-left %>
+      </div>
+
+      <div class="col-md-10">
+        <h2>
+          Events
+        </h2>
+
+        <% events.forEach(function(event){ %>
+        
+          <h4><a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a></h4>
+
+        <% }) %>
+      </div>
+
+      
+    </div>
+<%- include dashboard-footer %>

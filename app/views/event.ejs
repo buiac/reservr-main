@@ -1,0 +1,71 @@
+<%- include header %>
+  
+  <div class="col-md-6">
+                    
+    <div class="event-slider">
+
+      <ul class="clearing-thumbs clearing-feature" data-clearing>
+        
+        <% event.images.forEach(function(image, i){  %>
+          
+          <li class="<%= (i === 0) ? 'clearing-featured-img' : '' %>">
+            
+            <img src="<%= image.path %>">
+          
+          </li>
+
+        <% }) %>
+
+      </ul>
+      
+    </div>
+    
+  </div>
+
+  <div class="col-md-6 event-details">
+    
+    <h2>
+      <%= event.name %>
+    </h2>
+    
+    <div class="row">
+      
+      <div class="col-md-6 event-meta">
+        <i class="fa fa-clock-o"></i>
+        
+        <%= moment(event.date).format('LLLL') %>
+      </div>
+    </div>
+    <div class="row">
+      
+    
+      <div class="col-md-12 event-meta">
+        <i class="fa fa-map-marker"></i>
+        
+        <%= event.location || '' %>
+      </div>
+    </div>  
+    
+    
+    <div class="event-description">
+      <%- marked(event.description) %>
+    </div>
+    
+    <% if(event.description.length > 300) { %>
+    
+      <a class="event-toggle-description">
+        <span class="event-toggle-description-show">
+          vezi descrierea completă
+        </span>
+        <span class="event-toggle-description-hide">
+          ascunde descrierea completă
+        </span>
+      </a>
+      
+    <% } %>
+    
+    <%- include reserve %>
+    
+  </div>
+  
+<%- include footer %>

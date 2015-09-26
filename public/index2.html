@@ -1,0 +1,223 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>
+    Reservr Dashboard
+  </title>
+  
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="col-md-4">
+
+        <a href="/dashboard" class="logo">
+          <img src="/images/logo-white.png" class="logo-reservr">
+          <!-- <img src="/images/logo-reactor.png" class="logo-client"> -->
+        
+          <h2>
+            Dashboard
+          </h2>
+        </a>
+
+      </div>
+
+      <div class="col-md-8">
+
+        <a href="/dashboard/Ft4URwliZ61aPV3B/event" class="btn-event-new" title="Adauga eveniment">
+          <i class="fa fa-plus"></i>
+        </a>
+
+      </div>
+      
+    </div>
+  </div>
+  <div class="container">
+    
+  
+<div class="row">
+  <div class="col-md-2">
+    
+    
+  <ul class="nav nav-pills nav-stacked">
+    <li><a href="/dashboard/Ft4URwliZ61aPV3B/events">List events</a></li>
+    <li><a href="/dashboard/Ft4URwliZ61aPV3B/settings">Settings</a></li>
+    <li><a href="/dashboard/Ft4URwliZ61aPV3B/event">Create event</a></li>
+    <li><a href="/signout">Signout</a></li>
+  </ul>
+
+  </div>
+  <div class="col-md-10">
+    
+    <div class="row">
+      <div class="col-md-12">
+
+        <h3>Edit event id:</h3>
+        
+      </div>
+    </div>
+    
+    <form method="post" action="/dashboard/Ft4URwliZ61aPV3B/event" enctype="multipart/form-data">
+      
+      <div class="row">
+        
+        <div class="col-md-12">
+          
+          
+          
+        </div> 
+
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          
+          
+            <label>Event organizer:</label>
+          
+          
+          <div class="form-group">
+            <label>Event name:</label>
+            <input type="text" placeholder="" class="form-control" name="name" value="an event" />
+          </div>
+          
+          <div class="form-group">
+            <label>Event location: </label>
+            <input class="form-control" type="text" placeholder="" name="location" value="ssad" />
+          </div>
+          
+          <div class="form-group">
+            <label>Event description:</label>
+            <textarea class="form-control" name="description" rows="12">dsaasd</textarea>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+
+          
+        
+            <ul class="clearing-thumbs event-images" data-clearing>
+              
+              
+                
+                <li class="event-image-thumb " >
+                  
+                  <a href="/media/provizoriu-1.jpg" class="th">
+                    <img src="/media/provizoriu-1.jpg" width="100">
+                  </a>
+                  
+                  <a href="/dashboard/event/4SUMbPU1mLNK2yUp/deleteimage/0" class="btn-delete-image" title="Delete image">
+                    <i class="fa fa-times-circle"></i>
+                  </a>
+                
+                </li>
+
+              
+                
+                <li class="event-image-thumb " >
+                  
+                  <a href="/media/provizoriu-2.jpg" class="th">
+                    <img src="/media/provizoriu-2.jpg" width="100">
+                  </a>
+                  
+                  <a href="/dashboard/event/4SUMbPU1mLNK2yUp/deleteimage/1" class="btn-delete-image" title="Delete image">
+                    <i class="fa fa-times-circle"></i>
+                  </a>
+                
+                </li>
+
+              
+                
+                <li class="event-image-thumb " >
+                  
+                  <a href="/media/provizoriu-3.jpg" class="th">
+                    <img src="/media/provizoriu-3.jpg" width="100">
+                  </a>
+                  
+                  <a href="/dashboard/event/4SUMbPU1mLNK2yUp/deleteimage/2" class="btn-delete-image" title="Delete image">
+                    <i class="fa fa-times-circle"></i>
+                  </a>
+                
+                </li>
+
+              
+                
+                <li class="event-image-thumb " >
+                  
+                  <a href="/media/provizoriu-4.jpg" class="th">
+                    <img src="/media/provizoriu-4.jpg" width="100">
+                  </a>
+                  
+                  <a href="/dashboard/event/4SUMbPU1mLNK2yUp/deleteimage/3" class="btn-delete-image" title="Delete image">
+                    <i class="fa fa-times-circle"></i>
+                  </a>
+                
+                </li>
+
+              
+              
+            </ul>
+          
+          
+        
+          <div class="form-group">
+            <label>
+              Event images:
+              <input type="file" name="images" multiple >
+            </label>
+          </div>
+          
+          <div class="form-group">        
+            <label>Event date:</label>
+            <input type="text" class="form-control" name="date" value="2015-09-20 4:34 PM" class="event-date" required>
+          </div>
+
+          <div class="form-group">
+            <label> Event seats: </label>
+            <input class="form-control" type="number" name="seats" value="12" required>
+          </div>
+          
+          <input type="hidden" name="_id" value="4SUMbPU1mLNK2yUp">
+          
+          
+            <input type="hidden" name="existingImages" value="[{&quot;path&quot;:&quot;/media/provizoriu-1.jpg&quot;},{&quot;path&quot;:&quot;/media/provizoriu-2.jpg&quot;},{&quot;path&quot;:&quot;/media/provizoriu-3.jpg&quot;},{&quot;path&quot;:&quot;/media/provizoriu-4.jpg&quot;}]">
+          
+          
+          
+
+            <a href="/dashboard/eventdelete/4SUMbPU1mLNK2yUp" class="btn btn-danger">Delete event</a>
+
+          
+
+          
+          
+          <button class="btn btn-primary pull-right" type="submit">
+            Save
+          </button>
+
+          
+
+
+        </div>
+      </div>
+      
+    </form>
+
+  </div>
+</div>
+ 
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/ejs/ejs.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/bower_components/rome/dist/rome.min.js"></script>
+  </div>
+</body>
+</html>

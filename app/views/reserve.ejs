@@ -1,0 +1,94 @@
+<div class="row reserve-actions<%  if (event.seats <= event.reservedSeats) {%> no-more-seats<% } %>">
+                    
+  <div class="col-md-8">
+    
+    <div class="container-reserve">
+      
+      <div class="container-reserve-btn">
+        
+        <span class="hide-if-seats">Lista de asteptare</span>
+        <span class="show-if-seats">Rezervă locuri</span>
+      </div>
+      
+      <form class="container-reserve-form">
+        
+        <div class="form-group">
+          <label>
+            Nume
+          </label>
+
+          <input type="text" name="name" class="reserve-name form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            Email (pt. confirmare)
+          </label>
+          <input type="email" name="email" class="reserve-email form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            Numar de locuri
+          </label>
+          <input type="number" min="1" max="5" name="seats" class="reserve-seats form-control" value="1" required>
+        </div>
+        
+
+        <input type="hidden" class="reserve-newsletter" name="mclistid" value="<%= event.mclistid || '' %>">
+
+        <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
+        <input type="hidden" name="orgId" class="reserve-orgId" value="<%= org._id %>">
+        
+         <% if ((event.seats - event.reservedSeats) > 0) {%>
+          
+          <input type="hidden" name="waiting" class="reserve-waiting" value="false">
+
+        <% } else { %>
+          
+          <input type="hidden" name="waiting" class="reserve-waiting" value="true">
+
+        <% } %>
+        
+        <button type="submit" class="btn btn-primary">
+          
+          <% if (event.seats <= event.reservedSeats) {%>
+            <span>Adauga-ma pe lista de asteptare</span>
+          <% } else { %>
+            <span>Rezervă locuri</span>
+          <% } %>
+          
+        </button>
+        
+        <span class="container-reserve-form-success">
+          <i class="fa fa-check"></i>
+          Rezervarea a fost facuta. Un email de confirmare a fost trimis pe adresa ta.
+        </span>
+        
+        <span class="container-reserve-form-error">
+          <i class="fa fa-times"></i>
+          Rezervarea a esuat. Incercati mai tarziu.
+        </span>
+        
+      </form>
+    </div>
+    
+  </div>
+  
+  <div class="col-md-4">
+      <% if ((event.seats - event.reservedSeats) > 0) {%>
+      <span class="seats-left">
+        <span id="seats-left">
+          <%= event.seats - event.reservedSeats %>
+        </span> locuri disponibile
+      </span>
+      <% } else { %>
+      <span class="seats-left">
+        Locuri epuizate <br>(<%= event.reservedSeats - event.seats %> pe lista de asteptare)
+      </span>
+      <% } %>
+    
+  </div>
+  
+  
+</div>
