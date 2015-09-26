@@ -218,26 +218,45 @@ module.exports = function(config, db) {
           theEvent = {};
         }
 
-        res.render('event-update', {
-          errors: [],
-          theEvent: theEvent,
-          orgId: req.params.orgId,
-          user: user
-        });
+        db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+          
+          if(err) {
+            return res.render('event-update', {errors: err});
+          }
+
+          res.render('event-update', {
+            errors: [],
+            theEvent: theEvent,
+            orgId: req.params.orgId,
+            org: org,
+            user: user
+          });
+
+        })
 
       });
 
     } else {
 
-      res.render('event-update', {
-        errors: [],
-        theEvent: {
-          date: moment().format(),
-          user: req.user
-        },
-        user: user,
-        orgId: req.params.orgId
-      });
+      db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+        
+        if(err) {
+          return res.render('event-update', {errors: err});
+        }
+
+        res.render('event-update', {
+          errors: [],
+          theEvent: {
+            date: moment().format(),
+            user: req.user
+          },
+          user: user,
+          orgId: req.params.orgId,
+          org: org
+        });
+
+      })
+      
 
     }
     

@@ -59,10 +59,11 @@ module.exports = function(config, db) {
     var orgName = req.body.orgName;
     var username = req.body.username;
     var orgId = req.params.orgId;
+    var location = req.body.location;
 
     db.orgs.update({
       _id: orgId
-    }, {$set: { name: orgName }},  function (err, num) {
+    }, {$set: { name: orgName, location: location }},  function (err, num) {
       
       if (err) {
         res.render('settings', {
