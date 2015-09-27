@@ -96,11 +96,19 @@ module.exports = function(config, db) {
           events = [];
         }
 
-        res.render('events', {
-          events: events,
-          user: user,
-          orgId: req.params.orgId
-        });
+        db.orgs.findOne({_id: orgId}, function (err, org) {
+          
+          if(err) {
+            return res.send(err, 400);
+          }
+
+          res.render('events', {
+            events: events,
+            user: user,
+            orgId: org._id,
+            org: org
+          });
+        })
 
       });
     } else {
