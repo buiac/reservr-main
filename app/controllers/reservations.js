@@ -195,14 +195,29 @@ module.exports = function(config, db) {
         return;
       }
 
-      res.render('reservations-view',{
-        orgId: req.params.orgId,
-        user: req.user,
-        reservations: reservations,
-        eventId: req.params.eventId
-      });
+      db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
+        
+        if (err) {
+          res.status(400).json(err);
+          return;
+        }
 
-    })
+        console.log('\n\n\n\n')
+        console.log('--------')
+        console.log(reservations);
+        console.log('--------')
+        console.log('\n\n\n\n')
+
+        res.render('reservations-view',{
+          org: org,
+          orgId: req.params.orgId,
+          user: req.user,
+          reservations: reservations,
+          eventId: req.params.eventId
+        });
+
+      });
+    });
     
   };
 
