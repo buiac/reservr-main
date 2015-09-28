@@ -292,7 +292,6 @@ module.exports = function(config, db) {
     var theEvent = {
       name: name,
       description: description,
-      _id: eventId || '',
       images: images,
       date: new Date(req.body.date),
       seats: seats,
@@ -302,6 +301,10 @@ module.exports = function(config, db) {
       // mclistid: mclistid, // mailchimp list id
       orgId: orgId
     };
+
+    if (eventId !== '') {
+      theEvent._id = eventId;
+    }
     
     // check if there's an image
     if (!req.files.images) {
@@ -370,7 +373,7 @@ module.exports = function(config, db) {
       if (eventId) {
 
         db.events.update({
-          '_id': eventId
+          _id: eventId
         }, theEvent, function (err, num, newEvent) {
 
           if (err) {
@@ -385,7 +388,6 @@ module.exports = function(config, db) {
             res.redirect('/dashboard');
 
           }
-
 
         });
 
