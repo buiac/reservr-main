@@ -41,7 +41,6 @@ module.exports = function(config, db) {
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
 
-
     var errors = req.validationErrors();
 
     if (errors) {
@@ -61,15 +60,8 @@ module.exports = function(config, db) {
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
-
-    db.orgs.update({
-      _id: orgId
-    }, {$set: { 
-      name: orgName, 
-      location: location, 
-      logo: '/media/' + req.files.logo.originalname 
-    }},  function (err, num) {
-      
+    
+    db.orgs.findOne({_id: orgId}, function (err, org) {
       if (err) {
         res.render('settings', {
           errors: err,
@@ -81,7 +73,21 @@ module.exports = function(config, db) {
         return;
       }
 
-      db.orgs.findOne({_id: orgId}, function (err, org) {
+      var logo = '';
+
+      if (req.files.logo) {
+        logo = '/media/' + req.files.logo.originalname;
+      } else if (org.logo) {
+        logo = org.logo
+      }
+
+      db.orgs.update({
+        _id: orgId
+      }, {$set: { 
+        name: orgName, 
+        location: location, 
+        logo: logo 
+      }},  function (err, num) {
         
         if (err) {
           res.render('settings', {
@@ -94,23 +100,24 @@ module.exports = function(config, db) {
           return;
         }
 
-        // validate user email
-
-        var validEmail = validateEmail(username);
-
-        db.users.update({_id: org.userId}, {$set: {username: username, validEmail: validEmail}}, function (err, num) {
+        db.orgs.findOne({_id: orgId}, function (err, org) {
+          
           if (err) {
             res.render('settings', {
-             errors: err,
-             orgId: req.params.orgId,
-             org: org,
-             user: user
+              errors: err,
+              orgId: req.params.orgId,
+              org: org,
+              user: user
             });
 
             return;
           }
 
-          db.users.findOne({_id: org.userId}, function (err, user) {
+          // validate user email
+
+          var validEmail = validateEmail(username);
+
+          db.users.update({_id: org.userId}, {$set: {username: username, validEmail: validEmail}}, function (err, num) {
             if (err) {
               res.render('settings', {
                errors: err,
@@ -121,19 +128,33 @@ module.exports = function(config, db) {
 
               return;
             }
-            
-            res.render('settings', {
-              errors: errors,
-              orgId: req.params.orgId,
-              org: org,
-              user: user
-            });
 
-          })
+            db.users.findOne({_id: org.userId}, function (err, user) {
+              if (err) {
+                res.render('settings', {
+                 errors: err,
+                 orgId: req.params.orgId,
+                 org: org,
+                 user: user
+                });
 
+                return;
+              }
+              
+              res.render('settings', {
+                errors: errors,
+                orgId: req.params.orgId,
+                org: org,
+                user: user
+              });
+
+            })
+
+          });
         });
       });
-    });
+
+    });    
 
     // db.orgs.update({_id: req.body.orgId}, {$set: {name: orgName}}, function (err, num) {
     //   console.log('update org');
