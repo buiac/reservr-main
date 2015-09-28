@@ -96,7 +96,7 @@ module.exports = function(config, db) {
           events = [];
         }
 
-        db.orgs.findOne({_id: orgId}, function (err, org) {
+        db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
           
           if(err) {
             return res.send(err, 400);
