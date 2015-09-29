@@ -323,3 +323,9 @@ body {
 .clearing-thumbs li {
   max-width: 100%;
 }
+
+.btn-signupin {
+  background: #000;
+  border: 1px solid #fff;
+  color: #fff;
+}
