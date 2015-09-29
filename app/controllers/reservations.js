@@ -147,33 +147,71 @@ module.exports = function(config, db) {
   };
 
   var deleteReservation = function (req, res, next) {
-    db.reservations.remove({
+    
+    db.reservations.findOne({
       _id: req.params.reservationId
-    }, function (err, num) {
+    }, function (err, reservation) {
       
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
+      var deletedRes = reservation;
 
-      db.reservations.find({
-        eventId: req.params.eventId
-      }, function (err, reservations) {
+      db.reservations.remove({
+        _id: req.params.reservationId
+      }, function (err, num) {
+        
         if (err) {
           res.status(400).json(err);
           return;
         }
 
-        res.render('reservations-view',{
-          orgId: req.params.orgId,
-          user: req.user,
-          reservations: reservations,
-          eventId: req.params.eventId
+        // update the number of available seats
+        db.events.findOne({
+          _id: req.params.eventId
+        }, function (err, event) {
+          
+          var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(deletedRes.seats);
+          
+          db.events.update({
+            _id: req.params.eventId
+          }, {$set: {
+            reservedSeats: reservedSeats
+          }});
+
         });
 
-      })
+        db.reservations.find({
+          eventId: req.params.eventId
+        }, function (err, reservations) {
+          if (err) {
+            res.status(400).json(err);
+            return;
+          }
+
+          db.orgs.findOne({
+            _id: req.params.orgId
+          }, function (err, org) {
+            if (err) {
+              res.status(400).json(err);
+              return;
+            }
+
+            res.render('reservations-view',{
+              org: org,
+              orgId: req.params.orgId,
+              user: req.user,
+              reservations: reservations,
+              eventId: req.params.eventId
+            });
+
+          });
+
+          
+
+        })
+
+      });
 
     });
+
   };
 
   var viewReservation = function (req, res, next) {

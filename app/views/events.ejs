@@ -1,6 +1,4 @@
 <%- include dashboard-header %>
-    
-    
 
     <div class="row">
       <div class="col-md-2">
@@ -12,7 +10,14 @@
 
         <% if (!events.length) { %>
           <div class="alert alert-info">
-            <p>Nu exista evenimente. Adauga un <a href="/dashboard/<%= orgId %>/event" class="btn btn-primary btn-sm">eveniment nou</a></p>
+            <div class="row">
+              <div class="col-md-10">
+                <p>Nu exista evenimente.</p>
+              </div>
+              <div class="col-md-2">
+                <a href="/dashboard/<%= orgId %>/event" class="btn btn-primary btn-sm">Eveniment nou</a>
+              </div>
+            </div>
           </div>
         <% } else { %>
 
