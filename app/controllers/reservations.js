@@ -89,71 +89,62 @@ module.exports = function(config, db) {
 
     orgSubjectPlacholders.forEach(function (item) {
       template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
-    }); 
-
-    var userEmailConfig = {
-      from: 'sebi.kovacs@gmail.com',
-      to: reservation.email,
-      subject: template.userSubject,
-      html: template.userBody
-    };
-
-    var userWaitingEmailConfig = {
-      from: 'sebi.kovacs@gmail.com',
-      to: reservation.email,
-      subject: template.userSubjectWaiting,
-      html: template.userBodyWaiting
-    };
-
-    var orgEmailConfig = {
-      from: 'sebi.kovacs@gmail.com',
-      to: 'sebi.kovacs@gmail.com',
-      subject: template.orgSubject,
-      html: template.orgBody
-    };
-
-
-    if (typeof reservation.waiting === 'boolean' && reservation.waiting) {
-      transport.sendMail(userWaitingEmailConfig, function (err, info) {
-        console.log(err);
-        console.log(info);
-      });
-    } else if(reservation.waiting === 'false') {
-      transport.sendMail(userEmailConfig, function (err, info) {
-        console.log(err);
-        console.log(info);
-      });
-    }
-
-    transport.sendMail(orgEmailConfig, function (err, info) {
-      console.log(err);
-      console.log(info);
     });
 
-  };
+    db.orgs.findOne({
+      _id: event.orgId
+    }, function (err, org) {
+      
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        var userEmailConfig = {
+          from: user.username,
+          to: reservation.email,
+          subject: template.userSubject,
+          html: template.userBody
+        };
 
-  // var reservationDelete = function(req, res, next) {
+        var userWaitingEmailConfig = {
+          from: user.username,
+          to: reservation.email,
+          subject: template.userSubjectWaiting,
+          html: template.userBodyWaiting
+        };
 
-  //   var reservationId = req.params.reservationId;
-  //   var eventId = req.params.eventId;
+        var orgEmailConfig = {
+          from: 'contact@reservr.net',
+          to: user.username,
+          subject: template.orgSubject,
+          html: template.orgBody
+        };
+
+
+        if (typeof reservation.waiting === 'boolean' && reservation.waiting) {
+          transport.sendMail(userWaitingEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });
+        } else if(reservation.waiting === 'false') {
+          transport.sendMail(userEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });
+        }
+
+        transport.sendMail(orgEmailConfig, function (err, info) {
+          console.log(err);
+          console.log(info);
+        });
+
+      });
+
+    });
+
     
-  //   db.reservations.remove({
-  //     _id: reservationId
-  //   },function (err, num) {
 
-  //     if (err) {
-  //       res.render('reservations', {
-  //         errors: err,
-  //         reservations: []
-  //       });
-  //     }
-
-  //     // redirect to reservations page
-  //     res.redirect('/reservations/' + eventId);
-
-  //   });
-
-  // };
+  };
 
   var deleteReservation = function (req, res, next) {
     db.reservations.remove({
@@ -201,12 +192,6 @@ module.exports = function(config, db) {
           res.status(400).json(err);
           return;
         }
-
-        console.log('\n\n\n\n')
-        console.log('--------')
-        console.log(reservations);
-        console.log('--------')
-        console.log('\n\n\n\n')
 
         res.render('reservations-view',{
           org: org,
