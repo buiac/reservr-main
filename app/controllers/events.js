@@ -50,6 +50,18 @@ module.exports = function(config, db) {
     
   };
 
+  var deleteEvent = function (req, res, next) {
+    
+    // delete event from db
+    db.events.remove({
+      _id: req.params.eventId
+    }, function (err, num) {
+      
+      res.redirect('/dashboard');
+
+    });
+  };
+
   var listEvents = function(req, res, next) {
 
     db.events.find({
@@ -499,9 +511,10 @@ module.exports = function(config, db) {
 
         db.events.findOne({orgId: org._id}, function (err, ev) {
 
-          if (!ev) {
-            res.send({error: 'error'}, 400);
-          }
+          // if (!ev) {
+          //   res.send({error: 'error'}, 400);
+          //   return;
+          // }
 
           if (user.validEmail) {
             res.redirect('/dashboard/' + org._id + '/events/');
@@ -523,7 +536,8 @@ module.exports = function(config, db) {
     updateEvent: updateEvent,
     listFrontEventsView: listFrontEventsView,
     frontEventView: frontEventView,
-    eventDeleteImage: eventDeleteImage
+    eventDeleteImage: eventDeleteImage,
+    deleteEvent: deleteEvent
   };
 
 };

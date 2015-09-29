@@ -131,12 +131,14 @@ module.exports = (function() {
   var settings = require('./app/controllers/settings.js')(config, db);
 
   // Backend routes
+  // events
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
   app.get('/dashboard/:orgId/event/:eventId/deleteimage/:pictureIndex', isAuthenticated, events.eventDeleteImage);
+  app.get('/dashboard/:orgId/delete-event/:eventId', isAuthenticated, events.deleteEvent);
 
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);

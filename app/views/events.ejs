@@ -1,5 +1,6 @@
 <%- include dashboard-header %>
     
+    
 
     <div class="row">
       <div class="col-md-2">
@@ -7,59 +8,73 @@
       </div>
 
       <div class="col-md-10">
-        <h2>
-          Events
-        </h2>
-
-        <div class="row row-head">
-          
-          <div class="col-md-4">
-            Numele evenimentului
-          </div>
-
-          <div class="col-md-4">
-            Data
-          </div>
-
-          <div class="col-md-1 row-center">
-            Locuri
-          </div>
-
-          <div class="col-md-1 row-center">
-            Rezervari
-          </div>
-          
-        </div>
         
-        <% events.forEach(function(event){ %>
 
-        <div class="row row-row">
+        <% if (!events.length) { %>
+          <div class="alert alert-info">
+            <p>Nu exista evenimente. Adauga un <a href="/dashboard/<%= orgId %>/event" class="btn btn-primary btn-sm">eveniment nou</a></p>
+          </div>
+        <% } else { %>
 
-          <div class="col-md-4">
-            <h4><a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a></h4>
+          <h2>
+            Events
+          </h2>
+          <div class="row row-head">
+            
+            <div class="col-md-4">
+              Numele evenimentului
+            </div>
+
+            <div class="col-md-4">
+              Data
+            </div>
+
+            <div class="col-md-1 row-center">
+              Locuri
+            </div>
+
+            <div class="col-md-1 row-center">
+              Rezervari
+            </div>
+            
           </div>
           
-          <div class="col-md-4 row-td">
-            <%= moment(event.date).format('LLLL') %>
+          <% events.forEach(function(event){ %>
+
+          <div class="row row-row">
+
+            <div class="col-md-4">
+              <h4>
+                <a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
+
+                <a target="_blank" href="/u/<%= org.name %>/event/<%= event._id %>" class="external-link"><i class="fa fa-external-link"></i></a>
+              </h4>
+            </div>
+            
+            <div class="col-md-4 row-td">
+              <%= moment(event.date).format('LLLL') %>
+            </div>
+
+            <div class="col-md-1 row-td row-center">
+              <%= event.seats %>
+            </div>
+            <div class="col-md-1 row-td row-center">
+              <%= event.reservedSeats %>
+            </div>
+            <div class="col-md-2 row-td-btn">
+              <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>" class="btn btn-primary btn-sm">Vezi rezervari</a>
+              <a href="/dashboard/<%= org._id %>/delete-event/<%= event._id %>" class="btn btn-danger btn-sm" onclick="if (!confirm('Sunteti sigur ca doriti stergerea acestui eveniment?')) return false"><i class="fa fa-trash"></i></a>
+            </div>
+
           </div>
 
-          <div class="col-md-1 row-td row-center">
-            <%= event.seats %>
-          </div>
-          <div class="col-md-1 row-td row-center">
-            <%= event.reservedSeats %>
-          </div>
-          <div class="col-md-2 row-td-btn">
-            <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>" class="btn btn-primary btn-sm">Vezi rezervari</a>
-          </div>
-          
-
-        </div>
-
-        <% }) %>
+          <% }) %>
+        <% } %>
+        
 
       </div>
 
-      
     </div>
+
+
 <%- include dashboard-footer %>

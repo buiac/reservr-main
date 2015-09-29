@@ -116,7 +116,7 @@
           
           <% if (theEvent._id) { %>
 
-            <a href="/dashboard/eventdelete/<%= theEvent._id %>" class="btn btn-danger">Delete event</a>
+            <a href="/dashboard/<%= org._id %>/delete-event/<%= theEvent._id %>" class="btn btn-danger" onclick="confirm('Esti sigur ca vrei sa stergi acest eveniment')">Delete event</a>
 
           <% } %>
 
