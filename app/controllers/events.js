@@ -171,6 +171,8 @@ module.exports = function(config, db) {
           date: -1
         }).exec(function (err, events) {
 
+          
+
           if(err) {
             return res.send(err, 400);
           }
@@ -178,6 +180,12 @@ module.exports = function(config, db) {
           if (!events.length) {
             events = [];
           }
+
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(events)
+          console.log('--------')
+          console.log('\n\n\n\n')
 
           res.render('events-front', {
             events: events,

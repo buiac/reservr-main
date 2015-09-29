@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>
-    Reservr2 Dashboard
+    Reservr Dashboard
   </title>
   
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
@@ -15,12 +15,13 @@
 <body>
   <div class="header">
     <div class="container">
-      <div class="col-md-4">
+      <div class="col-md-7">
 
         <a href="/dashboard" class="logo">
           <img src="/images/logo-white.png" class="logo-reservr">
+          
           <img src="<%= org.logo %>" class="logo-client">
-        
+
           <h2>
             Dashboard
           </h2>
@@ -28,7 +29,7 @@
 
       </div>
 
-      <div class="col-md-8">
+      <div class="col-md-5">
 
         <a href="/dashboard/<%= orgId %>/event" class="btn-event-new" title="Adauga eveniment">
           <i class="fa fa-plus"></i>
