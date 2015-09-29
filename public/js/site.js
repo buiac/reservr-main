@@ -1,4 +1,17 @@
 $(document).ready(function () {
+
+   // toggle full description
+  var toggleDescription = function() {
+    
+    var $this = $(this);
+    var $description = $this.prev('.event-description');
+    
+    $description.toggleClass('event-description--show');
+    
+  };
+  
+  $('.event-toggle-description').on('click', toggleDescription);
+  
   
   var toggleReservationBox = function() {
     console.log('dasdasd');
