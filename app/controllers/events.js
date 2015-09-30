@@ -317,7 +317,6 @@ module.exports = function(config, db) {
       seats: seats,
       location: location,
       activeImage: activeImage,
-      reservedSeats: 0,
       // mclistid: mclistid, // mailchimp list id
       orgId: orgId
     };
@@ -392,10 +391,7 @@ module.exports = function(config, db) {
       
       if (eventId) {
 
-        db.events.update({
-          _id: eventId
-        }, theEvent, function (err, num, newEvent) {
-
+        db.events.findOne({_id: eventId}, function (err, event) {
           if (err) {
             res.render('event-update', {
               errors: err,
@@ -403,15 +399,31 @@ module.exports = function(config, db) {
             });
           }
 
-          if (num > 0) {
-            
-            res.redirect('/dashboard');
+          theEvent.reservedSeats = event.reservedSeats;
 
-          }
+          db.events.update({
+            _id: eventId
+          }, theEvent, function (err, num, newEvent) {
 
-        });
+            if (err) {
+              res.render('event-update', {
+                errors: err,
+                theEvent: theEvent
+              });
+            }
+
+            if (num > 0) {
+              
+              res.redirect('/dashboard');
+
+            }
+
+          });
+
+        });        
 
       } else {
+        theEvent.reservedSeats = 0;
 
         db.events.insert(theEvent, function (err, newEvent) {
 
