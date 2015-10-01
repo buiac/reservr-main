@@ -180,7 +180,7 @@ module.exports = function(config, db) {
         db.events.find({
           orgId: org._id
         }).sort({
-          date: -1
+          date: 1
         }).exec(function (err, events) {
 
           if(err) {
