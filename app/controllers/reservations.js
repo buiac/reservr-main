@@ -13,6 +13,43 @@ module.exports = function(config, db) {
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   var moment = require('moment');
+  var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
+  var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
+
+  var addUserToMailingList = function (reservation) {
+    var params = {
+      update_existing: true,
+      double_optin: false,
+      send_welcome: false,
+      id: reservation.mclistid,
+      email: {
+        email: reservation.email
+      },
+      merge_vars: {
+        FNAME: reservation.name.split(' ')[0] || '',
+        LNAME:  reservation.name.split(' ')[1] || '' 
+      }
+    };
+
+    mc.lists.subscribe(params, function(data) {
+      console.log('\n\n\n\n')
+      console.log('--------')
+      console.log('mailchimp success')
+      console.log('--------')
+      console.log('\n\n\n\n')
+      console.log(data);
+
+    }, function(err) {
+
+      console.log('\n\n\n\n')
+      console.log('--------')
+      console.log('mailchimp error')
+      console.log('--------')
+      console.log('\n\n\n\n')
+      console.log(err);
+
+    });
+  };
 
   // configure moment
   moment.defaultFormat = 'YYYY-MM-DD LT';
@@ -141,9 +178,6 @@ module.exports = function(config, db) {
       });
 
     });
-
-    
-
   };
 
   var deleteReservation = function (req, res, next) {
@@ -204,8 +238,6 @@ module.exports = function(config, db) {
 
           });
 
-          
-
         })
 
       });
@@ -255,7 +287,7 @@ module.exports = function(config, db) {
     var waiting = req.body.waiting;
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
-    // var mclistid = req.body.mclistid;
+    var mclistid = req.body.mclistid;
 
     var errors = req.validationErrors();
 
@@ -271,7 +303,7 @@ module.exports = function(config, db) {
       eventId: eventId,
       orgId: orgId,
       waiting: waiting,
-      // mclistid: mclistid
+      mclistid: mclistid
     };
 
     var findEventReservations = function (err, reservations) {
@@ -315,9 +347,10 @@ module.exports = function(config, db) {
               return;
             }
 
-            // send confirmation emails
+            if (newReservation.mclistid) {
+              addUserToMailingList(newReservation);
+            }
             
-
             // update number of reservations on event object
             db.events.update(
               {_id: eventId}, 

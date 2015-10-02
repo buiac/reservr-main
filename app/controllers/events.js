@@ -298,7 +298,8 @@ module.exports = function(config, db) {
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
     var location = (req.body.location) ? req.body.location.trim() : '';
     var activeImage = parseInt(req.body.activeImage || 0);
-    // var mclistid = req.body.mclistid.trim();
+    var mclistid = req.body.mclistid || '';
+
     var orgId = req.params.orgId;
 
     var theEvent = {
@@ -312,6 +313,10 @@ module.exports = function(config, db) {
       // mclistid: mclistid, // mailchimp list id
       orgId: orgId
     };
+
+    if (mclistid) {
+      theEvent.mclistid = mclistid.trim();
+    }
 
     if (eventId !== '') {
       theEvent._id = eventId;

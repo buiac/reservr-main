@@ -11,10 +11,9 @@ $(document).ready(function () {
   };
   
   $('.event-toggle-description').on('click', toggleDescription);
-  
-  
+
   var toggleReservationBox = function() {
-    console.log('dasdasd');
+
     var $container = $(this).parent('.container-reserve');
     
     $container.toggleClass('container-reserve--active');
@@ -34,11 +33,6 @@ $(document).ready(function () {
     var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($('#seats-left').html());
-
-    // send nothing if user does not check checkbox
-    if (!$this.find('.reserve-newsletter')[0].checked) {
-      mclistid = '';
-    }
     
     if (seats <= seatsLeft || seatsLeft === 0 || waiting ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');

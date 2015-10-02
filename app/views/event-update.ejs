@@ -7,14 +7,6 @@
   </div>
   <div class="col-md-10">
     
-    <div class="row">
-      <div class="col-md-12">
-
-        <h3>Edit event</h3>
-        
-      </div>
-    </div>
-    
     <form method="post" action="/dashboard/<%= orgId %>/event" enctype="multipart/form-data">
       
       <div class="row">
@@ -42,21 +34,11 @@
       </div>
 
       <div class="row">
-        <div class="col-md-6">
-          
-          <% if (user.validEmail) { %>
-            <label>Event organizer:</label>
-            <%= org.name %>
-          <% } %>
+        <div class="col-md-8">
           
           <div class="form-group">
             <label>Event name:</label>
             <input type="text" placeholder="" class="form-control" name="name" value="<%= theEvent.name || '' %>" />
-          </div>
-          
-          <div class="form-group">
-            <label>Event location: </label>
-            <input class="form-control" type="text" placeholder="" name="location" value="<%= theEvent.location || org.location %>" />
           </div>
           
           <div class="form-group">
@@ -65,7 +47,34 @@
           </div>
         </div>
         
-        <div class="col-md-6">
+        <div class="col-md-4">
+
+          <div class="form-group">
+            <label>Event location: </label>
+            <input class="form-control" type="text" placeholder="" name="location" value="<%= theEvent.location || org.location || ''%>" />
+          </div>
+
+          <div class="row">
+            
+            <div class="col-md-8">
+              
+              <div class="form-group">        
+                <label>Event date:</label>
+                <input type="text" class="form-control event-date" name="date" value="<%= moment(theEvent.date).format() %>" required>
+              </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+              <div class="form-group">
+                <label> Seats: </label>
+                <input class="form-control" type="number" name="seats" value="<%= theEvent.seats || '' %>" required>
+              </div>
+
+            </div>
+
+          </div>
 
           <% if(theEvent.images && theEvent.images.length) { %>
         
@@ -97,16 +106,28 @@
               <input type="file" name="images" multiple <% if (!theEvent || !theEvent._id) {%> required <% } %>>
             </label>
           </div>
+          <% if (org.mailchimp && org.mailchimp.length) { %>
           
-          <div class="form-group">        
-            <label>Event date:</label>
-            <input type="text" class="form-control event-date" name="date" value="<%= moment(theEvent.date).format() %>" required>
+          <div class="form-group">
+
+            <label for="">MailChimp Settings </label>
+            <div>
+              <% org.mailchimp.forEach(function(mcAccount, i){ %>
+                
+                <div class="radio">
+
+                  <label>
+                    <input type="radio" name="mclistid" id="optionsRadios<%= i %>" value="<%= mcAccount.account %>" <% if (i === 0) { %> checked <% } %>>
+                    <%= mcAccount.name %>
+                  </label>
+
+                </div>
+
+              <% }); %>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label> Event seats: </label>
-            <input class="form-control" type="number" name="seats" value="<%= theEvent.seats || '' %>" required>
-          </div>
+          <% } %>
           
           <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
           
