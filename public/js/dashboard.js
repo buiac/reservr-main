@@ -5,6 +5,17 @@ var validateEmail = function (email) {
 
 $(document).ready(function () {
 
+  var $datePicker = document.querySelector('.event-date');
+  
+  if($datePicker) {
+  
+    // init rome datetime picker
+    rome($datePicker, {
+      weekStart: 1
+    });
+  
+  };
+  
   $('body').on('click', '.event-images .event-image-thumb .th', function (e) {
     
     e.preventDefault();
@@ -14,5 +25,7 @@ $(document).ready(function () {
     $(this).addClass('active-image');
 
   });
+
+
 
 })

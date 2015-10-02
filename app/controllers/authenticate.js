@@ -161,7 +161,7 @@ module.exports = function(config, db) {
 
   var signin = passport.authenticate('signin', {
     successRedirect: '/dashboard',
-    failureRedirect: '/',
+    failureRedirect: '/signin',
     failureFlash : true
   });
 

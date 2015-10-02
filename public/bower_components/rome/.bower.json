@@ -35,7 +35,6 @@
     "commit": "bbcecfa601f002999df58569e091c61d72b49837"
   },
   "_source": "git://github.com/bevacqua/rome.git",
-  "_target": "~2.1.22",
-  "_originalSource": "rome",
-  "_direct": true
+  "_target": "~2.1.17",
+  "_originalSource": "rome"
 }
