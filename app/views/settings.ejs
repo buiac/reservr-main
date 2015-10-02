@@ -44,12 +44,12 @@
                     
                     <div class="col-md-6">
                       
-                      <input type="text" name="mailchimpName1" id="" class="form-control" placeholder="Mailchimp Account Name 1" <% if (org.mailchimp) { %> value="<%= org.mailchimp[0].name %>" <% } else { %> value="" <% } %>>
+                      <input type="text" name="mailchimpName1" id="" class="form-control" placeholder="Mailchimp Account Name 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].name %>" <% } else { %> value="" <% } %>>
                     </div>
 
                     <div class="col-md-6">
                       
-                      <input type="text" name="mailchimpAccount1" id="" class="form-control" placeholder="Mailchimp Account Number 1" <% if (org.mailchimp) { %> value="<%= org.mailchimp[0].account %>" <% } else { %> value="" <% } %> >
+                      <input type="text" name="mailchimpAccount1" id="" class="form-control" placeholder="Mailchimp Account Number 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].account %>" <% } else { %> value="" <% } %> >
                     </div>
 
                   </div>      
