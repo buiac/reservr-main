@@ -33,11 +33,6 @@ $(document).ready(function () {
     var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($('#seats-left').html());
-
-    console.log('seats, seatsLeft, waiting')
-    console.log(seats, seatsLeft, waiting);
-
-    console.log(seats <= seatsLeft || seatsLeft === 0 || waiting )
     
     if (seats <= seatsLeft || seatsLeft === 0 || waiting === 'true' ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');
