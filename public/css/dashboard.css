@@ -112,6 +112,18 @@ body {
 /* reservations
  */
 
+.no-reservations .reservations-wrapper {
+  display: none;
+}
+
+.alert-reservations {
+  display: none;
+}
+
+.no-reservations .alert-reservations {
+  display: block;
+}
+
 .table-reservations {
   width: 100%;
 }
@@ -221,4 +233,12 @@ body {
 
 .external-link {
   color: #ccc;
+}
+
+.btn-new-event {
+  margin: 20px auto 0;
+}
+
+.btn-cancel {
+  margin: 0 15px 0 0;
 }

@@ -27,14 +27,19 @@ $(document).ready(function () {
     var $this = $(this);
     var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
-    var seats = $this.find('.reserve-seats').val();
+    var seats = parseInt($this.find('.reserve-seats').val(), 10);
     var eventId = $this.find('.reserve-id').val();
     var orgId = $this.find('.reserve-orgId').val();
     var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($('#seats-left').html());
+
+    console.log('seats, seatsLeft, waiting')
+    console.log(seats, seatsLeft, waiting);
+
+    console.log(seats <= seatsLeft || seatsLeft === 0 || waiting )
     
-    if (seats <= seatsLeft || seatsLeft === 0 || waiting ) {
+    if (seats <= seatsLeft || seatsLeft === 0 || waiting === 'true' ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');
       
       $this.addClass('container-reserve-form--loading');
