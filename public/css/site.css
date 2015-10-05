@@ -329,3 +329,43 @@ body {
   border: 1px solid #fff;
   color: #fff;
 }
+
+/* reservr
+ */
+
+body.splash {
+  background: #333;
+  
+  font-family: sans-serif;
+}
+
+body.splash a,
+body.splash p {
+  color: #efefef;
+  font-size: 18px;
+}
+
+body.splash .container {
+  display: table;
+}
+
+body.splash .splash {
+  display: table-cell;
+  
+  text-align: center;
+  vertical-align: middle;
+}
+
+body.splash .splash img {
+  margin-bottom: 2rem;
+}
+
+html,
+body.splash,
+body.splash .container,
+body.splash .splash {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
