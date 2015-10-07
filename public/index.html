@@ -4,29 +4,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>
-    Reservr2
+    Reservr - hassle free reservations
   </title>
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/site.css">
 
-  <script>
-    var ready = function (fn) {
-      if (document.readyState !== 'loading') {
-        fn()
-      } else {
-        document.addEventListener('DOMContentLoaded', fn)
-      }
-    };
-
-    ready(function () {
-      var username = document.querySelector('#username');
-      var password = document.querySelector('#password');
-      var hexNumber = Math.ceil(Math.random() * 100000).toString(16);
-      var hexPass = Math.ceil(Math.random() * 100000).toString(16);
-      username.setAttribute('value', 'guest-' + hexNumber);
-      password.setAttribute('value', 'pass-' + hexNumber);
-    });
-  </script>
 </head>
 <body class="splash">
   
