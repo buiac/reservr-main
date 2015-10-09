@@ -251,6 +251,7 @@ module.exports = function(config, db) {
     db.reservations.find({
       eventId: req.params.eventId
     }, function (err, reservations) {
+
       if (err) {
         res.status(400).json(err);
         return;

@@ -25,11 +25,13 @@
             </tr>
           </thead>
           <tbody>
-            <% reservations.forEach(function(reservation, i){ %>
+            <% var i = 1; %>
+            <% reservations.forEach(function(reservation){ %>
               <% if (reservation.waiting === 'false')  { %>
               <tr>
                 <td>
-                  <%= (i + 1) %>. <%= reservation.name %>
+                  <%= i %>. <%= reservation.name %>
+                  <% i = i + 1 %>
                 </td>
                 <td>
                   <%= reservation.email %>
@@ -67,11 +69,13 @@
             </tr>
           </thead>
           <tbody>
-            <% reservations.forEach(function(reservation, i){ %>
+            <% var m = 1; %>
+            <% reservations.forEach(function(reservation){ %>
               <% if (typeof reservation.waiting === 'boolean' && reservation.waiting)  { %>
               <tr>
                 <td>
-                  <%= (i + 1) %>. <%= reservation.name %>
+                  <%= m %>. <%= reservation.name %>
+                  <% m = m +1 %>
                 </td>
                 <td>
                   <%= reservation.email %>
