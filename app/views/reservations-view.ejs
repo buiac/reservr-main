@@ -67,7 +67,7 @@
             </tr>
           </thead>
           <tbody>
-            <% reservations.forEach(function(reservation){ %>
+            <% reservations.forEach(function(reservation, i){ %>
               <% if (typeof reservation.waiting === 'boolean' && reservation.waiting)  { %>
               <tr>
                 <td>
