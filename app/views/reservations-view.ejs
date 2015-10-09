@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            <% var i = 1; %>
+            <% var i = 1; var s = 0; %>
             <% reservations.forEach(function(reservation){ %>
               <% if (reservation.waiting === 'false')  { %>
               <tr>
@@ -38,6 +38,7 @@
                 </td>
                 <td>
                   <%= reservation.seats %>
+                  <% s = s + parseInt(reservation.seats) %>
                 </td>
                 <td>
                   <a href="/dashboard/<%= orgId %>/event/<%= eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
@@ -49,6 +50,20 @@
               <% } %>
             <% });%>
           </tbody>
+          <tfoot>
+            <td>
+              <strong>Total reserved seats :</strong>
+            </td>
+            <td>
+              
+            </td>
+            <td>
+              <strong><%= s %></strong>
+            </td>
+            <td>
+              
+            </td>
+          </tfoot>
         </table>
 
         <h2>Waiting list</h2>
@@ -69,13 +84,13 @@
             </tr>
           </thead>
           <tbody>
-            <% var m = 1; %>
+            <% var m = 1; var ws = 0; %>
             <% reservations.forEach(function(reservation){ %>
               <% if (typeof reservation.waiting === 'boolean' && reservation.waiting)  { %>
               <tr>
                 <td>
                   <%= m %>. <%= reservation.name %>
-                  <% m = m +1 %>
+                  <% m = m +1; ws = ws + parseInt(reservation.seats) %>
                 </td>
                 <td>
                   <%= reservation.email %>
@@ -93,6 +108,20 @@
               <% } %>
             <% });%>
           </tbody>
+          <tfoot>
+            <td>
+              <strong>Total waiting seats :</strong>
+            </td>
+            <td>
+              
+            </td>
+            <td>
+              <strong><%= ws %></strong>
+            </td>
+            <td>
+              
+            </td>
+          </tfoot>
         </table>
 
       </div>
