@@ -148,12 +148,21 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservation);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);
 
-  // front-end routes
+  
+  /* Front-end routes
+  */
+
+  // events
   app.get('/u/:orgName', events.listFrontEventsView);
   app.get('/u/:orgName/event/:eventId', events.frontEventView);
 
   // reservations
   app.post('/u/:orgId/reservations/:eventId', reservations.updateReservation);
+
+  // user reservations management
+  app.get('/r/:reservationId', reservations.userReservationsView);
+  app.get('/r/delete-reservation/:reservationId', reservations.userReservationDelete);
+  app.get('/r/deleted-reservation', reservations.userReservationsDeleteView);  
 
   // auth routes
   var auth = require('./app/controllers/authenticate.js')(config, db);

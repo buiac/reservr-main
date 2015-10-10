@@ -101,8 +101,8 @@ module.exports = function(config, db) {
     var template = {
       userSubject: 'Rezervarea a fost facuta',
       userSubjectWaiting: 'Ai fost inclus pe lista de asteptare',
-      userBody: 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> O zi cat mai buna iti dorim.',
-      userBodyWaiting: 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> O zi cat mai buna iti dorim.',
+      userBody: 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
+      userBodyWaiting: 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.',
       orgSubject: 'O noua rezervare la "{eventName}"',
       orgBody: 'Salut, <br /><br /> O noua rezervare de {seats} locuri a fost facuta pentru evenimentul "{eventName}" de {eventDate} de catre {userName}, {userEmail}. <br /><br /> O zi cat mai buna iti dorim.'
     };
@@ -465,12 +465,81 @@ module.exports = function(config, db) {
 
   };
 
+  var userReservationsView = function (req, res, next) {
+
+    db.reservations.findOne({
+      _id: req.params.reservationId
+    }, function (err, reservation) {
+      
+      db.events.findOne({
+        _id: reservation.eventId
+      }, function (err, event) {
+        
+        db.orgs.findOne({
+          _id: event.orgId
+        }, function (err, org) {
+          res.render('user-reservations-view',{
+            reservation: reservation,
+            event: event,
+            org: org
+          });
+        });
+      })
+    });
+  };
+
+  var userReservationDelete = function (req, res, next) {
+    // delete event from db
+
+    db.reservations.findOne({
+      _id: req.params.reservationId
+    }, function (err, reservation) {
+      
+      db.events.findOne({
+        _id: reservation.eventId
+      }, function (err, event) {
+        
+        db.orgs.findOne({
+          _id: event.orgId
+        }, function (err, org) {
+          
+
+          db.reservations.remove({
+            _id: req.params.reservationId
+          }, function (err, num) {
+            
+            res.render('deleted-reservation',{
+              event: event,
+              org: org
+            });
+
+          });
+
+
+        });
+
+      })
+
+      
+    });
+    
+    
+
+  };
+
+  var userReservationsDeleteView = function (req, res, next) {
+    // body...
+  };
+
   return {
     // view: view,
     list: list,
     updateReservation: updateReservation,
     viewReservation: viewReservation,
-    deleteReservation: deleteReservation
+    deleteReservation: deleteReservation,
+    userReservationsView: userReservationsView,
+    userReservationDelete: userReservationDelete,
+    userReservationsDeleteView: userReservationsDeleteView
   };
 
 };

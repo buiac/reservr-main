@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>
+    Reservr Dashboard
+  </title>
+  
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="col-md-7">
+
+        <a href="/dashboard" class="logo">
+          <img src="/images/logo-white.png" class="logo-reservr">
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="container">
+
+    <h2>User Reservations</h2>
+    
+    <div class="row row-head">
+            
+      <div class="col-md-3">
+        Numele evenimentului
+      </div>
+
+      <div class="col-md-3">
+        Data
+      </div>
+
+      <div class="col-md-1 row-center">
+        Locuri
+      </div>
+      
+    </div>
+    <div class="row row-row">
+
+      <div class="col-md-3">
+        <h4>
+          <a target="_blank" href="/u/<%= org.name %>/event/<%= event._id %>"><%= event.name %></a>
+        </h4>
+      </div>
+      
+      <div class="col-md-3 row-td">
+        <%= moment(event.date).format('LLLL') %>
+      </div>
+
+      <div class="col-md-1 row-td row-center">
+        <%= reservation.seats %>
+      </div>
+      
+      <div class="col-md-2 row-td-btn">
+        <a title="Sterge rezervari" href="/r/delete-reservation/<%= reservation._id %>" class="btn btn-danger btn-sm" onclick="if (!confirm('Sunteti sigur ca doriti stergerea acestei rezervari?')) return false"><i class="fa fa-trash"></i> Sterge rezervare</a>
+      </div>
+
+    </div>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/ejs/ejs.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/bower_components/rome/dist/rome.min.js"></script>
+  </div>
+</body>
+</html>
+  

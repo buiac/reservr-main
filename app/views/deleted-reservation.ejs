@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>
+    Reservr Dashboard
+  </title>
+  
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="col-md-7">
+
+        <a href="/u/<%= org.name %>" class="logo">
+          <img src="/images/logo-white.png" class="logo-reservr">
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="container">
+
+    <h2>User Reservations</h2>
+    
+    <div class="alert alert-info">
+      <p>
+        Reservation successfully deleted. <a href="/u/<%= org.name %>" class="btn btn-primary">Other events</a>
+      </p>
+    </div>
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/ejs/ejs.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/bower_components/rome/dist/rome.min.js"></script>
+  </div>
+</body>
+</html>
+  
