@@ -137,14 +137,14 @@ module.exports = function(config, db) {
       }, function (err, user) {
         
         var userEmailConfig = {
-          from: user.username,
+          from: org.confirmationEmail,
           to: reservation.email,
           subject: template.userSubject,
           html: template.userBody
         };
 
         var userWaitingEmailConfig = {
-          from: user.username,
+          from: org.confirmationEmail,
           to: reservation.email,
           subject: template.userSubjectWaiting,
           html: template.userBodyWaiting
@@ -152,7 +152,7 @@ module.exports = function(config, db) {
 
         var orgEmailConfig = {
           from: 'contact@reservr.net',
-          to: user.username,
+          to: org.confirmationEmail,
           subject: template.orgSubject,
           html: template.orgBody
         };

@@ -61,6 +61,7 @@ module.exports = function(config, db) {
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
+    var confirmationEmail = req.body.confirmationEmail || '';
 
     if (req.body.mailchimpName1) {
       mailchimp.push({
@@ -74,6 +75,10 @@ module.exports = function(config, db) {
         name: req.body.mailchimpName2,
         account: req.body.mailchimpAccount2
       });
+    }
+
+    if (!confirmationEmail) {
+      confirmationEmail = username;
     }
     
     db.orgs.findOne({_id: orgId}, function (err, org) {
@@ -102,7 +107,8 @@ module.exports = function(config, db) {
         name: orgName, 
         location: location, 
         logo: logo,
-        mailchimp: mailchimp
+        mailchimp: mailchimp,
+        confirmationEmail: confirmationEmail
       }},  function (err, num) {
         
         if (err) {

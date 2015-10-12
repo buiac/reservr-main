@@ -32,6 +32,16 @@
 
                 <div class="form-group">
                   
+                  <label for="">Where should the confirmation email be sent?</label>
+
+                  <input type="email" value="<%= org.confirmationEmail || user.username %>" name="confirmationEmail" id="" class="form-control" required>
+
+                </div>
+
+                
+
+                <div class="form-group">
+                  
                   <label for="">Location</label>
 
                   <input type="text" value="<%= org.location || '' %>" name="location" id="" class="form-control">
