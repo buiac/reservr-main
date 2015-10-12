@@ -180,6 +180,20 @@ module.exports = function(config, db) {
     });
   };
 
+  var distributeWaitingList = function (event) {
+    db.reservations.find({
+      eventId: event._id
+    }, function (err, reservations) {
+      
+      reservations.forEach(function (reservation) {
+        if (reservation.waiting === true || reservation.waiting === 'true') {
+          
+        }
+      });
+
+    })
+  };
+
   var deleteReservation = function (req, res, next) {
     
     db.reservations.findOne({
@@ -195,7 +209,7 @@ module.exports = function(config, db) {
         if (err) {
           res.status(400).json(err);
           return;
-        }
+        } 
 
         // update the number of available seats
         db.events.findOne({
@@ -204,11 +218,15 @@ module.exports = function(config, db) {
           
           var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(deletedRes.seats);
           
+
           db.events.update({
             _id: req.params.eventId
           }, {$set: {
             reservedSeats: reservedSeats
           }});
+
+          // distribute new empty seats to waiting list
+          distributeWaitingList(event);
 
         });
 
@@ -498,6 +516,14 @@ module.exports = function(config, db) {
       db.events.findOne({
         _id: reservation.eventId
       }, function (err, event) {
+
+        var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(reservation.seats);
+        
+        db.events.update({
+          _id: event._id
+        }, {$set: {
+          reservedSeats: reservedSeats
+        }});
         
         db.orgs.findOne({
           _id: event.orgId
@@ -507,6 +533,9 @@ module.exports = function(config, db) {
           db.reservations.remove({
             _id: req.params.reservationId
           }, function (err, num) {
+
+            // distribute waiting list
+            distributeWaitingList(event);
             
             res.render('deleted-reservation',{
               event: event,
