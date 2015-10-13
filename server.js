@@ -143,6 +143,7 @@ module.exports = (function() {
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
   app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
+  app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
   
   // reservations  
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservation);

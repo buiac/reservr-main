@@ -176,70 +176,89 @@ module.exports = function(config, db) {
         });
       });
 
-    });    
+    });
 
-    // db.orgs.update({_id: req.body.orgId}, {$set: {name: orgName}}, function (err, num) {
-    //   console.log('update org');
+  };
 
-    //   if (err) {
-    //     res.render('settings', {
-    //       errors: err,
-    //       orgId: req.params.orgId,
-    //       org: org,
-    //       user: user
-    //     });
+  var deleteAccount = function (req, res, next) {
 
-    //     return;
-    //   }
+    db.users.findOne({
+      _id: req.params.userId
+    }, function (err, user) {
 
-    //   console.log(num);
-    //   if (num > 0) {
-    //     db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
-         
-    //      console.log('find org');
+      if (err) {
+        res.render('settings', {
+          errors: err,
+          orgId: org.id,
+          org: org,
+          user: user
+        });
+        return;
+      }
+      
+      db.orgs.findOne({
+        userId: user._id
+      }, function (err, org) {
 
-    //       // if (err) {
-    //       //   res.render('settings', {
-    //       //     errors: err,
-    //       //     orgId: req.params.orgId,
-    //       //     org: org,
-    //       //     user: user
-    //       //   });
-            
-    //       //   return;
-    //       // }
+        if (err) {
+          res.render('settings', {
+            errors: err,
+            orgId: org.id,
+            org: org,
+            user: user
+          });
+          return;
+        }
+        
+        db.events.remove({
+          orgId: org._id
+        },{
+          multi: true
+        }, function (err, num) {
 
-    //       // db.users.update({_id: org.userId}, {$set: {username: username}}, function (err, num) {
-    //       //   console.log('update user');
-    //       //   if (err) {
-    //       //     res.render('settings', {
-    //       //       errors: err,
-    //       //       orgId: req.params.orgId,
-    //       //       org: org,
-    //       //       user: user
-    //       //     });
+          if (err) {
+            res.render('settings', {
+              errors: err,
+              orgId: org.id,
+              org: org,
+              user: user
+            });
+            return;
+          }
+
+          db.orgs.remove({
+            userId: user._id
+          }, {
+            multi: true
+          }, function (err, num) {
+
+            if (err) {
+              res.render('settings', {
+                errors: err,
+                orgId: org.id,
+                org: org,
+                user: user
+              });
+              return;
+            }
+
+            db.users.remove({
+              _id: req.params.userId
+            }, function (err, num) {
               
-    //       //     return;
-    //       //   }
+              res.redirect('/dashboard/signout');
 
-    //       //   res.render('settings', {
-    //       //     errors: errors,
-    //       //     orgId: org.orgId,
-    //       //     org: org,
-    //       //     user: user
-    //       //   });
-    //       // });
-
-
-    //     });
-    //   }
-    // });
-
+            });
+          });
+        });
+      });
+    });
   };
 
   return {
     viewSettings: viewSettings,
-    updateSettings: updateSettings
+    updateSettings: updateSettings,
+    deleteAccount: deleteAccount
   };
 
 };
