@@ -184,83 +184,239 @@ module.exports = function(config, db) {
     db.reservations.find({
       eventId: event._id
     }, function (err, reservations) {
-      
+
+      var seatsTaken = 0;
+      var waiting = []
+      // how many seats are left
       reservations.forEach(function (reservation) {
-        if (reservation.waiting === true || reservation.waiting === 'true') {
-          
+        if (reservation.waiting === 'false') {
+          seatsTaken = seatsTaken + reservation.seats
         }
+
+        if (reservation.waiting === true) {
+          waiting.push(reservation)
+        }
+
       });
+      
+      var seatsLeft = parseInt(event.seats, 10) - parseInt(seatsTaken, 10);
+      var i = 0;
+
+      while (seatsLeft > 0) {
+        
+        var nextReservation = waiting[i];
+
+        if (seatsLeft >= nextReservation.seats) {
+
+          // update the reservations seats 
+          db.reservations.update({
+            _id: nextReservation._id
+          }, {
+            $set: {
+              waiting: 'false'
+            }
+          });
+
+          seatsLeft = seatsLeft - nextReservation.seats
+          i = i + 1;
+        }
+
+      }
 
     })
   };
 
   var deleteReservation = function (req, res, next) {
-    
+
+    // console.log(req.user)
+
+    // if it's an org
+    // delete the reservation
+    // update the number of reserved seats on the event
+    // return to the reservations page
+
+   
+
     db.reservations.findOne({
       _id: req.params.reservationId
     }, function (err, reservation) {
       
-      var deletedRes = reservation;
+      if (err) {
+        res.status(400).json(err);
+        return;
+      }
 
-      db.reservations.remove({
-        _id: req.params.reservationId
-      }, function (err, num) {
+      db.orgs.findOne({
+        _id: reservation.orgId
+      }, function (err, org) {
         
         if (err) {
           res.status(400).json(err);
           return;
-        } 
+        }
 
-        // update the number of available seats
         db.events.findOne({
-          _id: req.params.eventId
+          _id: reservation.eventId
         }, function (err, event) {
-          
-          var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(deletedRes.seats);
-          
-
-          db.events.update({
-            _id: req.params.eventId
-          }, {$set: {
-            reservedSeats: reservedSeats
-          }});
-
-          // distribute new empty seats to waiting list
-          distributeWaitingList(event);
-
-        });
-
-        db.reservations.find({
-          eventId: req.params.eventId
-        }, function (err, reservations) {
           if (err) {
             res.status(400).json(err);
             return;
           }
 
-          db.orgs.findOne({
-            _id: req.params.orgId
-          }, function (err, org) {
+          db.reservations.find({
+            eventId: event._id
+          }, function (err, reservations) {
+            
             if (err) {
               res.status(400).json(err);
               return;
             }
 
-            res.render('reservations-view',{
-              org: org,
-              orgId: req.params.orgId,
-              user: req.user,
-              reservations: reservations,
-              eventId: req.params.eventId
-            });
+            
+            // see if there are people on the waitin lists
+            // redistribute people on the waiting lists
+            // remove the reservation
+
+            // the seats need to be distributed
+
+            var toBeMoved = [];
+
+            if (reservation.waiting === 'false') {
+              
+              var seats = reservation.seats;
+
+              reservations.some(function (reserv) {
+                
+                if (reserv.waiting === true && seats >= reserv.seats) {
+
+                  seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
+
+                  toBeMoved.push(reserv);
+
+                  return false;
+
+                } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
+
+                  
+                  
+                  return true;
+
+                }
+
+              });
+
+            }
+
+            // reservations.forEach(function (resservation) {
+            //   if (resservation.waiting === true) {
+
+
+            //   }
+            // })
+
+
+            if (req.user) {
+
+              res.render('reservations-view',{
+                org: org,
+                orgId: org._id,
+                user: req.user,
+                reservations: reservations,
+                eventId: event.eventId
+              });
+            
+            } else {
+
+              res.render('deleted-reservation',{
+                org: org
+              });
+            
+            }
+            
 
           });
-
-        })
+          
+        });
 
       });
 
     });
+    
+    
+
+    // if it's a user
+    // return to the user reservation page
+
+
+    // see if this event was a waiting one
+    // if it was then redistribute the seats
+
+
+    
+    // db.reservations.findOne({
+    //   _id: req.params.reservationId
+    // }, function (err, reservation) {
+      
+    //   var deletedRes = reservation;
+
+    //   db.reservations.remove({
+    //     _id: req.params.reservationId
+    //   }, function (err, num) {
+        
+    //     if (err) {
+    //       res.status(400).json(err);
+    //       return;
+    //     } 
+
+    //     // update the number of available seats
+    //     db.events.findOne({
+    //       _id: req.params.eventId
+    //     }, function (err, event) {
+          
+    //       var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(deletedRes.seats);
+          
+    //       db.events.update({
+    //         _id: req.params.eventId
+    //       }, {$set: {
+    //         reservedSeats: reservedSeats
+    //       }});
+
+    //       // distribute new empty seats to waiting list
+    //       distributeWaitingList(event);
+
+    //     });
+
+    //     db.reservations.find({
+    //       eventId: req.params.eventId
+    //     }, function (err, reservations) {
+    //       if (err) {
+    //         res.status(400).json(err);
+    //         return;
+    //       }
+
+    //       db.orgs.findOne({
+    //         _id: req.params.orgId
+    //       }, function (err, org) {
+    //         if (err) {
+    //           res.status(400).json(err);
+    //           return;
+    //         }
+
+    //         res.render('reservations-view',{
+    //           org: org,
+    //           orgId: req.params.orgId,
+    //           user: req.user,
+    //           reservations: reservations,
+    //           eventId: req.params.eventId
+    //         });
+
+    //       });
+
+    //     })
+
+    //   });
+
+    // });
 
   };
 
@@ -506,55 +662,7 @@ module.exports = function(config, db) {
     });
   };
 
-  var userReservationDelete = function (req, res, next) {
-    // delete event from db
-
-    db.reservations.findOne({
-      _id: req.params.reservationId
-    }, function (err, reservation) {
-      
-      db.events.findOne({
-        _id: reservation.eventId
-      }, function (err, event) {
-
-        var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(reservation.seats);
-        
-        db.events.update({
-          _id: event._id
-        }, {$set: {
-          reservedSeats: reservedSeats
-        }});
-        
-        db.orgs.findOne({
-          _id: event.orgId
-        }, function (err, org) {
-          
-
-          db.reservations.remove({
-            _id: req.params.reservationId
-          }, function (err, num) {
-
-            // distribute waiting list
-            distributeWaitingList(event);
-            
-            res.render('deleted-reservation',{
-              event: event,
-              org: org
-            });
-
-          });
-
-
-        });
-
-      })
-
-      
-    });
-    
-    
-
-  };
+  
 
   var userReservationsDeleteView = function (req, res, next) {
     // body...
@@ -567,7 +675,6 @@ module.exports = function(config, db) {
     viewReservation: viewReservation,
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
-    userReservationDelete: userReservationDelete,
     userReservationsDeleteView: userReservationsDeleteView
   };
 

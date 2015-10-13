@@ -43,7 +43,7 @@
                   <% s = s + parseInt(reservation.seats) %>
                 </td>
                 <td>
-                  <a href="/dashboard/<%= orgId %>/event/<%= eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                  <a href="/u/delete-reservation/<%= reservation._id %>" class="btn-delete-reservation">
                     <i class="fa fa-times-circle"></i>
                     Delete Reservation
                   </a>
@@ -91,7 +91,7 @@
               <% if (typeof reservation.waiting === 'boolean' && reservation.waiting)  { %>
               <tr>
                 <td>
-                  <%= m %>. <%= reservation.name %>
+                  <%= m %>. <%= reservation.name %> | <%= reservation._id %>
                   <% m = m +1; ws = ws + parseInt(reservation.seats) %>
                 </td>
                 <td>

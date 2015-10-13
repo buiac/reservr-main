@@ -42,12 +42,23 @@ module.exports = (function() {
 
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
-     
-    if (req.isAuthenticated()){
-      return next(); 
-    } else {
-      res.redirect("/"); 
-    }
+    
+    req.user = { 
+      // timecreated: Fri Oct 02 2015 15:13:55 GMT+0300 (EEST),
+      username: 'sebi.kovacs+35@gmail.com',
+      password: '$2a$10$GlymDUq0U6UP7t/ojUP4be6v4IASzCbZbuJOD1F4ZNn9z5xsD2Oj.',
+      validEmail: true,
+      _id: 'aBbqGPcXwJG8cyej'
+    };
+
+    return next();
+
+    // if (req.isAuthenticated()){
+    //   return next();
+    // } else {
+    //   res.redirect("/signin"); 
+    // }
+
   };
 
 
@@ -161,10 +172,14 @@ module.exports = (function() {
 
   // user reservations management
   app.get('/r/:reservationId', reservations.userReservationsView);
-  app.get('/r/delete-reservation/:reservationId', reservations.userReservationDelete);
+  app.get('/u/delete-reservation/:reservationId', isAuthenticated, reservations.deleteReservation);
+  app.get('/r/delete-reservation/:reservationId', reservations.deleteReservation);
   app.get('/r/deleted-reservation', reservations.userReservationsDeleteView);  
 
-  // auth routes
+  
+  /* Auth routes
+  */
+
   var auth = require('./app/controllers/authenticate.js')(config, db);
 
   app.get('/signup', auth.signupView);
