@@ -230,13 +230,6 @@ module.exports = function(config, db) {
 
     // console.log(req.user)
 
-    // if it's an org
-    // delete the reservation
-    // update the number of reserved seats on the event
-    // return to the reservations page
-
-   
-
     db.reservations.findOne({
       _id: req.params.reservationId
     }, function (err, reservation) {
@@ -245,6 +238,8 @@ module.exports = function(config, db) {
         res.status(400).json(err);
         return;
       }
+
+      console.log(reservation)
 
       db.orgs.findOne({
         _id: reservation.orgId
@@ -297,7 +292,11 @@ module.exports = function(config, db) {
 
                 } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
 
-                  
+                  console.log('\n\n\n\n')
+                  console.log('----seats, reserv.seats----')
+                  console.log(seats, reserv.seats)
+                  console.log('--------')
+                  console.log('\n\n\n\n')
                   
                   return true;
 
@@ -306,6 +305,12 @@ module.exports = function(config, db) {
               });
 
             }
+
+            console.log('\n\n\n\n')
+            console.log('----toBeMoved----')
+            console.log(toBeMoved)
+            console.log('--------')
+            console.log('\n\n\n\n')
 
             // reservations.forEach(function (resservation) {
             //   if (resservation.waiting === true) {

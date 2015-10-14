@@ -43,13 +43,7 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    req.user = { 
-      // timecreated: Fri Oct 02 2015 15:13:55 GMT+0300 (EEST),
-      username: 'sebi.kovacs+35@gmail.com',
-      password: '$2a$10$GlymDUq0U6UP7t/ojUP4be6v4IASzCbZbuJOD1F4ZNn9z5xsD2Oj.',
-      validEmail: true,
-      _id: 'aBbqGPcXwJG8cyej'
-    };
+    req.user = {"timecreated":{"$$date":1444763232882},"username":"sebi.kovacs+39@gmail.com","password":"$2a$10$rvFnSi6xoQxRJftQS/5HzOnriPYCSULx02TgEZnpJs.zoRs6mCTPS","validEmail":true,"_id":"lTzPIcAr0IbLzKlX"}
 
     return next();
 
