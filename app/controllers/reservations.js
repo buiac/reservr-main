@@ -228,124 +228,262 @@ module.exports = function(config, db) {
 
   var deleteReservation = function (req, res, next) {
 
-    // console.log(req.user)
-
     db.reservations.findOne({
       _id: req.params.reservationId
-    }, function (err, reservation) {
+    }, function (err, rez) {
       
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
-
-      console.log(reservation)
-
-      db.orgs.findOne({
-        _id: reservation.orgId
-      }, function (err, org) {
+      db.reservations.remove({
+        _id: req.params.reservationId
+      }, function (err, num) {
         
-        if (err) {
-          res.status(400).json(err);
-          return;
-        }
+        db.orgs.findOne({
+          _id: rez.orgId
+        }, function (err, org) {
 
-        db.events.findOne({
-          _id: reservation.eventId
-        }, function (err, event) {
-          if (err) {
-            res.status(400).json(err);
-            return;
-          }
+          db.events.findOne({
+            _id: rez.eventId
+          }, function (err, event) {
 
-          db.reservations.find({
-            eventId: event._id
-          }, function (err, reservations) {
-            
-            if (err) {
-              res.status(400).json(err);
-              return;
-            }
+            db.reservations.find({
+              eventId: event._id
+            }, function (err, reservations) {
 
-            
-            // see if there are people on the waitin lists
-            // redistribute people on the waiting lists
-            // remove the reservation
+              // to be moved without seat number alteration
+              var toBeMoved = [];
 
-            // the seats need to be distributed
+              // to be moved with seat number alteration
+              var toBeMovedWithSeats = [];
 
-            var toBeMoved = [];
-
-            if (reservation.waiting === 'false') {
-              
-              var seats = reservation.seats;
-
-              reservations.some(function (reserv) {
+              if (rez.waiting === 'false') {
                 
-                if (reserv.waiting === true && seats >= reserv.seats) {
+                var seats = rez.seats;
 
-                  seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
-
-                  toBeMoved.push(reserv);
-
-                  return false;
-
-                } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
-
-                  console.log('\n\n\n\n')
-                  console.log('----seats, reserv.seats----')
-                  console.log(seats, reserv.seats)
-                  console.log('--------')
-                  console.log('\n\n\n\n')
+                // loop throgh the reservations until you 
+                // remain out of seats
+                reservations.some(function (reserv) {
                   
-                  return true;
+                  if (reserv.waiting === true && seats >= reserv.seats) {
 
-                }
+                    // update the number of seats so we can continue the countdown
+                    seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
 
-              });
+                    // toBeMoved.push(reserv);
 
-            }
+                    db.reservations.update({
+                      _id: reserv._id
+                    }, {
+                      $set: {
+                        waiting: 'false'
+                      }
+                    })
 
-            console.log('\n\n\n\n')
-            console.log('----toBeMoved----')
-            console.log(toBeMoved)
-            console.log('--------')
-            console.log('\n\n\n\n')
+                    return false;
 
-            // reservations.forEach(function (resservation) {
-            //   if (resservation.waiting === true) {
+                  } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
+                    
+                    // split this reservation into 2
 
+                    var clonedReserv = JSON.parse(JSON.stringify(reserv));
 
-            //   }
-            // })
+                    delete clonedReserv._id;
+                    clonedReserv.waiting = 'false';
 
+                    
+                    db.reservations.update({
+                      email: clonedReserv.email,
+                      waiting: 'false'
+                    },{
+                      $set: {
+                        seats: clonedReserv.seats + seats
+                      }
+                    }, function (err, num) {
 
-            if (req.user) {
+                      if (!err && num === 0) {
+                        
+                        clonedReserv.seats = seats;
+                        db.reservations.insert(clonedReserv);
 
-              res.render('reservations-view',{
-                org: org,
-                orgId: org._id,
-                user: req.user,
-                reservations: reservations,
-                eventId: event.eventId
-              });
-            
-            } else {
+                        db.reservations.update({
+                          _id: reserv._id,
+                          waiting: true
+                        }, {
+                          $set: {
+                            seats: reserv.seats - seats
+                          }
+                        });
+                      }
 
-              res.render('deleted-reservation',{
-                org: org
-              });
-            
-            }
-            
+                    });
 
+                    return true;
+
+                  }
+
+                });
+
+              }
+
+              if (req.user) {
+                
+                res.redirect('/dashboard/' + org._id + '/reservations/' + event._id);
+              
+              } else {
+
+                console.log('\n\n\n\n')
+                console.log('--------')
+                console.log('nem user')
+                console.log('--------')
+                console.log('\n\n\n\n')
+                res.render('deleted-reservation',{
+                  org: org
+                });
+              
+              }
+            });
           });
-          
         });
-
       });
-
     });
+    
+
+    // db.reservations.findOne( {
+    //   _id: req.params.reservationId
+    // }, function (err, reservation) {
+
+    //   var originalReservation = JSON.parse(JSON.stringify(reservation));
+      
+    //   if (err) {
+    //     res.status(400).json(err);
+    //     return;
+    //   }
+
+    //   db.orgs.findOne({
+    //     _id: originalReservation.orgId
+    //   }, function (err, org) {
+        
+    //     if (err) {
+    //       res.status(400).json(err);
+    //       return;
+    //     }
+
+    //     db.events.findOne({
+    //       _id: originalReservation.eventId
+    //     }, function (err, event) {
+    //       if (err) {
+    //         res.status(400).json(err);
+    //         return;
+    //       }
+
+    //       db.reservations.find({
+    //         eventId: event._id
+    //       }, function (err, reservations) {
+            
+    //         if (err) {
+    //           res.status(400).json(err);
+    //           return;
+    //         }
+
+    //         db.reservations.remove({
+    //           _id: originalReservation._id
+    //         }, function (err, numremoved) {
+    //           console.log('\n\n\n\n')
+    //           console.log('--------')
+    //           console.log(originalReservation)
+    //           console.log('--------')
+    //           console.log('\n\n\n\n')
+    //         });
+
+    //         // to be moved without seat number alteration
+    //         var toBeMoved = [];
+
+    //         // to be moved with seat number alteration
+    //         var toBeMovedWithSeats = [];
+
+    //         if (reservation.waiting === 'false') {
+              
+    //           var seats = reservation.seats;
+
+    //           reservations.some(function (reserv) {
+                
+    //             if (reserv.waiting === true && seats >= reserv.seats) {
+
+    //               seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
+
+    //               toBeMoved.push(reserv);
+
+    //               return false;
+
+    //             } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
+                  
+    //               // split this reservation into 2
+
+    //               var clonedReserv = JSON.parse(JSON.stringify(reserv));
+
+    //               delete clonedReserv._id;
+    //               clonedReserv.waiting = 'false';
+
+                  
+    //               db.reservations.update({
+    //                 email: clonedReserv.email,
+    //                 waiting: 'false'
+    //               },{
+    //                 $set: {
+    //                   seats: clonedReserv.seats + seats
+    //                 }
+    //               }, function (err, num) {
+
+    //                 if (!err && num === 0) {
+                      
+    //                   clonedReserv.seats = seats;
+    //                   db.reservations.insert(clonedReserv);
+
+    //                   db.reservations.update({
+    //                     _id: reserv._id,
+    //                     waiting: true
+    //                   }, {
+    //                     $set: {
+    //                       seats: reserv.seats - seats
+    //                     }
+    //                   });
+    //                 }
+
+    //               });
+
+    //               return true;
+
+    //             }
+
+    //           });
+
+    //         }
+
+
+    //         if (req.user) {
+
+    //           res.render('reservations-view',{
+    //             org: org,
+    //             orgId: org._id,
+    //             user: req.user,
+    //             reservations: reservations,
+    //             eventId: event.eventId
+    //           });
+            
+    //         } else {
+
+    //           res.render('deleted-reservation',{
+    //             org: org
+    //           });
+            
+    //         }
+            
+
+    //       });
+          
+    //     });
+
+    //   });
+
+    // });
     
     
 

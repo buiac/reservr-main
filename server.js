@@ -43,7 +43,12 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    req.user = {"timecreated":{"$$date":1444763232882},"username":"sebi.kovacs+39@gmail.com","password":"$2a$10$rvFnSi6xoQxRJftQS/5HzOnriPYCSULx02TgEZnpJs.zoRs6mCTPS","validEmail":true,"_id":"lTzPIcAr0IbLzKlX"}
+    req.user = {
+       "username":"sebi.kovacs+304@gmail.com",
+       "password":"$2a$10$FqJGcWNu7UTqD2gYF/NQjOXSlUwDkuZ5mGiYaxfK/ZY/7poDSXw.y",
+       "validEmail":true,
+       "_id":"4BRj7GbkuwP9rx7D"
+    }
 
     return next();
 

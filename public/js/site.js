@@ -32,7 +32,7 @@ $(document).ready(function () {
     var orgId = $this.find('.reserve-orgId').val();
     var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
-    var seatsLeft = parseInt($this.find('#seats-left').html());
+    var seatsLeft = parseInt($($this.parents('.reserve-actions')).find('#seats-left').html());
     
     if (seats <= seatsLeft || seatsLeft === 0 || waiting === 'true' ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');

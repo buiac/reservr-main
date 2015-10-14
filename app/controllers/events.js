@@ -12,6 +12,7 @@ module.exports = function(config, db) {
   var passport = require('passport');
   var moment = require('moment');
   var bCrypt = require('bcrypt-nodejs');
+  var q = require('q');
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
   moment.locale('ro');
@@ -84,6 +85,47 @@ module.exports = function(config, db) {
 
   };
 
+  var getOrgEvents = function (params) {
+    var deferred = q.defer();
+
+    db.events.find({
+      orgId: params.orgId
+    }).sort({
+      date: 1
+    }).exec(function (err, events) {
+      
+      if (err) {
+        deferred.reject(err)
+      } else {
+        deferred.resolve(events);
+      }
+      
+    });
+
+    return deferred.promise;
+  };
+
+  var getEventReservations = function (params) {
+    var deferred = q.defer();
+
+    db.reservations.find({
+      eventId: params.eventId
+    }, function (err, reservations) {
+      
+      if (err) {
+        
+        deferred.reject(err)
+
+      } else {
+
+        deferred.resolve(reservations);
+      }
+
+    });
+
+    return deferred.promise;
+  };
+
   var listEventsView = function (req, res, next) {
     
     if (!req.user) {
@@ -94,35 +136,64 @@ module.exports = function(config, db) {
     user.validEmail = validateEmail(user.username);
 
     if (user.validEmail) {
-      db.events.find({
+
+      getOrgEvents({
         orgId: req.params.orgId
-      }).sort({
-        date: 1
-      }).exec(function (err, events) {
+      }).then(function (events) {
+        
+        var arr = [];
+        
+        events.forEach(function (event) {
+          arr.push(getEventReservations({
+            eventId: event._id
+          }));
+        });
 
-        if(err) {
-          return res.send(err, 400);
-        }
-
-        if (!events.length) {
-          events = [];
-        }
-
-        db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
+        q.all(arr).then(function (rez) {
           
-          if(err) {
-            return res.send(err, 400);
-          }
+          var reservations = [].concat.apply([], rez);
+          
+          events.forEach(function (event) {
+            
+            event.invited = 0;
+            event.waiting = 0;
 
-          res.render('events', {
-            events: events,
-            user: user,
-            orgId: org._id,
-            org: org
+            reservations.forEach(function (reservation) {
+              
+              if (reservation.eventId === event._id) {
+
+                if (reservation.waiting === true) {
+
+                  event.waiting = event.waiting + reservation.seats;
+
+                } else if (reservation.waiting === 'false') {
+
+                  event.invited = event.invited + reservation.seats
+
+                }
+              }
+
+            });
+
           });
-        })
+
+          db.orgs.findOne({
+            _id: req.params.orgId
+          }, function (err, org) {
+
+            res.render('events', {
+              events: events,
+              user: user,
+              orgId: org._id,
+              org: org
+            });
+
+          });
+
+        });
 
       });
+
     } else {
       res.redirect('/dashboard')
     }
