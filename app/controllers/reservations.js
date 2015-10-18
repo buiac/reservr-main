@@ -15,6 +15,27 @@ module.exports = function(config, db) {
   var moment = require('moment');
   var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
   var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
+  var q = require('q');
+  var data = require('../services/data.js')(config, db);
+
+  db.reservations.find({},function (err, reservations) {
+    
+    reservations.forEach(function (reservation) {
+      if (reservation.waiting === 'false') {
+        reservation.waiting = false;
+      }
+
+      if (reservation.waiting === 'true') {
+        reservation.waiting = true;
+      }
+
+      if (reservation.waiting === undefined) {
+        reservation.waiting = false;
+      }
+    });
+
+  });
+
 
   var addUserToMailingList = function (reservation) {
     var params = {
@@ -75,8 +96,72 @@ module.exports = function(config, db) {
     return results
   };
 
-  var list = function (req, res, next) {
-    // body...
+  var notifyUser = function (reservation, event, partial) {
+
+    var params = {
+      seats: reservation.seats,
+      eventName: event.name,
+      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+      seatsAvaialable: reservation.seatsAvaialable || ''
+    };
+
+    var template = {
+      subject: 'Update rezervare',
+      body: 'Salut, <br /><br /> S-au eliberat {seats} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',      
+      bodyPartial: 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
+    };
+
+    var bodyPlaceholders = getWordsBetweenCurlies(template.body);
+    var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
+
+    bodyPlaceholders.forEach(function (item) {
+      template.body = template.body.replace('{' + item + '}', params[item]);
+    });
+
+    bodyPartialPlaceholders.forEach(function (item) {
+      template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
+    });
+
+    db.orgs.findOne({
+      _id: event.orgId
+    }, function (err, org) {
+      
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+
+        if (partial) {
+          
+          var userEmailConfig = {
+            from: user.username,
+            to: reservation.email,
+            subject: template.subject,
+            html: template.bodyPartial
+          };
+
+          transport.sendMail(userEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });
+
+        } else {
+
+          var userEmailConfig = {
+            from: user.username,
+            to: reservation.email,
+            subject: template.subject,
+            html: template.body
+          };
+
+          transport.sendMail(userEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });
+
+        }
+
+      });
+    });
   };
 
   var sendConfirmationEmails = function (reservation, event) {
@@ -158,12 +243,12 @@ module.exports = function(config, db) {
         };
 
 
-        if (typeof reservation.waiting === 'boolean' && reservation.waiting) {
+        if (typeof reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
             console.log(err);
             console.log(info);
           });
-        } else if(reservation.waiting === 'false') {
+        } else {
           transport.sendMail(userEmailConfig, function (err, info) {
             console.log(err);
             console.log(info);
@@ -187,14 +272,14 @@ module.exports = function(config, db) {
 
       var seatsTaken = 0;
       var waiting = []
+      
       // how many seats are left
       reservations.forEach(function (reservation) {
-        if (reservation.waiting === 'false') {
-          seatsTaken = seatsTaken + reservation.seats
-        }
 
-        if (reservation.waiting === true) {
+        if (reservation.waiting) {
           waiting.push(reservation)
+        } else {
+          seatsTaken = seatsTaken + reservation.seats
         }
 
       });
@@ -213,16 +298,14 @@ module.exports = function(config, db) {
             _id: nextReservation._id
           }, {
             $set: {
-              waiting: 'false'
+              waiting: false
             }
           });
 
           seatsLeft = seatsLeft - nextReservation.seats
           i = i + 1;
         }
-
       }
-
     })
   };
 
@@ -254,49 +337,60 @@ module.exports = function(config, db) {
               // to be moved with seat number alteration
               var toBeMovedWithSeats = [];
 
-              if (rez.waiting === 'false') {
+              if (!rez.waiting) {
                 
+                // the number of seats that remain free after the rezervation is deleted
                 var seats = rez.seats;
 
                 // loop throgh the reservations until you 
                 // remain out of seats
                 reservations.some(function (reserv) {
                   
-                  if (reserv.waiting === true && seats >= reserv.seats) {
+
+                  if (reserv.waiting && seats >= reserv.seats) {
+                    // number of free seats is greater than the number of needed
+                    // by next on the waiting list
 
                     // update the number of seats so we can continue the countdown
                     seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
-
-                    // toBeMoved.push(reserv);
 
                     db.reservations.update({
                       _id: reserv._id
                     }, {
                       $set: {
-                        waiting: 'false'
+                        waiting: false
                       }
-                    })
+                    }, function (err, num) {
+                      
+                      if (!err) {
+                        notifyUser(reserv, event, false)
+                      }
+                    });
 
                     return false;
 
-                  } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
+                  } else if (reserv.waiting && seats !== 0 && seats < reserv.seats) {
                     
                     // split this reservation into 2
 
                     var clonedReserv = JSON.parse(JSON.stringify(reserv));
 
                     delete clonedReserv._id;
-                    clonedReserv.waiting = 'false';
-
+                    clonedReserv.waiting = false;
                     
                     db.reservations.update({
                       email: clonedReserv.email,
-                      waiting: 'false'
+                      eventId: rez.eventId,
+                      waiting: false
                     },{
                       $set: {
-                        seats: clonedReserv.seats + seats
+                        seats: seats
                       }
                     }, function (err, num) {
+
+                      // notify user of change
+                      reserv.seatsAvaialable = seats;
+                      notifyUser(reserv, event, true)
 
                       if (!err && num === 0) {
                         
@@ -329,11 +423,6 @@ module.exports = function(config, db) {
               
               } else {
 
-                console.log('\n\n\n\n')
-                console.log('--------')
-                console.log('nem user')
-                console.log('--------')
-                console.log('\n\n\n\n')
                 res.render('deleted-reservation',{
                   org: org
                 });
@@ -344,223 +433,6 @@ module.exports = function(config, db) {
         });
       });
     });
-    
-
-    // db.reservations.findOne( {
-    //   _id: req.params.reservationId
-    // }, function (err, reservation) {
-
-    //   var originalReservation = JSON.parse(JSON.stringify(reservation));
-      
-    //   if (err) {
-    //     res.status(400).json(err);
-    //     return;
-    //   }
-
-    //   db.orgs.findOne({
-    //     _id: originalReservation.orgId
-    //   }, function (err, org) {
-        
-    //     if (err) {
-    //       res.status(400).json(err);
-    //       return;
-    //     }
-
-    //     db.events.findOne({
-    //       _id: originalReservation.eventId
-    //     }, function (err, event) {
-    //       if (err) {
-    //         res.status(400).json(err);
-    //         return;
-    //       }
-
-    //       db.reservations.find({
-    //         eventId: event._id
-    //       }, function (err, reservations) {
-            
-    //         if (err) {
-    //           res.status(400).json(err);
-    //           return;
-    //         }
-
-    //         db.reservations.remove({
-    //           _id: originalReservation._id
-    //         }, function (err, numremoved) {
-    //           console.log('\n\n\n\n')
-    //           console.log('--------')
-    //           console.log(originalReservation)
-    //           console.log('--------')
-    //           console.log('\n\n\n\n')
-    //         });
-
-    //         // to be moved without seat number alteration
-    //         var toBeMoved = [];
-
-    //         // to be moved with seat number alteration
-    //         var toBeMovedWithSeats = [];
-
-    //         if (reservation.waiting === 'false') {
-              
-    //           var seats = reservation.seats;
-
-    //           reservations.some(function (reserv) {
-                
-    //             if (reserv.waiting === true && seats >= reserv.seats) {
-
-    //               seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
-
-    //               toBeMoved.push(reserv);
-
-    //               return false;
-
-    //             } else if (reserv.waiting === true && seats !== 0 && seats < reserv.seats) {
-                  
-    //               // split this reservation into 2
-
-    //               var clonedReserv = JSON.parse(JSON.stringify(reserv));
-
-    //               delete clonedReserv._id;
-    //               clonedReserv.waiting = 'false';
-
-                  
-    //               db.reservations.update({
-    //                 email: clonedReserv.email,
-    //                 waiting: 'false'
-    //               },{
-    //                 $set: {
-    //                   seats: clonedReserv.seats + seats
-    //                 }
-    //               }, function (err, num) {
-
-    //                 if (!err && num === 0) {
-                      
-    //                   clonedReserv.seats = seats;
-    //                   db.reservations.insert(clonedReserv);
-
-    //                   db.reservations.update({
-    //                     _id: reserv._id,
-    //                     waiting: true
-    //                   }, {
-    //                     $set: {
-    //                       seats: reserv.seats - seats
-    //                     }
-    //                   });
-    //                 }
-
-    //               });
-
-    //               return true;
-
-    //             }
-
-    //           });
-
-    //         }
-
-
-    //         if (req.user) {
-
-    //           res.render('reservations-view',{
-    //             org: org,
-    //             orgId: org._id,
-    //             user: req.user,
-    //             reservations: reservations,
-    //             eventId: event.eventId
-    //           });
-            
-    //         } else {
-
-    //           res.render('deleted-reservation',{
-    //             org: org
-    //           });
-            
-    //         }
-            
-
-    //       });
-          
-    //     });
-
-    //   });
-
-    // });
-    
-    
-
-    // if it's a user
-    // return to the user reservation page
-
-
-    // see if this event was a waiting one
-    // if it was then redistribute the seats
-
-
-    
-    // db.reservations.findOne({
-    //   _id: req.params.reservationId
-    // }, function (err, reservation) {
-      
-    //   var deletedRes = reservation;
-
-    //   db.reservations.remove({
-    //     _id: req.params.reservationId
-    //   }, function (err, num) {
-        
-    //     if (err) {
-    //       res.status(400).json(err);
-    //       return;
-    //     } 
-
-    //     // update the number of available seats
-    //     db.events.findOne({
-    //       _id: req.params.eventId
-    //     }, function (err, event) {
-          
-    //       var reservedSeats = parseInt(event.reservedSeats, 10) - parseInt(deletedRes.seats);
-          
-    //       db.events.update({
-    //         _id: req.params.eventId
-    //       }, {$set: {
-    //         reservedSeats: reservedSeats
-    //       }});
-
-    //       // distribute new empty seats to waiting list
-    //       distributeWaitingList(event);
-
-    //     });
-
-    //     db.reservations.find({
-    //       eventId: req.params.eventId
-    //     }, function (err, reservations) {
-    //       if (err) {
-    //         res.status(400).json(err);
-    //         return;
-    //       }
-
-    //       db.orgs.findOne({
-    //         _id: req.params.orgId
-    //       }, function (err, org) {
-    //         if (err) {
-    //           res.status(400).json(err);
-    //           return;
-    //         }
-
-    //         res.render('reservations-view',{
-    //           org: org,
-    //           orgId: req.params.orgId,
-    //           user: req.user,
-    //           reservations: reservations,
-    //           eventId: req.params.eventId
-    //         });
-
-    //       });
-
-    //     })
-
-    //   });
-
-    // });
-
   };
 
   var viewReservation = function (req, res, next) {
@@ -568,6 +440,8 @@ module.exports = function(config, db) {
     db.reservations.find({
       eventId: req.params.eventId
     }, function (err, reservations) {
+
+
 
       if (err) {
         res.status(400).json(err);
@@ -602,7 +476,6 @@ module.exports = function(config, db) {
     var name = req.body.name.trim();
     var email = req.body.email.trim();
     var seats = req.body.seats;
-    var waiting = req.body.waiting;
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
     var mclistid = req.body.mclistid;
@@ -620,19 +493,17 @@ module.exports = function(config, db) {
       seats: parseInt(seats),
       eventId: eventId,
       orgId: orgId,
-      waiting: waiting,
-      mclistid: mclistid
+      mclistid: mclistid,
+      waiting: false
     };
 
-    var findEventReservations = function (err, reservations) {
-      if (err) {
-        res.status(400).json(err);
-        return;
-      }
+    data.getEventReservations({
+      eventId: eventId
+    }).then(function (reservations) {
 
-      db.orgs.findOne({
-        _id: orgId
-      }, function (err, org) {
+      data.getOrgById({
+        id: orgId
+      }).then(function (org) {
         
         db.users.findOne({
           _id: org.userId
@@ -645,7 +516,10 @@ module.exports = function(config, db) {
 
           // determine the number of reservations that have already been made
           reservations.forEach(function (item) {
-            reservedSeats = reservedSeats + parseInt(item.seats, 10);
+            
+            if (!item.waiting) {
+              reservedSeats = reservedSeats + parseInt(item.seats, 10);
+            }
 
             if (item.email === reservation.email && reservation.email !== user.username) {
               prevRes = true;
@@ -659,13 +533,14 @@ module.exports = function(config, db) {
             }
 
             var totalSeats = event.seats;
-            
+           
             // if there are no more seats left put the user on the waiting list
             if (seats > (totalSeats - reservedSeats)) {
               reservation.waiting = true;
             }
             
             if (!prevRes) {
+
               db.reservations.insert(reservation, function (err, newReservation) {
                 
                 if (err) {
@@ -695,6 +570,33 @@ module.exports = function(config, db) {
 
                       sendConfirmationEmails(newReservation, event);
 
+                      // update invited and waiting parameters
+                      event.invited = 0;
+                      event.waiting = 0;
+
+                      if (newReservation.waiting) {
+                        event.waiting = event.waiting + newReservation.seats
+                      } else {
+                        event.invited = event.invited + newReservation.seats
+                      }
+
+                      reservations.forEach(function (reservation) {
+                        
+                        if (reservation.eventId === event._id) {
+
+                          if (reservation.waiting) {
+
+                            event.waiting = event.waiting + reservation.seats;
+
+                          } else {
+
+                            event.invited = event.invited + reservation.seats
+
+                          }
+                        }
+
+                      });
+
                       res.json({
                         message: 'Create successful.',
                         reservation: newReservation,
@@ -708,10 +610,11 @@ module.exports = function(config, db) {
 
             } else {
 
-              // upgrading or downgrading?
-              db.reservations.findOne(
-                {email: reservation.email}, 
-                function (err, reserv) {
+              // more seats or less seats?
+              db.reservations.findOne({
+                eventId: eventId,
+                email: reservation.email
+              }, function (err, reserv) {
 
                   if (reserv.seats === reservation.seats) {
                     res.json({
@@ -730,20 +633,8 @@ module.exports = function(config, db) {
                     reservedSeats = reservedSeats - (reserv.seats - parseInt(reservation.seats)); 
                   }
 
-                  // update reserved seats on the event
-                  db.events.update(
-                    {_id: eventId}, 
-                    {$set: { reservedSeats: reservedSeats}},
-                    function (err, num) {
-                      if (err) {
-                        res.status(400).json(err);
-                        return;
-                      }
-                    }
-                  );
-
                   db.reservations.update(
-                    {email: reservation.email},
+                    {email: reservation.email, eventId: eventId},
                     {$set: {seats: reservation.seats}},
                     function (err, num) {
                       if (err) {
@@ -759,6 +650,33 @@ module.exports = function(config, db) {
 
                         sendConfirmationEmails(reservation, ev);
 
+                        // update invited and waiting parameters
+                        ev.invited = 0;
+                        ev.waiting = 0;
+
+                        if (reservation.waiting) {
+                          ev.waiting = ev.waiting + newReservation.seats
+                        } else {
+                          ev.invited = ev.invited + newReservation.seats
+                        }
+
+                        reservations.forEach(function (reservation) {
+                          
+                          if (reservation.eventId === ev._id) {
+
+                            if (reservation.waiting) {
+
+                              ev.waiting = ev.waiting + reservation.seats;
+
+                            } else {
+
+                              ev.invited = ev.invited + reservation.seats
+
+                            }
+                          }
+
+                        });
+
                         res.json({
                           message: 'Update successful.',
                           reservation: reserv,
@@ -772,14 +690,9 @@ module.exports = function(config, db) {
           });
 
         });
-
       });
-
-      
-    };
-
-    db.reservations.find({eventId: eventId}, findEventReservations);
-
+    }
+    );
   };
 
   var userReservationsView = function (req, res, next) {
@@ -805,15 +718,11 @@ module.exports = function(config, db) {
     });
   };
 
-  
-
   var userReservationsDeleteView = function (req, res, next) {
     // body...
   };
 
   return {
-    // view: view,
-    list: list,
     updateReservation: updateReservation,
     viewReservation: viewReservation,
     deleteReservation: deleteReservation,

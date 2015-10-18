@@ -33,8 +33,9 @@ $(document).ready(function () {
     var waiting = $this.find('.reserve-waiting').val();
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($($this.parents('.reserve-actions')).find('#seats-left').html());
-    
-    if (seats <= seatsLeft || seatsLeft === 0 || waiting === 'true' ) {
+  
+
+    if (seats <= seatsLeft || seatsLeft === 0 ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');
       
       $this.addClass('container-reserve-form--loading');
@@ -45,15 +46,14 @@ $(document).ready(function () {
           name: name,
           email: email,
           seats: seats,
-          mclistid: mclistid,
-          waiting: waiting
+          mclistid: mclistid
         },
         success: function(res) {
 
           $this.addClass('container-reserve-form--success');
 
-          seatsLeft = res.event.seats - res.event.reservedSeats;
-          $('#seats-left').html(seatsLeft);
+          seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
+          $('#seats-left').html(Math.abs(seatsLeft));
         },
         error: function(err) {
           
