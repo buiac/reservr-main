@@ -1,5 +1,5 @@
-<div class="row reserve-actions<%  if (event.seats <= event.reservedSeats) {%> no-more-seats<% } %>">
-                    
+<div class="row reserve-actions<%  if (event.seats <= event.invited) {%> no-more-seats<% } %>">
+
   <div class="col-md-8">
     
     <div class="container-reserve">
@@ -40,16 +40,6 @@
         <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
         <input type="hidden" name="orgId" class="reserve-orgId" value="<%= org._id %>">
         
-         <% if ((event.seats - event.reservedSeats) > 0) {%>
-          
-          <input type="hidden" name="waiting" class="reserve-waiting" value="false">
-
-        <% } else { %>
-          
-          <input type="hidden" name="waiting" class="reserve-waiting" value="true">
-
-        <% } %>
-        
         <button type="submit" class="btn btn-primary">
           
           <% if (event.seats <= event.reservedSeats) {%>
@@ -76,15 +66,15 @@
   </div>
   
   <div class="col-md-4">
-      <% if ((event.seats - event.reservedSeats) > 0) {%>
+      <% if ((event.seats - event.invited) > 0) {%>
       <span class="seats-left">
         <span id="seats-left">
-          <%= event.seats - event.reservedSeats %>
+          <%= event.seats - event.invited %>
         </span> locuri disponibile
       </span>
       <% } else { %>
       <span class="seats-left">
-        Locuri epuizate <br>(<%= event.reservedSeats - event.seats %> pe lista de asteptare)
+        Locuri epuizate <br>(<span id="seats-left"><%= event.waiting %></span> pe lista de asteptare)
       </span>
       <% } %>
     

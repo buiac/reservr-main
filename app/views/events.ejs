@@ -26,20 +26,24 @@
           </h2>
           <div class="row row-head">
             
-            <div class="col-md-4">
+            <div class="col-md-3">
               Numele evenimentului
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               Data
             </div>
 
             <div class="col-md-1 row-center">
-              Locuri
+              Disponibile
             </div>
 
             <div class="col-md-1 row-center">
-              Rezervari
+              Rezervate
+            </div>
+
+            <div class="col-md-2 row-center">
+              In asteptare
             </div>
             
           </div>
@@ -48,7 +52,7 @@
 
           <div class="row row-row">
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               <h4>
                 <a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
 
@@ -56,16 +60,22 @@
               </h4>
             </div>
             
-            <div class="col-md-4 row-td">
+            <div class="col-md-3 row-td">
               <%= moment(event.date).format('LLLL') %>
             </div>
 
             <div class="col-md-1 row-td row-center">
               <%= event.seats %>
             </div>
+            
             <div class="col-md-1 row-td row-center">
-              <%= event.reservedSeats %>
+              <%= event.invited %>
             </div>
+
+            <div class="col-md-2 row-td row-center">
+              <%= event.waiting %>
+            </div>
+
             <div class="col-md-2 row-td-btn">
               <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>" class="btn btn-default btn-sm">Vezi rezervari</a>
               

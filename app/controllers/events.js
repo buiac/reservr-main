@@ -12,6 +12,8 @@ module.exports = function(config, db) {
   var passport = require('passport');
   var moment = require('moment');
   var bCrypt = require('bcrypt-nodejs');
+  var q = require('q');
+  var data = require('../services/data.js')(config, db);
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
   moment.locale('ro');
@@ -84,6 +86,7 @@ module.exports = function(config, db) {
 
   };
 
+  // list events in dashboard
   var listEventsView = function (req, res, next) {
     
     if (!req.user) {
@@ -94,41 +97,71 @@ module.exports = function(config, db) {
     user.validEmail = validateEmail(user.username);
 
     if (user.validEmail) {
-      db.events.find({
+
+      data.getOrgEvents({
         orgId: req.params.orgId
-      }).sort({
-        date: 1
-      }).exec(function (err, events) {
+      }).then(function (events) {
+        
+        var arr = [];
+        
+        events.forEach(function (event) {
+          arr.push(data.getEventReservations({
+            eventId: event._id
+          }));
+        });
 
-        if(err) {
-          return res.send(err, 400);
-        }
-
-        if (!events.length) {
-          events = [];
-        }
-
-        db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
+        q.all(arr).then(function (rez) {
           
-          if(err) {
-            return res.send(err, 400);
-          }
+          var reservations = [].concat.apply([], rez);
 
-          res.render('events', {
-            events: events,
-            user: user,
-            orgId: org._id,
-            org: org
+          events.forEach(function (event) {
+            
+            event.invited = 0;
+            event.waiting = 0;
+
+            reservations.forEach(function (reservation) {
+              
+              if (reservation.eventId === event._id) {
+
+                if (reservation.waiting) {
+
+                  event.waiting = event.waiting + reservation.seats;
+
+                } else {
+
+                  event.invited = event.invited + reservation.seats
+
+                }
+              }
+
+            });
+
           });
-        })
+
+          db.orgs.findOne({
+            _id: req.params.orgId
+          }, function (err, org) {
+
+            res.render('events', {
+              events: events,
+              user: user,
+              orgId: org._id,
+              org: org
+            });
+
+          });
+
+        });
 
       });
+
     } else {
       res.redirect('/dashboard')
     }
     
   };
 
+  // one event in front end
   var frontEventView = function (req, res, next) {
     db.orgs.findOne({
       name: req.params.orgName
@@ -152,53 +185,99 @@ module.exports = function(config, db) {
           return res.send(err, 400);
         }
 
-        res.render('event', {
-          event: event,
-          org: org
-        });
+        event.waiting = 0;
+        event.invited = 0;
 
-      });
-    })
-  };
-
-  var listFrontEventsView = function (req, res, next) {
-
-      db.orgs.findOne({
-        name: req.params.orgName
-      }, function (err, org) {
-        
-        if (err) {
-          res.send({ error: 'error'}, 400);
-          return
-        }
-
-        if (!org) {
-          res.redirect('/');
-          return
-        }
-
-        db.events.find({
-          orgId: org._id
-        }).sort({
-          date: 1
-        }).exec(function (err, events) {
+        db.reservations.find({
+          eventId: event._id
+        }, function (err, reservations) {
 
           if(err) {
             return res.send(err, 400);
           }
+          
+          reservations.forEach(function (reservation) {
+            if (reservation.waiting) {
 
-          if (!events.length) {
-            events = [];
-          }
+              event.waiting = event.waiting + reservation.seats;
+
+            } else {
+
+              event.invited = event.invited + reservation.seats
+
+            }
+
+          });
+
+          res.render('event', {
+            event: event,
+            org: org
+          }); 
+        });
+      });
+    })
+  };
+
+
+  var listFrontEventsView = function (req, res, next) {
+
+    data.getOrgByName({
+      name: req.params.orgName
+    }).then(function (org) {
+      // body... 
+
+      data.getOrgEvents({
+        orgId: org._id
+      }).then(function (events) {
+        
+        var arr = [];
+        
+        events.forEach(function (event) {
+          arr.push(data.getEventReservations({
+            eventId: event._id
+          }));
+        });
+
+        q.all(arr).then(function (rez) {
+
+          // get all reservations
+          var reservations = [].concat.apply([], rez);
+          
+          events.forEach(function (event) {
+            
+            event.invited = 0;
+            event.waiting = 0;
+
+            reservations.forEach(function (reservation) {
+              
+              if (reservation.eventId === event._id) {
+
+                if (reservation.waiting) {
+
+                  event.waiting = event.waiting + reservation.seats;
+
+                } else {
+
+                  event.invited = event.invited + reservation.seats
+
+                }
+              }
+
+            });
+
+          });
 
           res.render('events-front', {
             events: events,
             org: org
           });
-
         });
-      })
-    
+      });
+    }).catch(function (err) {
+      
+      res.redirect('/');
+
+    })
   };
 
   var redirectToEventsList = function (req, res, next) {
@@ -275,8 +354,7 @@ module.exports = function(config, db) {
           org: org
         });
 
-      })
-      
+      });
 
     }
     

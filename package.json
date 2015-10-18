@@ -32,7 +32,8 @@
     "mailchimp-api": "^2.0.7",
     "bitly": "^1.2.5",
     "multer": "^0.1.8",
-    "mailchimp-api": "^2.0.7"
+    "mailchimp-api": "^2.0.7",
+    "q": "^1.4.1"
   },
   "devDependencies": {
     "jshint": "^2.5.x",
