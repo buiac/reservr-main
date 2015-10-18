@@ -9,11 +9,11 @@ module.exports = function(config, db) {
       orgId: params.orgId || params._id
     };
 
-    if (params.fromDate) {
-      parrams.date = {
-        $gte: new Date()
-      }
-    }
+    // if (params.fromDate) {
+    //   parrams.date = {
+    //     $gte: new Date()
+    //   }
+    // }
 
     db.events.find(parrams).sort({
       date: 1
