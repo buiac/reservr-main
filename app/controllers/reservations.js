@@ -23,14 +23,37 @@ module.exports = function(config, db) {
     reservations.forEach(function (reservation) {
       if (reservation.waiting === 'false') {
         reservation.waiting = false;
+        db.reservations.update({
+          _id: reservation._id
+        }, {
+          $set: {
+            waiting: false
+          }
+        });
       }
 
       if (reservation.waiting === 'true') {
         reservation.waiting = true;
+
+        db.reservations.update({
+          _id: reservation._id
+        }, {
+          $set: {
+            waiting: true
+          }
+        });
       }
 
       if (reservation.waiting === undefined) {
         reservation.waiting = false;
+
+        db.reservations.update({
+          _id: reservation._id
+        }, {
+          $set: {
+            waiting: false
+          }
+        });
       }
     });
 
