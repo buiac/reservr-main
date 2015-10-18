@@ -227,7 +227,8 @@ module.exports = function(config, db) {
       // body... 
 
       data.getOrgEvents({
-        orgId: org._id
+        orgId: org._id,
+        fromDate: true // render events starting from now
       }).then(function (events) {
         
         var arr = [];

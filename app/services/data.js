@@ -1,13 +1,21 @@
 module.exports = function(config, db) {
 
   var q = require('q');
+  var moment = require('moment');
 
   var getOrgEvents = function (params) {
     var deferred = q.defer();
-
-    db.events.find({
+    var parrams = {
       orgId: params.orgId || params._id
-    }).sort({
+    };
+
+    if (params.fromDate) {
+      parrams.date = {
+        $gte: new Date()
+      }
+    }
+
+    db.events.find(parrams).sort({
       date: 1
     }).exec(function (err, events) {
       
