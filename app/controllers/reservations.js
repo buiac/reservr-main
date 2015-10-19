@@ -266,7 +266,8 @@ module.exports = function(config, db) {
         };
 
 
-        if (typeof reservation.waiting) {
+
+        if (reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
             console.log(err);
             console.log(info);
