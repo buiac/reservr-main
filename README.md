@@ -1,6 +1,4 @@
-# apunto
-
-![Secret squirrel.](http://3.bp.blogspot.com/_Y8m29ZLX5ag/STSYjESMjWI/AAAAAAAAB2w/kfnmE5xbkK4/s400/SECRET+SQUIRREL+COLOR+3.jpg)
+# reservr
 
 
 ## Development Setup
@@ -17,12 +15,16 @@ The server should start at:
 
 [http://localhost:8080/](http://localhost:8080/)
 
+## Dashboard
+
+To create an account:
+
+[http://localhost:8080/signup](http://localhost:8080/signup)
+
 
 The Dashboard is at:
 
-[http://localhost:8080/dashboard](http://localhost:8080/dashboard)
-
-The default credentials are `admin/admin`. On `localhost` you can log in with any credentials.
+[http://localhost:8080/signin](http://localhost:8080/signin)
 
 
 ## Config files
