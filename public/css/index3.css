@@ -176,3 +176,14 @@ textarea {
 .btn-publish:hover {
   background: #03655C;
 }
+
+.rd-day-body {
+  padding: 5px;
+}
+
+.rd-day-body:hover {
+  background: #eaeaea;
+}
+.rd-day-selected:hover {
+  background: #000;
+}

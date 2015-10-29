@@ -3,6 +3,7 @@ autosize(document.querySelectorAll('textarea'));
 $(document).ready(function () {
   var $eventGroups = $('.event-group')
   var saveHover = false
+  var calendar
 
   function toggleGroup (e) {
 
@@ -29,6 +30,12 @@ $(document).ready(function () {
             var evt = document.createEvent('Event');
             evt.initEvent('autosize:update', true, false);
             field.dispatchEvent(evt);
+          }
+
+          if ($parent.hasClass('event-date')) {
+            setTimeout(function () {
+              calendar.show()
+            }, 10)
           }
         })
       }
@@ -134,7 +141,7 @@ $(document).ready(function () {
 
   function setupCalendar () {
     var dateElement = $('.event-date input')[0]
-    rome(dateElement)
+    calendar = rome(dateElement)
   }
 
   function initBootstrapWidgets (argument) {
