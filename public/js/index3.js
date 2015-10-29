@@ -5,6 +5,7 @@ $(document).ready(function () {
   var saveHover = false
 
   function toggleGroup (e) {
+
     var $this = $(this)
     var $parent = $this.parent()
     var $fields = $parent.find('[name]')
@@ -13,22 +14,24 @@ $(document).ready(function () {
     if ($parent.hasClass(toggleClass)) {
       $parent.removeClass(toggleClass)
     } else {
-      $parent.addClass(toggleClass)
+      if (!$parent.hasClass('event-image')) {
+        $parent.addClass(toggleClass)
 
-      // focus input
-      $fields.each(function (i, field) {
-        var data = $(field).val()
+        // focus input
+        $fields.each(function (i, field) {
+          var data = $(field).val()
 
-        $(field).focus()
+          $(field).focus()
 
-        $(field).val('').val(data)
+          $(field).val('').val(data)
 
-        if (field.type === 'textarea') {
-          var evt = document.createEvent('Event');
-          evt.initEvent('autosize:update', true, false);
-          field.dispatchEvent(evt);
-        }
-      })
+          if (field.type === 'textarea') {
+            var evt = document.createEvent('Event');
+            evt.initEvent('autosize:update', true, false);
+            field.dispatchEvent(evt);
+          }
+        })
+      }
     }
   }
 
@@ -36,23 +39,50 @@ $(document).ready(function () {
     var $this = $(this)
     var $parent = $(this).parent()
     var toggleClass = 'event-group--toggle-placeholder'
+    var isDate = $this.parents('.event-group').hasClass('event-date')
 
-    if ($parent.hasClass(toggleClass) && !saveHover) {
+    if ($parent.hasClass(toggleClass) && !saveHover && !isDate) {
       $parent.removeClass(toggleClass)
     }
   }
 
   function saveData (e) {
-    var $this = $(this)
+    var $this = $(e.target)
     var $parent = $this.parents('.event-group')
     var $placeholder = $parent.find('.event-placeholder')
-    var $field = $($parent.find('[name]')[0])
+    var $icon = $placeholder.find('.fa')
+    var field = $parent.find('[name]')[0]
     var toggleClass = 'event-group--toggle-placeholder'
+    var value = $(field).val()
+    
 
-    $placeholder.html(marked($field.val()))
+    if (!$icon.length) {
+      $icon = $placeholder.find('.icomoon')
+    }
+
+    if (value && field.type === 'textarea') {
+      $placeholder.html(marked($(field).val()))
+    } else {
+      $placeholder.html($(field).val())
+    }
+
+    if ($icon) {
+      $placeholder.prepend($icon)
+    }
+    
 
     if ($parent.hasClass(toggleClass)) {
       $parent.removeClass(toggleClass)
+    }
+  }
+
+
+  function saveDataEnter (e) {
+    var code = e.keyCode || e.which;
+    var isDescription = $(e.target).parents('.event-group').hasClass('event-description')
+
+    if (code === 13 && !isDescription) {
+      saveData(e)
     }
   }
 
@@ -62,6 +92,7 @@ $(document).ready(function () {
   
     $fields.each(function (i, field) {
       $(field).blur(hideGroup)
+      $(field).keypress(saveDataEnter)
     })
   })
 
@@ -73,18 +104,60 @@ $(document).ready(function () {
     saveHover = false
   }
 
-  function parseDescription () {
-    var $eventDescription = $('.event-description')
-    var $placeholder = $eventDescription.find('.event-placeholder')
-    var description = $eventDescription.find('textarea').val()
+  function parseFields () {
+    var $eventGroups = $('.rzv-lightbox .event-group')
 
-    $placeholder.html(marked(description))
+    $eventGroups.each(function (i, eventGroup) {
+      var field = $(eventGroup).find('[name]')[0]
+      var $placeholder = $(eventGroup).find('.event-placeholder')
+      var value = $(field).val()
+
+      if (field.type !== 'file' && value) {
+        if (field.type === 'textarea') {
+          $placeholder.html(marked(value))
+        } else {
+          $placeholder.html(value)
+        }
+      }
+    });
   }
 
-  parseDescription()
+  function checkImage () {
+    var $eventImage = $('.event-image')
+    var $preview = $eventImage.find('.event-preview')
+  }
+
+  function setupCalendar () {
+    var dateElement = $('.event-date input')[0]
+    rome(dateElement)
+  }
+
+  function init () {
+    parseFields()
+    checkImage()
+    setupCalendar()
+  }
+
+  function updateEventPrice (e) {
+    var $this = $(this)
+    var $parent = $this.parents('.event-group')
+    var $placeholder = $this.parent()
+    var $icon = $placeholder.find('.fa')
+    var $change = $('<a>').html('Change')
+
+    $placeholder.html('Free Event ')
+    $placeholder.prepend($icon)
+    $placeholder.append($change)
+
+
+    e.stopPropagation()
+  }
 
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.event-save', saveData);
   $('body').on('mouseover', '.event-save', preventBlur);
   $('body').on('mouseout', '.event-save', unpreventBlur);
+  $('body').on('click', '.event-free', updateEventPrice);
+
+  init()
 })

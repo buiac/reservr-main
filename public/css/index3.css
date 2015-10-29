@@ -13,6 +13,15 @@ textarea {
   resize: none;
 }
 
+.rzv-logo-wrap {
+  text-align: center;
+}
+
+.rzv-logo-wrap a {
+  display: block;
+  margin-top: 30px;
+}
+
 .rzv-lightbox {
   background: #fff;
   color: #333;
@@ -29,6 +38,10 @@ textarea {
 
 .event-name h1 {
   font-size: 22px;  
+  margin: 0;
+}
+
+.event-name h1 p {
   margin: 0;
 }
 
@@ -72,6 +85,7 @@ textarea {
 
 .event-group-action {
   display: none;
+  margin-bottom: 10px;
 }
 
 .event-group--toggle-placeholder .event-group-action {
@@ -85,17 +99,29 @@ textarea {
   cursor: pointer;
 }
 
-.event-group .fa {
+.event-group .fa,
+.event-group .icomoon {
   color: #ccc;
   margin-right: 10px;
 }
 
+.event-group:hover .icomoon,
 .event-group:hover .fa {
   color: #333;
 }
 
 .event-image {
   position: relative;
+}
+
+.event-image .event-preview-image {
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.event-image .event-preview-image img {
+  max-width: 100%;
 }
 
 .event-image input {
@@ -118,4 +144,18 @@ textarea {
 
 .event-organization-setup span {
   margin-top: 2px;
+}
+
+.event-publish {
+  margin-top: 20px;
+}
+
+.btn-publish {
+  background: #02766C;
+  border-radius: 2px;
+  display: block;
+}
+
+.btn-publish:hover {
+  background: #03655C;
 }
