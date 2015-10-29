@@ -137,10 +137,16 @@ $(document).ready(function () {
     rome(dateElement)
   }
 
+  function initBootstrapWidgets (argument) {
+    // Bootstrap widgets
+    $('.event-free').tooltip()
+  }
+
   function init () {
     parseFields()
     checkImage()
     setupCalendar()
+    initBootstrapWidgets()
   }
 
   function updateEventPrice (e) {
@@ -165,4 +171,5 @@ $(document).ready(function () {
   $('body').on('click', '.event-free', updateEventPrice);
 
   init()
+
 })
