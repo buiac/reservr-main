@@ -167,6 +167,50 @@ textarea {
   margin-top: 20px;
 }
 
+.event-publish .event-link {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;  
+  margin-bottom: 10px;
+  display: block;
+  padding: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.event-publish .event-link-wrap {
+  display: none;
+}
+
+.event-publish .event-link:hover {
+  background: #eaeaea;
+}
+
+.event-publish.event-publish--published .event-link-wrap{
+  display: block;
+}
+
+.event-publish.event-publish--published .btn-publish {
+  display: none;
+}
+
+.event-save {
+  margin-top: 30px;
+  display: none;
+}
+
+.event-save label {
+  margin-bottom: 10px;
+}
+
+.event-save input {
+  margin-bottom: 10px;
+}
+
+.event-publish.event-publish--published .event-save {
+  display: block;
+}
+
 .btn-publish {
   background: #02766C;
   border-radius: 2px;
@@ -184,6 +228,55 @@ textarea {
 .rd-day-body:hover {
   background: #eaeaea;
 }
+
 .rd-day-selected:hover {
   background: #000;
 }
+
+.btn-state-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.btn-state-loading:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1099;
+  width: 100%;
+  height: 100%;
+  background-color: #02766C;
+}
+
+.btn-state-loading:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1100;
+  display: inline-block;
+  width: .5em;
+  height: .5em;
+  margin-left: -.25em;
+  margin-top: -.25em;
+
+  border-radius: 3px;
+  border: 2px solid #fff;
+
+  -webkit-animation: rotate 1.4s linear infinite;
+  -moz-animation: rotate 1.4s linear infinite;
+  animation: rotate 1.4s linear infinite;
+}
+
+.fa-info-circle {
+  color: #ccc;
+}
+
+.fa-info-circle:hover {
+  color: #000;
+}
+
+@-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}

@@ -124,7 +124,7 @@ $(document).ready(function () {
       var $placeholder = $(eventGroup).find('.event-placeholder')
       var value = $(field).val()
 
-      if (field.type !== 'file' && value) {
+      if (field && field.type !== 'file' && value) {
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
         } else {
@@ -147,6 +147,7 @@ $(document).ready(function () {
   function initBootstrapWidgets (argument) {
     // Bootstrap widgets
     $('.event-free').tooltip()
+    $('.fa-info-circle').tooltip()
   }
 
   function init () {
@@ -171,11 +172,25 @@ $(document).ready(function () {
     e.stopPropagation()
   }
 
+  function publishEvent (e) {
+    var $this = $(this)
+    var $parent = $this.parents('.event-publish')
+
+    $this.addClass('btn-state-loading')
+
+    setTimeout(function() {
+      $this.removeClass('btn-state-loading')
+      $parent.addClass('event-publish--published')
+    }, 700);
+  }
+
   $('body').on('click', '.event-placeholder', toggleGroup);
-  $('body').on('click', '.event-save', saveData);
-  $('body').on('mouseover', '.event-save', preventBlur);
-  $('body').on('mouseout', '.event-save', unpreventBlur);
+  $('body').on('click', '.btn-event-save', saveData);
+  $('body').on('mouseover', '.btn-event-save', preventBlur);
+  $('body').on('mouseout', '.btn-event-save', unpreventBlur);
   $('body').on('click', '.event-free', updateEventPrice);
+  $('body').on('click', '.btn-publish', publishEvent);
+  
 
   init()
 
