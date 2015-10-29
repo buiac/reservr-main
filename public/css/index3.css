@@ -66,7 +66,23 @@ textarea {
   height: 45px;
 }
 
-.event-group [name]{
+.event-input {
+  position: relative;
+}
+
+.event-input [name] {
+  padding-left: 30px;
+}
+
+.event-input .icomoon,
+.event-input .fa {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.event-group [name],
+.event-group .event-input {
   display: none
 }
 
@@ -74,7 +90,8 @@ textarea {
   display: block
 }
 
-.event-group--toggle-placeholder [name]{
+.event-group--toggle-placeholder [name],
+.event-group--toggle-placeholder .event-input {
   display: block;
   margin-bottom: 10px;
 }

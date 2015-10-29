@@ -37,7 +37,7 @@ $(document).ready(function () {
 
   function hideGroup (e) {
     var $this = $(this)
-    var $parent = $(this).parent()
+    var $parent = $(this).parents('.event-group')
     var toggleClass = 'event-group--toggle-placeholder'
     var isDate = $this.parents('.event-group').hasClass('event-date')
 
@@ -65,6 +65,11 @@ $(document).ready(function () {
     } else {
       $placeholder.html($(field).val())
     }
+
+    if ($parent.hasClass('event-seats')) {
+      $placeholder.html($placeholder.html() + ' seats')
+    }
+
 
     if ($icon) {
       $placeholder.prepend($icon)
