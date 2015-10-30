@@ -168,7 +168,6 @@ $(document).ready(function () {
     $placeholder.prepend($icon)
     $placeholder.append($change)
 
-
     e.stopPropagation()
   }
 
