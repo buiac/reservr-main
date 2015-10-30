@@ -183,13 +183,28 @@ $(document).ready(function () {
     }, 700);
   }
 
+  function createAccount (e) {
+    var $this = $(this)
+    var $form = $this.parents('.event-save')
+    var loadingClass = 'event-save--loading';
+    var successClass = 'event-save--success';
+    var errorClass = 'event-save--error';
+
+    $form.addClass(loadingClass)
+
+    setTimeout(function() {
+      $form.removeClass(loadingClass)
+      $form.addClass(successClass)
+    }, 1000);
+  }
+
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.btn-event-save', saveData);
   $('body').on('mouseover', '.btn-event-save', preventBlur);
   $('body').on('mouseout', '.btn-event-save', unpreventBlur);
   $('body').on('click', '.event-free', updateEventPrice);
   $('body').on('click', '.btn-publish', publishEvent);
-  
+  $('body').on('click', '.btn-create-account', createAccount);
 
   init()
 

@@ -15,6 +15,7 @@ textarea {
 
 .rzv-logo-wrap {
   text-align: center;
+  margin-bottom: 30px;
 }
 
 .rzv-logo-wrap a {
@@ -24,16 +25,13 @@ textarea {
 
 .rzv-lightbox {
   background: #fff;
-  color: #333;
-  width: 60%;
-  height: 95%;
   border-radius: 3px;
-  position: absolute;
-  right: 20px;
-  top: 2%;
   box-shadow: rgba(0,0,0, .4) 0 0 4px;
   padding: 20px;
   overflow: auto;
+  clear: both;
+  color: #333;
+  height: 92%;
 }
 
 .event-name h1 {
@@ -196,6 +194,7 @@ textarea {
 
 .event-save {
   margin-top: 30px;
+  position: relative;
   display: none;
 }
 
@@ -238,7 +237,8 @@ textarea {
   pointer-events: none;
 }
 
-.btn-state-loading:before {
+.btn-state-loading:before,
+.event-save--loading:before {
   content: '';
   position: absolute;
   left: 0;
@@ -249,7 +249,8 @@ textarea {
   background-color: #02766C;
 }
 
-.btn-state-loading:after {
+.btn-state-loading:after,
+.event-save--loading:after {
   content: '';
   position: absolute;
   top: 50%;
@@ -277,6 +278,107 @@ textarea {
   color: #000;
 }
 
+.event-save--loading:before {
+  border-radius: 4px;
+}
+.event-save--loading:after {
+  width: 1em;
+  height: 1em;
+}
+
+.event-success,
+.event-error {
+  display: none;
+  position: absolute;
+  background: #27ae60;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  padding: 20px;
+  color: #FFF;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.event-save--success .event-success,
+.event-save--error .event-error {
+  display: block;
+}
+
+.event-success h4,
+.event-error h4 {
+  margin-top: 0;
+}
+
+.event-success a {
+  background: rgba(255,255,255,.9);
+  color: #333;
+  padding: 7px 5px;
+  border-radius: 3px;
+  display: block;
+}
+
+.event-success a:hover {
+  background: #fff;
+  text-decoration: none;
+}
+
+.event-error {
+  background: #c0392b;
+}
+
+.header-menu {
+  margin-top: 7px;
+  margin-right: 3px;
+}
+
+.header-menu li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.header-menu li:last-child {
+  margin-right: 0;
+}
+
+.header-menu a {
+  color: rgba(255,255,255, .6);
+}
+
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}
+
+
+.box-white {
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: rgba(0,0,0, .4) 0 0 4px;
+  padding: 10px;
+  color: #333;
+}
+
+.event-summary {
+  margin-bottom: 10px;
+  opacity: .6;
+}
+
+.event-summary:hover {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.event-summary.event-active {
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
+
