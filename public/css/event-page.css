@@ -70,9 +70,9 @@
   margin-bottom: 10px;
 }
 
-.event-page .event-description img {
+.event-page .event-image img {
   display: block;
-  margin: 30px auto
+  max-width: 100%;
 }
 
 .event-page .event-description h4 {
