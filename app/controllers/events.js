@@ -300,23 +300,47 @@ module.exports = function(config, db) {
   };
 
   var updateEventView = function (req, res, next) {
-
     var user = req.user;
     user.validEmail = validateEmail(user.username);
 
-    if (req.params.eventId) {
+    db.events.find({
+        orgId: req.params.orgId
+    }, function (err, events) {
 
-      db.events.findOne({
-        _id: req.params.eventId
-      }).exec(function (err, theEvent) {
+      if (req.params.eventId) {
 
-        if(err) {
-          return res.render('event-update', {errors: err});
-        }
+        db.events.findOne({
+          _id: req.params.eventId
+        }).exec(function (err, theEvent) {
 
-        if (!theEvent) {
-          theEvent = {};
-        }
+          if(err) {
+            return res.render('event-update', {errors: err});
+          }
+
+          if (!theEvent) {
+            theEvent = {};
+          }
+
+          db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+            
+            if(err) {
+              return res.render('event-update', {errors: err});
+            }
+
+            res.render('event-update', {
+              errors: [],
+              events: events,
+              theEvent: theEvent,
+              orgId: req.params.orgId,
+              org: org,
+              user: user
+            });
+
+          })
+
+        });
+
+      } else {
 
         db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
           
@@ -326,39 +350,21 @@ module.exports = function(config, db) {
 
           res.render('event-update', {
             errors: [],
-            theEvent: theEvent,
+            theEvent: {
+              date: moment().format(),
+              user: req.user
+            },
+            events: events,
+            user: user,
             orgId: req.params.orgId,
-            org: org,
-            user: user
+            org: org
           });
 
-        })
-
-      });
-
-    } else {
-
-      db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-        
-        if(err) {
-          return res.render('event-update', {errors: err});
-        }
-
-        res.render('event-update', {
-          errors: [],
-          theEvent: {
-            date: moment().format(),
-            user: req.user
-          },
-          user: user,
-          orgId: req.params.orgId,
-          org: org
         });
 
-      });
+      }
 
-    }
-    
+    });
   };
 
   var updateEvent = function (req, res, next) {

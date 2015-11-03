@@ -1,98 +1,236 @@
 <%- include dashboard-header %>
-
+  
+  <div class="rzv-lightbox">
+    
     <div class="row">
-      <div class="col-md-2">
-        <%- include nav-left %>
+      
+      <div class="col-md-8">
+        
+        <form action="">
+          
+          <div class="form-group event-name event-group">
+
+            <h1 class="event-placeholder"></h1>
+            
+            <textarea name="" id="" class="form-control">Lightspeed event publishing</textarea>
+            
+            <div class="event-group-action">
+              
+              <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+              <a class="event-group-cancel event-cancel">Cancel</a>
+              
+            </div>
+
+          </div>
+
+          <div class="form-group event-description event-group">
+
+            <span class="event-placeholder">description</span>
+            
+            <textarea name="" id="" class="form-control">This is the event's default description. Click anywhere here to change it.
+
+![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+
+- Type in some markdown
+- Automatically parse it into HTML
+- Magic
+
+Markdown is a lightweight markup language based on the formatting conventions that people naturally use in email.  As [John Gruber](http://google.com) writes on the [Markdown site]:</textarea>
+            
+            <div class="event-group-action">
+              
+              <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+              <a class="event-group-cancel event-cancel">Cancel</a>
+              
+            </div>
+
+          </div>
+
+        </form>
+
       </div>
 
-      <div class="col-md-10">
+      <div class="col-md-4">
+
+        <!-- <h4>Meta</h4>
         
-
-        <% if (!events.length) { %>
-          <div class="alert alert-info">
-            <div class="row">
-              <div class="col-md-10">
-                <p>Nu exista evenimente.</p>
-              </div>
-              <div class="col-md-2">
-                <a href="/dashboard/<%= orgId %>/event" class="btn btn-primary btn-sm">Eveniment nou</a>
-              </div>
-            </div>
+        <div class="event-group event-image">
+          <div class="event-preview-image">
+            <img src="/images/purcelusii.jpg" alt="">
           </div>
-        <% } else { %>
-
-          <h2>
-            Events
-          </h2>
           
-          <% events.forEach(function(event){ %>
-
-          <div class="row row-row">
+          <span class="event-placeholder">
             
-            <div class="col-md-1 row-td">
+            <i class="fa fa-picture-o"></i> Add an image
+
+            <input type="file" name="" id="">
+
+          </span>
+
+        </div> -->
+        
+        <div class="event-group">
+          
+
+          <span class="event-placeholder">
+            <i class="fa fa-money"></i>
+
+            Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-money"></i>
+
+            <input type="text" class="form-control" name="" value="" min="0">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+
+        </div>
+
+        <div class="event-group event-seats">
+
+          <span class="event-placeholder">
+
+            <i class="icomoon icon-chair"></i>
+
+            Number of seats
+
+          </span>
+
+          <div class="event-input">
+
+            <i class="icomoon icon-chair"></i>
+
+            <input type="number" class="form-control" name="" value="">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+          
+        </div>
+
+        <div class="event-group event-date">
+          
+          <span class="event-placeholder">
+            
+            <i class="fa fa-calendar-o"></i>
+
+            Date &amp; Time
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-calendar-o"></i>
+
+            <input type="text" class="form-control" name="" value="">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+
+        </div>
+
+        <div class="event-group">
+
+          <span class="event-placeholder">
+
+            <i class="fa fa-map-o"></i>
+
+            Location
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-map-o"></i>
+
+            <input type="text" class="form-control" name="" value="">
+
+          </div>
+          
+        </div>
+
+        <div class="event-publish">
+          
+          <div class="event-link-wrap">
+            
+            <span>Your unique event link is ready:</span>
+
+            <a href="http://localhost:8081/event-page.html" target="_blank" class="event-link"><i class="fa fa-link"></i> http://www.reservr.net/u/reactor/event/EJf8JVa3GQ7KNaCs</a>
+
+          </div>
+
+          <a class="btn btn-lg btn-publish btn-primary">Publish event</a>
+
+          <div class="event-save">
+
+            <div class="event-error">
               
-              <div class="date rbt">
+              <h4><i class="fa fa-exclamation-triangle"></i> Something's wrong!</h4>
 
-                <div class="date-monthday">
-                  <div class="date-weekday">
-                    <%= moment(event.date).format('dd') %>
-                  </div>  
-                  <%= moment(event.date).format('DD') %>
-                </div>
+              <p>There was some kind of error.</p>
 
-                <div class="date-month">
-                  <%= moment(event.date).format('MMM') %>
-                </div>
-                
-                <div class="date-hour">
-                  <%= moment(event.date).format('HH:mm') %>
-                  <div class="date-year">
-                    <%= moment(event.date).format('YYYY') %>
-                  </div>
-                </div>
-
-                
-
-              </div>
 
             </div>
 
-            <div class="col-md-10">
-              <h4 class="event-title">
-                <a href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
-
-                <a target="_blank" href="/u/<%= org.name %>/event/<%= event._id %>" class="external-link"><i class="fa fa-external-link"></i></a>
+            <div class="event-success">
+              
+              <h4>
+                <i class="fa fa-check"></i> Success!
               </h4>
 
-              <div class="event-seats-info">
-                <span class="seats-invited">
-                  <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>"><%= event.invited %> rezervari</a>
-                </span>
-                <span class="seats-total">
-                  din <%= event.seats %> disponibile.
-                </span>  
-                <span class="seats-waiting text-muted">
-                  <%= event.waiting %> in asteptare
-                </span>
-              </div>
+              <a href="http://www.reservr.net/dashboard" target="_blank">
+                Your Account
+              </a>
+
             </div>
 
-            <div class="col-md-1 row-td-btn">
-              <a title="Sterge eveniment" href="/dashboard/<%= org._id %>/delete-event/<%= event._id %>" class="event-delete" onclick="if (!confirm('Sunteti sigur ca doriti stergerea acestui eveniment?')) return false"><i class="fa fa-trash"></i></a>
-            </div>
+            <label for="">
+              Save event to your account 
+              <i class="fa fa-info-circle" title="We'll create an account with the email you provide and send you the password"></i>
+            </label>
 
+            <input type="email" class="form-control" name="" value="" placeholder="email">
+
+            <div>
+              
+              <a class="btn btn-sm btn-primary btn-create-account">Save</a>
+
+              <a class="event-group-cancel event-cancel">Nah, thanks!</a>
+              
+            </div>
+            
           </div>
- 
+          
+        </div>
 
-          <% }) %>
-
-          <a href="/dashboard/<%= org._id %>/event" class="btn btn-primary btn-new-event pull-right">Adauga eveniment nou</a>
-        <% } %>
-        
-
-      </div>
+      </div>      
 
     </div>
 
-
+  </div>
 <%- include dashboard-footer %>

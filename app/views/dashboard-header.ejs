@@ -1,46 +1,77 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>
-    Reservr Dashboard
-  </title>
-  
+  <meta charset="UTF-8">
+  <title>Reservr 3</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
-  <link rel="stylesheet" href="/css/dashboard.css">
-
-  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="/css/reservr3.css">
+  <link rel="stylesheet" href="/css/fonts.css">
 </head>
 <body>
-  <div class="header">
-    <div class="container">
-      <div class="col-md-7">
 
-        <a href="/dashboard" class="logo">
-          <img src="/images/logo-white.png" class="logo-reservr">
+  <div class="container-fluid"  style="height: 100%">
+
+    <div class="row"  style="height: 100%">
+
+      <div class="col-md-4" style="height: 100%">
+
+        <div class="rzv-logo-wrap">
           
-          <img src="<%= org.logo %>" class="logo-client">
+          <a href="" class="logo">
 
-          <h2>
-            Dashboard
-          </h2>
-        </a>
+            <img src="/images/logo-white.png" alt="">  
 
+          </a>  
+
+        </div>
+
+        <a href="" class="btn btn-primary btn-lg btn-add-new-event" style="display: block; margin-bottom: 30px;">Add new event</a>
+        
+        <div class="event-list">
+          
+          <% events.forEach(function(event){ %>
+            <div class="box-white event-summary event-active">
+              
+              <div class="event-date">
+                
+                <span class="text-small">
+                  <%= moment(event.date).format('dddd') %>
+                  
+                  <%= moment(event.date).format('DD') %>
+                
+                  <%= moment(event.date).format('MMM') %>,
+                
+                  <%= moment(event.date).format('HH:mm') %>
+                
+                  <%= moment(event.date).format('YYYY') %>
+                </span>
+
+              </div>
+
+              <a class="event-title" href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
+
+              <div class="event-reservations">
+                <p class="text-muted" style="margin-bottom: 0">
+
+                    <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>"><%= event.invited %> rezervari</a>
+                  
+                  
+                    din <%= event.seats %> disponibile.
+                  
+                  
+                    <%= event.waiting %> in asteptare
+                  
+              </div>
+
+            </div>
+          <% }) %>
+        </div>
       </div>
+      <div class="col-md-8" style="height: 100%">
 
-      <div class="col-md-5">
-
-        <a href="/dashboard/<%= orgId %>/event" class="btn-event-new" title="Adauga eveniment">
-          <i class="fa fa-plus"></i>
-        </a>
-
-      </div>
-      
-    </div>
-  </div>
-  <div class="container">
-    
+        <ul class="list list-unstyled pull-right header-menu">
+          <li><a href="">Settings</a></li>
+          <li><a href="">Sign Out</a></li>
+        </ul>
