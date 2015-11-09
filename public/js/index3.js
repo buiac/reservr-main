@@ -198,6 +198,20 @@ $(document).ready(function () {
     }, 1000);
   }
 
+  function readURL(input) {
+
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        $('.event-preview-image img').attr('src', e.target.result);
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    }
+
+  }
+
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.btn-event-save', saveData);
   $('body').on('mouseover', '.btn-event-save', preventBlur);
@@ -205,6 +219,10 @@ $(document).ready(function () {
   $('body').on('click', '.event-free', updateEventPrice);
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
+
+  $(".event-image input").change(function(){
+    readURL(this);
+  });
 
   init()
 

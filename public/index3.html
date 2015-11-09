@@ -38,38 +38,33 @@
             
             <div class="row">
               
-              <div class="col-md-8">
+              <div class="col-md-6">
                 
                 <form action="">
                   
-                  <div class="form-group event-name event-group">
-
-                    <h1 class="event-placeholder"></h1>
+                  <div class="event-group event-image event-image--show-image">
                     
-                    <textarea name="" id="" class="form-control">Click here to add event title</textarea>
-                    
-                    <div class="event-group-action">
+                    <div class="event-preview-image">
                       
-                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+                      <img src="/images/purcelusii.jpg" alt="">
+                      
+                      <div class="event-image-actions">
 
-                      <a class="event-group-cancel event-cancel">Cancel</a>
-                      
+                        <a><i class="fa fa-edit"></i> Change Image</a>
+
+                        <input type="file" name="" id="">
+                        
+                      </div>
+
                     </div>
-
-                  </div>
-
-                  <div class="form-group event-description event-group">
-
-                    <span class="event-placeholder">description</span>
                     
-                    <textarea name="" id="" class="form-control">Add a short description as well</textarea>
-                    
-                    <div class="event-group-action">
+                    <span class="event-placeholder">
                       
-                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
-                      <a class="event-group-cancel event-cancel">Cancel</a>
-                      
-                    </div>
+                      <i class="fa fa-picture-o"></i> Add an image
+
+                      <input type="file" name="" id="">
+
+                    </span>
 
                   </div>
 
@@ -77,126 +72,156 @@
 
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-6">
 
-                <div class="event-group event-image">
-                  <!-- <div class="event-preview-image">
-                    <img src="/images/purcelusii.jpg" alt="">
-                  </div> -->
+                <div class="form-group event-name event-group">
+
+                  <h1 class="event-placeholder"></h1>
                   
-                  <span class="event-placeholder">
+                  <textarea name="" id="" class="form-control">Click here to add event title</textarea>
+                  
+                  <div class="event-group-action">
                     
-                    <i class="fa fa-picture-o"></i> Add an image
+                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
 
-                    <input type="file" name="" id="">
+                    <a class="event-group-cancel event-cancel">Cancel</a>
+                    
+                  </div>
 
-                  </span>
+                </div>
+
+                <div class="form-group event-description event-group">
+
+                  <span class="event-placeholder">description</span>
+                  
+                  <textarea name="" id="" class="form-control">Add a short description</textarea>
+                  
+                  <div class="event-group-action">
+                    
+                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+                    <a class="event-group-cancel event-cancel">Cancel</a>
+                    
+                  </div>
 
                 </div>
                 
-                <div class="event-group">
+                <div class="event-meta">
                   
-
-                  <span class="event-placeholder">
-                    <i class="fa fa-money"></i>
-
-                    Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
-
-                  </span>
-
-                  <div class="event-input">
+                  <div class="event-group">
                     
-                    <i class="fa fa-money"></i>
+                    <span class="event-placeholder">
+                      <i class="fa fa-money"></i>
 
-                    <input type="text" class="form-control" name="" value="" min="0">
+                      Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-money"></i>
+
+                      <input type="text" class="form-control" name="" value="" min="0">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
 
                   </div>
 
-                  <div class="event-group-action">
-                    
-                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+                  <div class="event-group event-seats">
 
-                    <a class="event-group-cancel event-cancel">Cancel</a>
+                    <span class="event-placeholder">
+
+                      <i class="icomoon icon-chair"></i>
+
+                      Number of seats
+
+                    </span>
+
+                    <div class="event-input">
+
+                      <i class="icomoon icon-chair"></i>
+
+                      <input type="number" class="form-control" name="" value="">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+                    
+                  </div>
+
+                  <div class="event-group event-date">
+                    
+                    <span class="event-placeholder">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      Date &amp; Time
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      <input type="text" class="form-control" name="" value="">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+
+                  </div>
+
+                  <div class="event-group">
+
+                    <span class="event-placeholder">
+
+                      <i class="fa fa-map-o"></i>
+
+                      Location
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-map-o"></i>
+
+                      <input type="text" class="form-control" name="" value="">
+
+                    </div>
                     
                   </div>
 
-                </div>
-
-                <div class="event-group event-seats">
-
-                  <span class="event-placeholder">
-
-                    <i class="icomoon icon-chair"></i>
-
-                    Number of seats
-
-                  </span>
-
-                  <div class="event-input">
-
-                    <i class="icomoon icon-chair"></i>
-
-                    <input type="number" class="form-control" name="" value="">
-
-                  </div>
-
-                  <div class="event-group-action">
-                    
-                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
-
-                    <a class="event-group-cancel event-cancel">Cancel</a>
-                    
-                  </div>
                   
                 </div>
+                
+                
 
-                <div class="event-group event-date">
-                  
-                  <span class="event-placeholder">
-                    
-                    <i class="fa fa-calendar-o"></i>
+                
 
-                    Date &amp; Time
+                
 
-                  </span>
+                
 
-                  <div class="event-input">
-                    
-                    <i class="fa fa-calendar-o"></i>
-
-                    <input type="text" class="form-control" name="" value="">
-
-                  </div>
-
-                  <div class="event-group-action">
-                    
-                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
-
-                    <a class="event-group-cancel event-cancel">Cancel</a>
-                    
-                  </div>
-
-                </div>
-
-                <div class="event-group">
-
-                  <span class="event-placeholder">
-
-                    <i class="fa fa-map-o"></i>
-
-                    Location
-
-                  </span>
-
-                  <div class="event-input">
-                    
-                    <i class="fa fa-map-o"></i>
-
-                    <input type="text" class="form-control" name="" value="">
-
-                  </div>
-                  
-                </div>
+                
 
                 <div class="event-publish">
                   
