@@ -40,20 +40,20 @@
               
               <div class="col-md-6">
                 
-                <form action="">
+                <form enctype="multipart/form-data" method="post" name="fileinfo">
                   
                   <div class="event-group event-image event-image--show-image">
                     
                     <div class="event-preview-image">
                       
-                      <img src="/images/purcelusii.jpg" alt="">
+                      <img src="/images/reservr-placeholder-2.png" alt="">
                       
                       <div class="event-image-actions">
 
                         <a><i class="fa fa-edit"></i> Change Image</a>
 
                         <input type="file" name="" id="">
-                        
+
                       </div>
 
                     </div>
@@ -62,7 +62,7 @@
                       
                       <i class="fa fa-picture-o"></i> Add an image
 
-                      <input type="file" name="" id="">
+                      <input type="file" name="image" id="">
 
                     </span>
 
@@ -78,7 +78,7 @@
 
                   <h1 class="event-placeholder"></h1>
                   
-                  <textarea name="" id="" class="form-control">Click here to add event title</textarea>
+                  <textarea name="name" id="" class="form-control">My cool fake event name</textarea>
                   
                   <div class="event-group-action">
                     
@@ -92,9 +92,15 @@
 
                 <div class="form-group event-description event-group">
 
-                  <span class="event-placeholder">description</span>
+                  <span class="event-placeholder"></span>
                   
-                  <textarea name="" id="" class="form-control">Add a short description</textarea>
+                  <textarea name="description" id="" class="form-control">This is a fake event description that will take place in the heart of our beloved city. One of it's kind, it will be a transformative experience. Check out the items list: 
+
+- some strings
+- glue
+- paper
+- [links are included](http://google.com)
+                  </textarea>
                   
                   <div class="event-group-action">
                     
@@ -106,6 +112,54 @@
                 </div>
                 
                 <div class="event-meta">
+
+
+
+                  <div class="event-group event-date">
+                    
+                    <span class="event-placeholder">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      Date &amp; Time
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      <input type="text" class="form-control" name="date" value="">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+
+                  </div>
+
+                  <div class="event-group">
+
+                    <span class="event-placeholder">
+
+                      <i class="fa fa-map-o"></i>
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-map-o"></i>
+
+                      <input type="text" class="form-control" name="location" value="London, 106 Lower Marsh, Waterloo, SE1 7AB">
+
+                    </div>
+                    
+                  </div>
                   
                   <div class="event-group">
                     
@@ -120,7 +174,7 @@
                       
                       <i class="fa fa-money"></i>
 
-                      <input type="text" class="form-control" name="" value="" min="0">
+                      <input type="text" class="form-control" name="price" min="0" value="12$ / pers.">
 
                     </div>
 
@@ -148,7 +202,7 @@
 
                       <i class="icomoon icon-chair"></i>
 
-                      <input type="number" class="form-control" name="" value="">
+                      <input type="number" class="form-control" name="seats" value="120">
 
                     </div>
 
@@ -161,67 +215,8 @@
                     </div>
                     
                   </div>
-
-                  <div class="event-group event-date">
-                    
-                    <span class="event-placeholder">
-                      
-                      <i class="fa fa-calendar-o"></i>
-
-                      Date &amp; Time
-
-                    </span>
-
-                    <div class="event-input">
-                      
-                      <i class="fa fa-calendar-o"></i>
-
-                      <input type="text" class="form-control" name="" value="">
-
-                    </div>
-
-                    <div class="event-group-action">
-                      
-                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
-
-                      <a class="event-group-cancel event-cancel">Cancel</a>
-                      
-                    </div>
-
-                  </div>
-
-                  <div class="event-group">
-
-                    <span class="event-placeholder">
-
-                      <i class="fa fa-map-o"></i>
-
-                      Location
-
-                    </span>
-
-                    <div class="event-input">
-                      
-                      <i class="fa fa-map-o"></i>
-
-                      <input type="text" class="form-control" name="" value="">
-
-                    </div>
-                    
-                  </div>
-
                   
                 </div>
-                
-                
-
-                
-
-                
-
-                
-
-                
 
                 <div class="event-publish">
                   
@@ -252,7 +247,7 @@
                         <i class="fa fa-check"></i> Success!
                       </h4>
 
-                      <a href="http://localhost:8081/dashboard-events.html" target="_blank">
+                      <a href="/dashboard" target="_blank">
                         Your Account
                       </a>
 
@@ -263,7 +258,7 @@
                       <i class="fa fa-info-circle" title="We'll create an account with the email you provide and send you the password"></i>
                     </label>
 
-                    <input type="email" class="form-control" name="" value="" placeholder="email">
+                    <input type="email" class="form-control" name="email" value="" placeholder="email">
 
                     <div>
                       
@@ -296,6 +291,7 @@
   <script src="/bower_components/ejs/ejs.js"></script>
   <script src="/bower_components/rome/dist/rome.min.js"></script>
   <script src="/bower_components/marked/lib/marked.js"></script>
+  <script src="/bower_components/moment/moment.js"></script>
   <script src="/js/index3.js"></script>
 
 </body>

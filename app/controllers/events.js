@@ -620,6 +620,155 @@ module.exports = function(config, db) {
       }
     });
   };
+
+  var updateTempEvent = function (req, res, next) {
+
+    var event = req.body.event
+
+    // convert strings to booleans
+    if (typeof event.published === 'string') {
+      event.published = (event.published === 'true')
+    }
+    
+    if (typeof event.temp === 'string') {
+      event.temp = (event.temp === 'true')
+    }
+    
+    if (!event._id) {
+      // this is a new event so we need to create a user and an org
+      db.users.insert({
+        timecreated: new Date(),
+        username: 'guest-' + new Date().getTime(),
+        password: '',
+        validEmail:false
+      }, function (err, user) {
+
+        // TODO error handling
+        
+        db.orgs.insert({
+          name: 'guest-' + new Date().getTime(),
+          userId: user._id,
+          logo: '/media/event-image-placeholder.jpg',
+          mailchimp: [],
+          confirmationEmail: 'contact@reservr.net'
+        }, function (err, org) {
+
+          // TODO error handling
+
+          db.events.insert(event, function (err, event) {
+
+            // TODO error handling
+            
+            res.json({
+              userId: user._id,
+              orgId: org._id,
+              event: event
+            })
+          })
+        })
+      })
+
+    } else {
+      // the event has already been saved at least once
+
+      db.orgs.findOne({
+        _id: event.orgId
+      }, function (err, org) {
+
+        // TODO error handling
+        
+        db.users.findOne({
+          _id: org.userId
+        }, function (err, user) {
+          
+          // TODO error handling
+
+          db.events.update({
+            _id: event._id
+          }, event, function (err, num) {
+
+            // TODO error handling
+            
+            db.events.findOne({
+              _id: event._id
+            }, function (err, theEvent) {
+
+              // TODO error handling
+
+              res.json({
+                userId: user._id,
+                orgId: org._id,
+                event: theEvent
+              })
+            })
+          })
+        })
+      })
+    }
+  };
+
+  var tempFrontEventView = function (req, res, next) {
+    
+    db.orgs.findOne({
+      _id: req.params.orgId
+    }, function (err, org) {
+      
+      if (err) {
+        res.send({ error: 'error'}, 400);
+        return
+      }
+
+      if (!org) {
+        res.redirect('/');
+        return
+      }
+
+      db.events.findOne({
+        _id: req.params.eventId
+      }).exec(function (err, event) {
+        if(err) {
+          return res.send(err, 400);
+        }
+
+        event.waiting = 0;
+        event.invited = 0;
+
+        db.reservations.find({
+          eventId: event._id
+        }, function (err, reservations) {
+
+          if(err) {
+            return res.send(err, 400);
+          }
+          
+          reservations.forEach(function (reservation) {
+
+            if (reservation.waiting) {
+
+              event.waiting = event.waiting + reservation.seats;
+
+            } else {
+
+              event.invited = event.invited + reservation.seats
+
+            }
+
+          });
+
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(err, event)
+          console.log('--------')
+          console.log('\n\n\n\n')
+
+          res.render('event', {
+            event: event,
+            org: org
+          }); 
+        });
+      });
+    })
+  };
   
   return {
     listEventsView: listEventsView,
@@ -631,7 +780,9 @@ module.exports = function(config, db) {
     listFrontEventsView: listFrontEventsView,
     frontEventView: frontEventView,
     eventDeleteImage: eventDeleteImage,
-    deleteEvent: deleteEvent
+    deleteEvent: deleteEvent,
+    updateTempEvent: updateTempEvent,
+    tempFrontEventView: tempFrontEventView
   };
 
 };

@@ -85,6 +85,9 @@ module.exports = (function() {
     dest: config.dataDir + config.publicDir + '/media',
     rename: function (fieldname, filename) {
       return filename;
+    },
+    onFileUploadStart: function (file) {
+        console.log(file.originalname + ' is starting ...');
     }
   }));
 
@@ -162,6 +165,12 @@ module.exports = (function() {
   
   /* Front-end routes
   */
+
+  // homepage
+  app.post('/tempEvent', events.updateTempEvent);
+
+  // temoporary event
+  app.get('/t/:orgId/event/:eventId', events.tempFrontEventView);
 
   // events
   app.get('/u/:orgName', events.listFrontEventsView);

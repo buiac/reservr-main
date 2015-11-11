@@ -4,6 +4,28 @@ $(document).ready(function () {
   var $eventGroups = $('.event-group')
   var saveHover = false
   var calendar
+  var eventModel = {
+    name: 'My cool fake event name',
+    description: 'This is a fake event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
+    images: '/images/reservr-placeholder-2.png',
+    date: new Date(),
+    seats: 120,
+    price: '12$ / pers',
+    location: 'London, 106 Lower Marsh, Waterloo, SE1 7AB',
+    orgId: '',
+    temp: true,
+    published: false
+  };
+
+  var config = {
+    baseUrl: ''
+  }
+
+  // 'http://localhost:8080'
+
+  if (window.location.hostname.indexOf('localhost') !== -1) {
+    config.baseUrl = 'http://localhost:8080'
+  }
 
   function toggleGroup (e) {
 
@@ -53,6 +75,48 @@ $(document).ready(function () {
     }
   }
 
+  function updateEventUrl () {
+    var $eventLink = $('.event-link')
+    var $parent = $eventLink.parents('.event-publish')
+    var $button = $parent.find('.btn-publish')
+    var $icon = $eventLink.find('.fa')
+    var url = config.baseUrl + '/t/' + eventModel.orgId + '/event/' + eventModel._id
+
+    $eventLink.html(url)
+    $eventLink.prepend($icon)
+    $eventLink.attr('href', url)
+
+    $button.removeClass('btn-state-loading')
+    $parent.addClass('event-publish--published')
+  }
+
+  function syncData () {
+
+    $.ajax({
+      method: 'POST',
+      url: config.baseUrl + '/tempEvent',
+      data: {
+        event: eventModel
+      }
+    }).done(function (res) {
+
+      // set the event orgId
+      eventModel.orgId = res.orgId
+      eventModel._id = res.event._id
+
+      if (res.event.published) {
+        // update the unique event url
+        updateEventUrl()
+      }
+
+    }).fail(function (err) {
+      
+      console.log('error')
+      console.log(err)
+
+    })
+  }
+
   function saveData (e) {
     var $this = $(e.target)
     var $parent = $this.parents('.event-group')
@@ -86,6 +150,11 @@ $(document).ready(function () {
     if ($parent.hasClass(toggleClass)) {
       $parent.removeClass(toggleClass)
     }
+
+    eventModel[field.name] = field.value
+
+    syncData()
+
   }
 
 
@@ -123,12 +192,23 @@ $(document).ready(function () {
       var field = $(eventGroup).find('[name]')[0]
       var $placeholder = $(eventGroup).find('.event-placeholder')
       var value = $(field).val()
+      var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
+
+
 
       if (field && field.type !== 'file' && value) {
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
         } else {
           $placeholder.html(value)
+
+          if ($icon) {
+            $placeholder.prepend($icon)
+          }
+
+          if ($(eventGroup).hasClass('event-seats')) {
+            $placeholder.append(' seats')
+          }
         }
       }
     });
@@ -150,11 +230,26 @@ $(document).ready(function () {
     $('.fa-info-circle').tooltip()
   }
 
+  function updateDateField () {
+    // add todays date to the date field
+
+    $date = $('[name=date]')
+
+    var date = moment().format('YYYY')
+    date += '-' + moment().format('MM')
+    date += '-' + moment().format('DD')
+    date += ' ' + moment().format('HH:mm')
+
+    $date.val(date)
+  }
+
   function init () {
+    updateDateField()
     parseFields()
     checkImage()
     setupCalendar()
     initBootstrapWidgets()
+    
   }
 
   function updateEventPrice (e) {
@@ -177,25 +272,47 @@ $(document).ready(function () {
 
     $this.addClass('btn-state-loading')
 
-    setTimeout(function() {
-      $this.removeClass('btn-state-loading')
-      $parent.addClass('event-publish--published')
-    }, 700);
+    eventModel.published = true;
+
+    syncData()
   }
 
   function createAccount (e) {
     var $this = $(this)
     var $form = $this.parents('.event-save')
+    var email = $form.find('[name=email]').val()
     var loadingClass = 'event-save--loading';
     var successClass = 'event-save--success';
     var errorClass = 'event-save--error';
 
     $form.addClass(loadingClass)
 
-    setTimeout(function() {
-      $form.removeClass(loadingClass)
+    $.ajax({
+      method: 'POST',
+      url: config.baseUrl + '/updateUser',
+      data: {
+        email: email,
+        orgId: eventModel.orgId
+      }
+    }).done(function (res) {
+      
+      $form.removeClass(loadingClass)      
       $form.addClass(successClass)
-    }, 1000);
+
+    }).fail(function (err) {
+
+      $form.removeClass(loadingClass)
+      $form.addClass(errorClass)
+
+      $form.find('.event-error p').html(err.responseJSON.message)
+
+      setTimeout(function() {
+        $form.removeClass(errorClass)
+      }, 4000);
+    })
+
+    // $form.removeClass(loadingClass)
+    // $form.addClass(successClass)
   }
 
   function readURL(input) {
@@ -203,11 +320,48 @@ $(document).ready(function () {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
 
+      eventModel.images = ['/media/' + input.files[0].name]
+
       reader.onload = function (e) {
         $('.event-preview-image img').attr('src', e.target.result);
       }
 
       reader.readAsDataURL(input.files[0]);
+
+      // send image to the server
+      var formData = new FormData()
+      formData.append('image', input.files[0])
+
+      if (eventModel.orgId) {
+        formData.append('orgId', eventModel.orgId)  
+      }
+      
+      if (eventModel._id) {
+        formData.append('eventId', eventModel._id)
+      }
+      
+      for (var key in eventModel) {
+        
+        if (key === 'images') {
+          formData.append('event[' + key + '][0]', eventModel[key][0])
+        } else {
+          formData.append('event[' + key + ']', eventModel[key])
+        }
+        
+      }
+
+      $.ajax({
+        url: config.baseUrl + '/tempEvent',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        success: function(res){
+          eventModel.orgId = res.orgId
+          eventModel._id = res.event._id
+        }
+      });
     }
 
   }
@@ -220,7 +374,7 @@ $(document).ready(function () {
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
 
-  $(".event-image input").change(function(){
+  $('.event-image input').change(function(){
     readURL(this);
   });
 
