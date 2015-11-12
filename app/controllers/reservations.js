@@ -97,7 +97,6 @@ module.exports = function(config, db) {
 
   // configure moment
   moment.defaultFormat = 'YYYY-MM-DD LT';
-  moment.locale('ro');
 
   var transport = nodemailer.createTransport(smtpTransport({
     host: 'smtp.mandrillapp.com',

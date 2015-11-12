@@ -43,20 +43,24 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    req.user = {
-       "username":"sebi.kovacs+304@gmail.com",
-       "password":"$2a$10$FqJGcWNu7UTqD2gYF/NQjOXSlUwDkuZ5mGiYaxfK/ZY/7poDSXw.y",
-       "validEmail":true,
-       "_id":"4BRj7GbkuwP9rx7D"
+    if (false) { //req.hostname === 'localhost'
+      db.users.findOne({
+        username: 'sebi.kovacs+8@gmail.com'
+      }, function (err, user) {
+
+        req.user = user;
+        return next()
+        
+      })
+
+    } else {
+
+      if (req.isAuthenticated()){
+        return next();
+      } else {
+        res.redirect("/signin"); 
+      }
     }
-
-    return next();
-
-    // if (req.isAuthenticated()){
-    //   return next();
-    // } else {
-    //   res.redirect("/signin"); 
-    // }
 
   };
 
@@ -140,6 +144,7 @@ module.exports = (function() {
 
   // events
   var events = require('./app/controllers/events.js')(config, db);
+  var users = require('./app/controllers/users.js')(config, db);
   var reservations = require('./app/controllers/reservations.js')(config, db);
   var settings = require('./app/controllers/settings.js')(config, db);
 
@@ -172,6 +177,9 @@ module.exports = (function() {
   // temoporary event
   app.get('/t/:orgId/event/:eventId', events.tempFrontEventView);
 
+  // update user
+  app.post('/updateUser', users.updateUser);
+
   // events
   app.get('/u/:orgName', events.listFrontEventsView);
   app.get('/u/:orgName/event/:eventId', events.frontEventView);
@@ -191,12 +199,14 @@ module.exports = (function() {
 
   var auth = require('./app/controllers/authenticate.js')(config, db);
 
-  app.get('/signup', auth.signupView);
+  
   
   app.post('/createTempUser', auth.createTempUser);
 
   app.get('/signin', auth.signinView);
   app.post('/signin', auth.signin);
+
+  app.get('/signup', auth.signupView);
 
   // Logout
   app.get('/dashboard/signout', function(req, res) {

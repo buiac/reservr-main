@@ -5,8 +5,8 @@ $(document).ready(function () {
   var saveHover = false
   var calendar
   var eventModel = {
-    name: 'My cool fake event name',
-    description: 'This is a fake event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
+    name: 'My cool event name',
+    description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
     images: '/images/reservr-placeholder-2.png',
     date: new Date(),
     seats: 120,
@@ -77,7 +77,7 @@ $(document).ready(function () {
 
   function updateEventUrl () {
     var $eventLink = $('.event-link')
-    var $parent = $eventLink.parents('.event-publish')
+    var $parent = $eventLink.parents('.event-details')
     var $button = $parent.find('.btn-publish')
     var $icon = $eventLink.find('.fa')
     var url = config.baseUrl + '/t/' + eventModel.orgId + '/event/' + eventModel._id
@@ -87,6 +87,8 @@ $(document).ready(function () {
     $eventLink.attr('href', url)
 
     $button.removeClass('btn-state-loading')
+
+    // show overlay
     $parent.addClass('event-publish--published')
   }
 
@@ -221,7 +223,9 @@ $(document).ready(function () {
 
   function setupCalendar () {
     var dateElement = $('.event-date input')[0]
-    calendar = rome(dateElement)
+    if (dateElement) {
+      calendar = rome(dateElement)  
+    }
   }
 
   function initBootstrapWidgets (argument) {
@@ -284,6 +288,7 @@ $(document).ready(function () {
     var loadingClass = 'event-save--loading';
     var successClass = 'event-save--success';
     var errorClass = 'event-save--error';
+    var $dashboardlink = $('.event-dashboard')
 
     $form.addClass(loadingClass)
 
@@ -298,6 +303,9 @@ $(document).ready(function () {
       
       $form.removeClass(loadingClass)      
       $form.addClass(successClass)
+
+      // update href of the dashboard redirect link
+      $dashboardlink.attr('href', config.baseUrl + '/signin?email=' + email)
 
     }).fail(function (err) {
 
@@ -366,6 +374,42 @@ $(document).ready(function () {
 
   }
 
+  function toggleDescription (e) {
+    var $this = $(this)
+    var $eventDescription = $this.parent().prev()
+
+    $eventDescription.toggleClass('event-description--show')
+  }
+
+    function toggleFormFields (e) {
+    var $this = $(this)
+    var $form = $this.parents('.event-form')
+
+    $form.addClass('event-form--show-fields')
+  }
+
+  function makeReservation (e) {
+    var $this = $(this)
+    var $form = $this.parents('.event-form')
+
+    $form.addClass('event-form--loading')
+
+    setTimeout(function() {
+      $form.removeClass('event-form--loading')
+      $form.addClass('event-form--success')
+
+      setTimeout(function() {
+        $form.removeClass('event-form--show-fields')  
+        $form.removeClass('event-form--success')
+      }, 10000);
+    }, 1000);
+
+
+  }
+
+
+  $('body').on('click','.btn-toggle-fields', toggleFormFields)
+  $('body').on('click','.btn-reserv', makeReservation)
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.btn-event-save', saveData);
   $('body').on('mouseover', '.btn-event-save', preventBlur);
@@ -373,6 +417,7 @@ $(document).ready(function () {
   $('body').on('click', '.event-free', updateEventPrice);
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
+  $('body').on('click', '.event-toggle-description a', toggleDescription)
 
   $('.event-image input').change(function(){
     readURL(this);

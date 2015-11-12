@@ -216,11 +216,37 @@ textarea {
   margin-top: 2px;
 }
 
+.event-details {
+  position: relative;
+}
+
+.event-publish--published .event-overlay {
+  display: block;
+}
+
+.event-overlay {
+  position: absolute;
+  top: 0;
+  background: #27ae60;
+  left: 0;
+  width: 99%;
+  height: 100%;
+  color: #FFF;
+  padding: 60px 20px 20px;
+  font-size: 22px;
+  border-radius: 5px;
+  display: none;
+}
+
+.event-overlay a {
+  color: #FFF;
+}
+
 .event-publish {
   margin-top: 20px;
 }
 
-.event-publish .event-link {
+.event-link {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;  
@@ -229,47 +255,73 @@ textarea {
   padding: 10px;
   border-radius: 3px;
   cursor: pointer;
+  border: 1px solid rgba(255,255,255,.9);
 }
 
-.event-publish .event-link .fa {
+.event-link .fa {
   margin-right: 8px;
 }
 
-.event-publish .event-link-wrap {
-  display: none;
+.event-link-wrap {
+  margin-bottom: 140px;
 }
 
-.event-publish .event-link:hover {
-  background: #eaeaea;
-}
-
-.event-publish.event-publish--published .event-link-wrap{
+.event-link-wrap span {
+  margin-bottom: 10px;
   display: block;
 }
 
-.event-publish.event-publish--published .btn-publish {
-  display: none;
+.event-link:hover {
+  background: #eaeaea;
+  color: #000;
 }
 
 .event-save {
   margin-top: 30px;
   position: relative;
-  display: none;
 }
 
 .event-save label {
   margin-bottom: 10px;
+  font-size: 15px;
 }
 
 .event-save input {
   margin-bottom: 10px;
+  background: transparent;
+  color: #FFF;
+  border-color: #FFF;
 }
 
-.event-publish.event-publish--published .event-save {
-  display: block;
+.event-save input:focus {
+  border-color: #FFF;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.075),0 0 8px rgba(255,255,255,.6)
 }
 
-.btn-publish {
+.event-save ::-webkit-input-placeholder {
+   color: #fff;
+}
+
+.event-save :-moz-placeholder { /* Firefox 18- */
+   color: #fff;  
+}
+
+.event-save ::-moz-placeholder {  /* Firefox 19+ */
+   color: #fff;  
+}
+
+.event-save :-ms-input-placeholder {  
+   color: #fff;  
+}
+
+.event-save .btn-create-account {
+  border-color: #FFF;
+  background-color: #FFF;
+  color: #000;
+}
+
+.btn-publish,
+.btn-save-event {
   background: #02766C;
   border-radius: 2px;
   display: block;
@@ -369,6 +421,8 @@ textarea {
 .event-success h4,
 .event-error h4 {
   margin-top: 0;
+  line-height: 170%;
+  font-size: 15px;
 }
 
 .event-success a {
@@ -439,9 +493,17 @@ textarea {
 }
 
 .btn-add-new-event {
-  background: #043147;
-  border-color: #043147;
+  background: transparent;
+  border-color: #fff;
   border-radius: 2px;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.btn-add-new-event:hover {
+  background: #fff;
+  border-color: #fff;
+  color: #333;
 }
 
 /* Scrollbar
@@ -513,6 +575,10 @@ textarea {
   max-width: 230px;
   display: block;
   margin: 30px auto 60px;
+}
+
+.event-page-org-logo img{
+  max-width: 100%;
 }
 
 .event-page-header .logo {
@@ -697,6 +763,45 @@ textarea {
 
 .event-form--error .form-error h4 {
   margin: 60px 0 30px;
+}
+
+.event-page .event-description {
+  overflow: hidden;
+  max-height: 165px;
+  
+  text-overflow: ellipsis;
+}
+
+.event-description--show {
+  max-height: none;
+}
+
+.event-toggle-description a {
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  padding: 20px;
+  display: block;
+}
+
+
+.event-image-wrap {
+  position: relative;
+}
+
+.event-temporary-overlay {
+  position: absolute;
+  background: #fff;
+  z-index: 1;
+  width: 95%;
+  height: 100%;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.event-temporary-overlay .text-muted {
+  position: absolute;
+  bottom: 0;
 }
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }

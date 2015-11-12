@@ -16,7 +16,6 @@ module.exports = function(config, db) {
   var data = require('../services/data.js')(config, db);
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
-  moment.locale('ro');
 
   var validateEmail = function (email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -595,10 +594,10 @@ module.exports = function(config, db) {
     var user = req.user;
     user.validEmail = validateEmail(user.username);
 
-    db.orgs.findOne({'userId': req.user._id}, function (err, org) {
+    db.orgs.findOne({userId: req.user._id}, function (err, org) {
           
       if (!org) {
-        res.send({error: 'error'}, 400);
+        res.status(400).send({error: 'error'});
       }
       
       if (org) {
@@ -648,12 +647,15 @@ module.exports = function(config, db) {
         db.orgs.insert({
           name: 'guest-' + new Date().getTime(),
           userId: user._id,
-          logo: '/media/event-image-placeholder.jpg',
+          logo: '/media/org-logo-placeholder.png',
           mailchimp: [],
           confirmationEmail: 'contact@reservr.net'
         }, function (err, org) {
 
           // TODO error handling
+          
+          // update event org id
+          event.orgId = org._id
 
           db.events.insert(event, function (err, event) {
 
@@ -694,7 +696,7 @@ module.exports = function(config, db) {
             }, function (err, theEvent) {
 
               // TODO error handling
-
+              
               res.json({
                 userId: user._id,
                 orgId: org._id,
@@ -708,67 +710,23 @@ module.exports = function(config, db) {
   };
 
   var tempFrontEventView = function (req, res, next) {
-    
-    db.orgs.findOne({
-      _id: req.params.orgId
-    }, function (err, org) {
+    db.events.findOne({
+      _id: req.params.eventId
+    }, function (err, event) {
       
-      if (err) {
-        res.send({ error: 'error'}, 400);
-        return
-      }
+      db.orgs.findOne({
+        _id: req.params.orgId
+      }, function (err, org) {
 
-      if (!org) {
-        res.redirect('/');
-        return
-      }
+        res.render('front-event', {
+          event: event,
+          org: org
+        }); 
 
-      db.events.findOne({
-        _id: req.params.eventId
-      }).exec(function (err, event) {
-        if(err) {
-          return res.send(err, 400);
-        }
-
-        event.waiting = 0;
-        event.invited = 0;
-
-        db.reservations.find({
-          eventId: event._id
-        }, function (err, reservations) {
-
-          if(err) {
-            return res.send(err, 400);
-          }
-          
-          reservations.forEach(function (reservation) {
-
-            if (reservation.waiting) {
-
-              event.waiting = event.waiting + reservation.seats;
-
-            } else {
-
-              event.invited = event.invited + reservation.seats
-
-            }
-
-          });
-
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(err, event)
-          console.log('--------')
-          console.log('\n\n\n\n')
-
-          res.render('event', {
-            event: event,
-            org: org
-          }); 
-        });
-      });
+      })
     })
-  };
+  }
+    
   
   return {
     listEventsView: listEventsView,

@@ -120,7 +120,6 @@ module.exports = function(config, db) {
     res.render('signup', {
       info: req.flash("message")
     });
-
   };
 
   // helper methods

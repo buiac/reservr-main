@@ -71,6 +71,15 @@
     
   </div>
 
+  <script>
+    if (window.location.search.indexOf('email') !== -1) {
+      var email = window.location.search.split('=')[1]
+      var $emailInput = document.querySelector('[name=username]')
+
+      $emailInput.value = email
+    }
+  </script>
+
 </body>
 
 </html>

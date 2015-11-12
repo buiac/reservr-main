@@ -23,12 +23,24 @@ module.exports = function(config, db) {
     if (user.validEmail) {
 
       db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
-        res.render('settings', {
-          errors: [],
-          orgId: req.params.orgId,
-          org: org,
-          user: user
-        });
+
+        // TODO error handling
+
+        db.events.find({
+          orgId: org._id
+        }, function (err, events) {
+
+          // TODO error handling
+          
+          res.render('settings', {
+            errors: [],
+            orgId: req.params.orgId,
+            org: org,
+            events: events,
+            user: user
+          });
+        })
+        
       });
       
     } else {
@@ -40,6 +52,7 @@ module.exports = function(config, db) {
   var updateSettings = function (req, res, next) {
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
+    req.checkBody('locale', 'Date locale name should not be empty').notEmpty();
 
     var errors = req.validationErrors();
 
@@ -61,6 +74,7 @@ module.exports = function(config, db) {
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
+    var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
 
     if (req.body.mailchimpName1) {
@@ -106,6 +120,7 @@ module.exports = function(config, db) {
       }, {$set: { 
         name: orgName, 
         location: location, 
+        locale: locale,
         logo: logo,
         mailchimp: mailchimp,
         confirmationEmail: confirmationEmail
@@ -162,22 +177,24 @@ module.exports = function(config, db) {
 
                 return;
               }
-              
-              res.render('settings', {
-                errors: errors,
-                orgId: req.params.orgId,
-                org: org,
-                user: user
+
+              db.events.find({
+                orgId: org._id
+              }, function (err, events) {
+
+                res.render('settings', {
+                  events: events,
+                  errors: errors,
+                  orgId: req.params.orgId,
+                  org: org,
+                  user: user
+                });
               });
-
             })
-
           });
         });
       });
-
     });
-
   };
 
   var deleteAccount = function (req, res, next) {
