@@ -1,9 +1,12 @@
 <%- include dashboard-header %>
 
-<form method="post" action="/dashboard/EiUObqbCDKIxmWux/event" enctype="multipart/form-data">
+<form method="post" action="/dashboard/<%= org._id %>/event" enctype="multipart/form-data">
 <div class="rzv-lightbox">
-  <input type="hidden" name="_id" value="XbDhzACQ6Z6ZeiV6">
-  <input type="hidden" name="existingImages" value="">
+  <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
+  
+  <% if(theEvent.images && theEvent.images.length) { %>
+    <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
+  <% } %>
             
   <div class="row">
     
@@ -176,7 +179,7 @@
         
       </div>
 
-      <button type="submit">Save event</button>
+      <button type="submit" class="btn btn-primary btn-save-event">Save event</button>
 
     </div>      
 

@@ -327,7 +327,8 @@ textarea {
   display: block;
 }
 
-.btn-publish:hover {
+.btn-publish:hover,
+.btn-save-event:hover {
   background: #03655C;
 }
 

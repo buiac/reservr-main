@@ -415,14 +415,6 @@ module.exports = function(config, db) {
 
         theEvent.images = JSON.parse(req.body.existingImages);
 
-        theEvent.images.forEach(function (image, i) {
-          if (i === activeImage) {
-            image.active = true;
-          } else {
-            image.active = false;
-          }
-        });
-
       } else {
 
         errors = errors || [];
@@ -452,16 +444,31 @@ module.exports = function(config, db) {
     }
 
     if (errors) {
-      
-      res.render('event-update', {
-        theEvent: theEvent,
-        orgId: orgId,
-        errors: errors,
-        user: req.user
+
+      db.orgs.findOne({
+        _id: orgId
+      }, function (err, org) {
+        
+        // TODO error handling
+        
+        db.events.find({
+          orgId: org._id
+        }, function (err, events) {
+          
+          // TODO error handling
+
+          res.render('event-update', {
+            theEvent: theEvent,
+            orgId: orgId,
+            org: org,
+            errors: errors,
+            user: req.user,
+            events: events
+          });
+        })
       });
 
       return;
-
     }
 
     // check if email is valid
