@@ -478,13 +478,22 @@ module.exports = function(config, db) {
           return;
         }
 
-        res.render('reservations-view',{
-          org: org,
-          orgId: req.params.orgId,
-          user: req.user,
-          reservations: reservations,
-          eventId: req.params.eventId
-        });
+        db.events.find({
+          orgId: org.id
+        }, function (err, events) {
+          
+          // TODO errors handling
+
+          res.render('backend/reservations-view',{
+            org: org,
+            orgId: req.params.orgId,
+            user: req.user,
+            reservations: reservations,
+            eventId: req.params.eventId,
+            events: events
+          });
+
+        })
 
       });
     });

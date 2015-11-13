@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reservr 3</title>
+  <title>Reservr - dashboard</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
@@ -21,7 +21,7 @@
 
         <div class="rzv-logo-wrap">
           
-          <a href="" class="logo">
+          <a href="/dashboard/<%= org._id %>/events" class="logo">
 
             <img src="/images/logo-white.png" alt="">  
 
@@ -75,5 +75,5 @@
 
         <ul class="list list-unstyled pull-right header-menu">
           <li><a href="/dashboard/<%= org._id %>/settings">Settings</a></li>
-          <li><a href="">Sign Out</a></li>
+          <li><a href="/dashboard/signout">Sign Out</a></li>
         </ul>

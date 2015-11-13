@@ -1,0 +1,118 @@
+<%- include header %>
+    
+
+      <div class="rzv-lightbox">
+
+        <h2>Settings</h2>
+        
+        <form action="/dashboard/<%= org._id %>/settings" method="post" enctype="multipart/form-data">
+
+          <div class="row">
+
+            <div class="col-md-6">
+              
+                <div class="form-group">
+                  
+                  <label for="">Organization name</label>
+
+                  <input type="text" value="<%= org.name %>" name="orgName" id="" class="form-control" required>
+
+                </div>
+
+                <div class="form-group">
+                  
+                  <label for="">Email</label>
+
+                  <input type="email" value="<%= user.username %>" name="username" id="" class="form-control" required>
+
+                </div>
+
+                <div class="form-group">
+                  
+                  <label for="">Where should the confirmation email be sent?</label>
+
+                  <input type="email" value="<%= org.confirmationEmail || user.username %>" name="confirmationEmail" id="" class="form-control" required>
+
+                </div>
+
+                
+
+                <div class="form-group">
+                  
+                  <label for="">Location</label>
+
+                  <input type="text" value="<%= org.location || '' %>" name="location" id="" class="form-control">
+
+                </div>
+
+                <div class="form-group">
+                      
+                  <label for="">Mailchimp Account 1</label>
+                  <div class="row">
+                    
+                    <div class="col-md-6">
+                      
+                      <input type="text" name="mailchimpName1" id="" class="form-control" placeholder="Mailchimp Account Name 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].name %>" <% } else { %> value="" <% } %>>
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <input type="text" name="mailchimpAccount1" id="" class="form-control" placeholder="Mailchimp Account Number 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].account %>" <% } else { %> value="" <% } %> >
+                    </div>
+
+                  </div>      
+
+                </div>
+
+                <div class="form-group">
+                      
+                  <label for="">Mailchimp Account 2</label>
+                  <div class="row">
+                    
+                    <div class="col-md-6">
+                      
+                      <input type="text" name="mailchimpName2" id="" class="form-control" placeholder="Mailchimp Account Name 2" <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].name %>" <% } else { %> value="" <% } %>>
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <input type="text" name="mailchimpAccount2" id="" class="form-control" placeholder="Mailchimp Account Number 2"  <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].account %>" <% } else { %> value="" <% } %>>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Date locale</label>
+                <select name="locale" id="" class="form-control">
+                  <option value="en" selected>English</option>
+                  <option value="ro" >Romanian</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <img src="<%= org.logo %>" alt="" class="settings-org-logo">
+
+                <label for="">Logo</label>
+
+                <input type="file" value="" name="logo" id="">
+
+              </div>
+
+              <a href="/dashboard/delete-account/<%= user._id %>" class="btn btn-danger" onclick="if (!confirm('Sunteti sigura ca doriti sa stergeti contul?')) return false">Delete Account</a>
+              <button class="btn btn-primary pull-right" type="submit">Save</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      
+      
+        
+      
+
+    
+
+
+<%- include footer %>

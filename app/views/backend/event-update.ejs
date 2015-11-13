@@ -1,13 +1,29 @@
-<%- include dashboard-header %>
+<%- include header %>
 
 <form method="post" action="/dashboard/<%= org._id %>/event" enctype="multipart/form-data">
 <div class="rzv-lightbox">
   <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
-  
+
   <% if(theEvent.images && theEvent.images.length) { %>
     <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
   <% } %>
-            
+  
+  <% if (errors.length) { %>
+          
+    <div data-alert class="alert alert-warning">
+        
+        <% for(var i = 0; i < errors.length; i++) {%>
+           
+          <p><%= errors[i].msg %></p>
+
+        <% } %>
+
+      <a href="" class="close">&times;</a>
+
+    </div>
+
+  <% } %>
+
   <div class="row">
     
     <div class="col-md-6">
@@ -15,14 +31,23 @@
         <div class="event-group event-image event-image--show-image">
           
           <div class="event-preview-image">
+            <% if (theEvent.images && theEvent.images.length) { %>
+              
+              <img src="<%= theEvent.images[0].path %>" alt="">
+
+            <% } else { %>
+
+              <img src="/images/reservr-placeholder-2.png" alt="">
+
+            <% } %>
+
             
-            <img src="/images/reservr-placeholder-2.png" alt="">
             
             <div class="event-image-actions">
 
               <a><i class="fa fa-edit"></i> Change Image</a>
 
-              <input type="file" name="" id="">
+              <input type="file" name="images" id="">
 
             </div>
 
@@ -189,4 +214,4 @@
 
 </form>          
  
-<%- include dashboard-footer %>
+<%- include footer %>

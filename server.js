@@ -43,9 +43,9 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (false) { //req.hostname === 'localhost'
+    if (req.hostname === 'localhost') { //
       db.users.findOne({
-        username: 'sebi.kovacs+8@gmail.com'
+        username: 'sebi.kovacs@gmail.com'
       }, function (err, user) {
 
         req.user = user;

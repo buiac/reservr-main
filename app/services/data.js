@@ -18,12 +18,50 @@ module.exports = function(config, db) {
     db.events.find(parrams).sort({
       date: 1
     }).exec(function (err, events) {
+
+      var arr = [];
       
-      if (err) {
-        deferred.reject(err)
-      } else {
-        deferred.resolve(events);
-      }
+      events.forEach(function (event) {
+        arr.push(getEventReservations({
+          eventId: event._id
+        }));
+      });
+
+      q.all(arr).then(function (rez) {
+        
+        var reservations = [].concat.apply([], rez);
+
+        events.forEach(function (event) {
+          
+          event.invited = 0;
+          event.waiting = 0;
+
+          reservations.forEach(function (reservation) {
+            
+            if (reservation.eventId === event._id) {
+
+              if (reservation.waiting) {
+
+                event.waiting = event.waiting + reservation.seats;
+
+              } else {
+
+                event.invited = event.invited + reservation.seats
+
+              }
+            }
+
+          });
+
+        });
+
+        if (err) {
+          deferred.reject(err)
+        } else {
+          deferred.resolve(events);
+        }
+
+      });
       
     });
 

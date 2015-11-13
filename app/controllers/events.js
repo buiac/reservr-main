@@ -101,53 +101,15 @@ module.exports = function(config, db) {
         orgId: req.params.orgId
       }).then(function (events) {
         
-        var arr = [];
-        
-        events.forEach(function (event) {
-          arr.push(data.getEventReservations({
-            eventId: event._id
-          }));
-        });
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
 
-        q.all(arr).then(function (rez) {
-          
-          var reservations = [].concat.apply([], rez);
-
-          events.forEach(function (event) {
-            
-            event.invited = 0;
-            event.waiting = 0;
-
-            reservations.forEach(function (reservation) {
-              
-              if (reservation.eventId === event._id) {
-
-                if (reservation.waiting) {
-
-                  event.waiting = event.waiting + reservation.seats;
-
-                } else {
-
-                  event.invited = event.invited + reservation.seats
-
-                }
-              }
-
-            });
-
-          });
-
-          db.orgs.findOne({
-            _id: req.params.orgId
-          }, function (err, org) {
-
-            res.render('events', {
-              events: events,
-              user: user,
-              orgId: org._id,
-              org: org
-            });
-
+          res.render('backend/events', {
+            events: events,
+            user: user,
+            orgId: org._id,
+            org: org
           });
 
         });
@@ -302,68 +264,75 @@ module.exports = function(config, db) {
     var user = req.user;
     user.validEmail = validateEmail(user.username);
 
-    db.events.find({
-        orgId: req.params.orgId
-    }, function (err, events) {
+    data.getOrgEvents({
+      orgId: req.params.orgId
+    }).then(function (events) {
+      
+      db.orgs.findOne({
+        _id: req.params.orgId
+      }, function (err, org) {
 
-      if (req.params.eventId) {
+        if (req.params.eventId) {
 
-        db.events.findOne({
-          _id: req.params.eventId
-        }).exec(function (err, theEvent) {
+          db.events.findOne({
+            _id: req.params.eventId
+          }).exec(function (err, theEvent) {
 
-          if(err) {
-            return res.render('event-update', {errors: err});
-          }
+            if(err) {
+              return res.render('backend/event-update', {errors: err});
+            }
 
-          if (!theEvent) {
-            theEvent = {};
-          }
+            if (!theEvent) {
+              theEvent = {};
+            }
+
+            db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+              
+              if(err) {
+                return res.render('backend/event-update', {errors: err});
+              }
+
+              res.render('backend/event-update', {
+                errors: [],
+                events: events,
+                theEvent: theEvent,
+                orgId: req.params.orgId,
+                org: org,
+                user: user
+              });
+
+            })
+
+          });
+
+        } else {
 
           db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
             
             if(err) {
-              return res.render('event-update', {errors: err});
+              return res.render('backend/event-update', {errors: err});
             }
 
-            res.render('event-update', {
+            res.render('backend/event-update', {
               errors: [],
+              theEvent: {
+                date: moment().format(),
+                user: req.user
+              },
               events: events,
-              theEvent: theEvent,
+              user: user,
               orgId: req.params.orgId,
-              org: org,
-              user: user
+              org: org
             });
 
-          })
-
-        });
-
-      } else {
-
-        db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-          
-          if(err) {
-            return res.render('event-update', {errors: err});
-          }
-
-          res.render('event-update', {
-            errors: [],
-            theEvent: {
-              date: moment().format(),
-              user: req.user
-            },
-            events: events,
-            user: user,
-            orgId: req.params.orgId,
-            org: org
           });
 
-        });
+        }
 
-      }
+      });
 
     });
+
   };
 
   var updateEvent = function (req, res, next) {
@@ -405,6 +374,12 @@ module.exports = function(config, db) {
     if (eventId !== '') {
       theEvent._id = eventId;
     }
+
+    console.log('\n\n\n\n')
+    console.log('--------')
+    console.log(req.files)
+    console.log('--------')
+    console.log('\n\n\n\n')
     
     // check if there's an image
     if (!req.files.images) {
@@ -457,7 +432,7 @@ module.exports = function(config, db) {
           
           // TODO error handling
 
-          res.render('event-update', {
+          res.render('backend/event-update', {
             theEvent: theEvent,
             orgId: orgId,
             org: org,
@@ -481,7 +456,7 @@ module.exports = function(config, db) {
 
         db.events.findOne({_id: eventId}, function (err, event) {
           if (err) {
-            res.render('event-update', {
+            res.render('backend/event-update', {
               errors: err,
               theEvent: theEvent
             });
@@ -494,7 +469,7 @@ module.exports = function(config, db) {
           }, theEvent, function (err, num, newEvent) {
 
             if (err) {
-              res.render('event-update', {
+              res.render('backend/event-update', {
                 errors: err,
                 theEvent: theEvent
               });
@@ -516,7 +491,7 @@ module.exports = function(config, db) {
         db.events.insert(theEvent, function (err, newEvent) {
 
           if (err) {
-            res.render('event-update', {errors: err});
+            res.render('backend/event-update', {errors: err});
           }
 
           res.redirect('/dashboard');
@@ -534,7 +509,7 @@ module.exports = function(config, db) {
       
       if (errors) {
         
-        res.render('event-update', {
+        res.render('backend/event-update', {
           theEvent: theEvent,
           orgId: orgId,
           errors: errors,
@@ -555,7 +530,7 @@ module.exports = function(config, db) {
 
       var updateEvent = function (err, num) {
         if (err) {
-         res.render('event-update', {errors: err, user: user, orgId: orgId});
+         res.render('backend/event-update', {errors: err, user: user, orgId: orgId});
         }
 
         res.redirect('/dashboard');
@@ -564,7 +539,7 @@ module.exports = function(config, db) {
       var updateOrg = function (err, num) {
 
         if (err) {
-         res.render('event-update', {errors: err});
+         res.render('backend/event-update', {errors: err});
         }
 
         //find event by org id and update the event
@@ -577,7 +552,7 @@ module.exports = function(config, db) {
       var updateUser = function (err, num) {
         
         if (err) {
-         res.render('event-update', {errors: err});
+         res.render('backend/event-update', {errors: err});
         }
 
          //find org by user id and update org name

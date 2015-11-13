@@ -10,6 +10,7 @@ module.exports = function(config, db) {
   var fs = require('fs');
   var util = require('util');
   var passport = require('passport');
+  var data = require('../services/data.js')(config, db);
 
   var validateEmail = function (email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -22,26 +23,27 @@ module.exports = function(config, db) {
 
     if (user.validEmail) {
 
-      db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
+      data.getOrgEvents({
+        orgId: req.params.orgId
+      }).then(function (events) {
+        
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
 
-        // TODO error handling
-
-        db.events.find({
-          orgId: org._id
-        }, function (err, events) {
-
-          // TODO error handling
-          
-          res.render('settings', {
+          res.render('backend/settings', {
             errors: [],
             orgId: req.params.orgId,
             org: org,
             events: events,
             user: user
           });
-        })
-        
+
+        });
+
       });
+
+      
       
     } else {
       res.redirect('/dashboard')
@@ -58,7 +60,7 @@ module.exports = function(config, db) {
 
     if (errors) {
       
-      res.render('settings', {
+      res.render('backend/settings', {
         errors: errors,
         orgId: req.params.orgId,
         org: org,
@@ -97,7 +99,7 @@ module.exports = function(config, db) {
     
     db.orgs.findOne({_id: orgId}, function (err, org) {
       if (err) {
-        res.render('settings', {
+        res.render('backend/settings', {
           errors: err,
           orgId: req.params.orgId,
           org: org,
@@ -127,7 +129,7 @@ module.exports = function(config, db) {
       }},  function (err, num) {
         
         if (err) {
-          res.render('settings', {
+          res.render('backend/settings', {
             errors: err,
             orgId: req.params.orgId,
             org: org,
@@ -140,7 +142,7 @@ module.exports = function(config, db) {
         db.orgs.findOne({_id: orgId}, function (err, org) {
           
           if (err) {
-            res.render('settings', {
+            res.render('backend/settings', {
               errors: err,
               orgId: req.params.orgId,
               org: org,
@@ -156,7 +158,7 @@ module.exports = function(config, db) {
 
           db.users.update({_id: org.userId}, {$set: {username: username, validEmail: validEmail}}, function (err, num) {
             if (err) {
-              res.render('settings', {
+              res.render('backend/settings', {
                errors: err,
                orgId: req.params.orgId,
                org: org,
@@ -168,7 +170,7 @@ module.exports = function(config, db) {
 
             db.users.findOne({_id: org.userId}, function (err, user) {
               if (err) {
-                res.render('settings', {
+                res.render('backend/settings', {
                  errors: err,
                  orgId: req.params.orgId,
                  org: org,
@@ -182,7 +184,7 @@ module.exports = function(config, db) {
                 orgId: org._id
               }, function (err, events) {
 
-                res.render('settings', {
+                res.render('backend/settings', {
                   events: events,
                   errors: errors,
                   orgId: req.params.orgId,
@@ -204,7 +206,7 @@ module.exports = function(config, db) {
     }, function (err, user) {
 
       if (err) {
-        res.render('settings', {
+        res.render('backend/settings', {
           errors: err,
           orgId: org.id,
           org: org,
@@ -218,7 +220,7 @@ module.exports = function(config, db) {
       }, function (err, org) {
 
         if (err) {
-          res.render('settings', {
+          res.render('backend/settings', {
             errors: err,
             orgId: org.id,
             org: org,
@@ -234,7 +236,7 @@ module.exports = function(config, db) {
         }, function (err, num) {
 
           if (err) {
-            res.render('settings', {
+            res.render('backend/settings', {
               errors: err,
               orgId: org.id,
               org: org,
@@ -250,7 +252,7 @@ module.exports = function(config, db) {
           }, function (err, num) {
 
             if (err) {
-              res.render('settings', {
+              res.render('backend/settings', {
                 errors: err,
                 orgId: org.id,
                 org: org,
