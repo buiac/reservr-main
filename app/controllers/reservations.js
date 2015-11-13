@@ -463,25 +463,18 @@ module.exports = function(config, db) {
       eventId: req.params.eventId
     }, function (err, reservations) {
 
-
-
       if (err) {
         res.status(400).json(err);
         return;
       }
 
-      db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
-        
-        if (err) {
-          res.status(400).json(err);
-          return;
-        }
+      data.getOrgEvents({
+        orgId: req.params.orgId
+      }).then(function (events) {
 
-        db.events.find({
-          orgId: org.id
-        }, function (err, events) {
-          
-          // TODO errors handling
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
 
           res.render('backend/reservations-view',{
             org: org,
@@ -491,12 +484,9 @@ module.exports = function(config, db) {
             eventId: req.params.eventId,
             events: events
           });
-
-        })
-
+        });
       });
     });
-    
   };
 
   var updateReservation = function (req, res, next) {

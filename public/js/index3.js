@@ -201,8 +201,24 @@ $(document).ready(function () {
       var $placeholder = $(eventGroup).find('.event-placeholder')
       var value = $(field).val()
       var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
+      
+      if ($(eventGroup).hasClass('event-seats')) {
+        
+
+        if (value) {
+          $placeholder.append(' seats')  
+        } else {
+
+          $placeholder.html('Event seats')
+        }
+
+        if ($icon) {
+          $placeholder.prepend($icon)
+        }
+      }
 
       if (field && field.type !== 'file' && value) {
+
         
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
@@ -214,7 +230,11 @@ $(document).ready(function () {
           }
 
           if ($(eventGroup).hasClass('event-seats')) {
-            $placeholder.append(' seats')
+            if (value) {
+              $placeholder.append(' seats')  
+            } else {
+              $placeholder.html('Event seats')              
+            }
           }
         }
       }
