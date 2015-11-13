@@ -25,7 +25,8 @@ $(document).ready(function () {
     baseUrl: ''
   }
 
-  // 'http://localhost:8080'
+  moment.defaultFormat = 'YYYY-MM-DD LT';
+
 
   if (window.location.hostname.indexOf('localhost') !== -1) {
     config.baseUrl = 'http://localhost:8080'
@@ -248,7 +249,12 @@ $(document).ready(function () {
     date += '-' + moment().format('DD')
     date += ' ' + moment().format('HH:mm')
 
-    $date.val(date)
+    if (!$date.val()) {
+      $date.val(date)
+    } else {
+      $date.val(moment(date).format())
+    }
+    
   }
 
   function init () {
