@@ -130,24 +130,7 @@ module.exports = function(config, db) {
     })
   }
 
-  var list = function (req, res, next) {
-    
-    db.contacts.find({calendarId: req.params.calendarId}, function (err, docs) {
-      if (err) {
-        res.send({error: err}, 400);
-      }
-
-      res.json({
-        contacts: docs,
-      });
-
-    });
-
-  };
-
   return {
-    // view: view,
-    list: list,
     updateUser: updateUser
   };
 

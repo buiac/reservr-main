@@ -7,7 +7,11 @@ $(document).ready(function () {
   var eventModel = {
     name: 'My cool event name',
     description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
-    images: '/images/reservr-placeholder-2.png',
+    images: [
+      {
+        path: '/images/reservr-placeholder-2.png'
+      }
+    ],
     date: new Date(),
     seats: 120,
     price: '12$ / pers',
@@ -328,7 +332,9 @@ $(document).ready(function () {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
 
-      eventModel.images = ['/media/' + input.files[0].name]
+      eventModel.images = [{
+        path: '/media/' + input.files[0].name
+      }]
 
       reader.onload = function (e) {
         $('.event-preview-image img').attr('src', e.target.result);
@@ -351,7 +357,7 @@ $(document).ready(function () {
       for (var key in eventModel) {
         
         if (key === 'images') {
-          formData.append('event[' + key + '][0]', eventModel[key][0])
+          formData.append('event[' + key + '][0][path]', eventModel[key][0].path)
         } else {
           formData.append('event[' + key + ']', eventModel[key])
         }

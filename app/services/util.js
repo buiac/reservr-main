@@ -1,4 +1,5 @@
 module.exports = function(config, db) {
+  var bCrypt = require('bcrypt-nodejs');
 
   // Generates hash using bCrypt
   var createHash = function(password){

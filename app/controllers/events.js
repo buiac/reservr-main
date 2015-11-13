@@ -622,7 +622,7 @@ module.exports = function(config, db) {
           userId: user._id,
           logo: '/media/org-logo-placeholder.png',
           mailchimp: [],
-          confirmationEmail: 'contact@reservr.net'
+          confirmationEmail: 'contact@reservr.net',
         }, function (err, org) {
 
           // TODO error handling
