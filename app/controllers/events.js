@@ -8,23 +8,14 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
   var moment = require('moment');
   var bCrypt = require('bcrypt-nodejs');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
+  var util = require('../services/util.js')(config, db);
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
-
-  var createHash = function(password){
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-  };
 
   var eventDeleteImage = function(req, res, next) {
     
@@ -93,7 +84,7 @@ module.exports = function(config, db) {
     }
 
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
 
@@ -262,7 +253,7 @@ module.exports = function(config, db) {
 
   var updateEventView = function (req, res, next) {
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     data.getOrgEvents({
       orgId: req.params.orgId
@@ -448,7 +439,7 @@ module.exports = function(config, db) {
 
     // check if email is valid
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
       
@@ -522,11 +513,11 @@ module.exports = function(config, db) {
 
       var username = req.body.username;
       var orgName = req.body.org_name;
-      var password = createHash(req.body.password);
+      var password = util.createHash(req.body.password);
 
       // TODO further validate email
       user.username = username;
-      user.validEmail = validateEmail(username);
+      user.validEmail = util.validateEmail(username);
 
       var updateEvent = function (err, num) {
         if (err) {
@@ -574,7 +565,7 @@ module.exports = function(config, db) {
   var redirectToEventUpdate = function (req, res, next) {
 
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     db.orgs.findOne({userId: req.user._id}, function (err, org) {
           

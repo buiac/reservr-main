@@ -1,25 +1,14 @@
 module.exports = function(config, db) {
 	var express = require('express');
   var expressSession = require('express-session');
-
   var expressValidator = require('express-validator');
   var bCrypt = require('bcrypt-nodejs');
-
   var bodyParser = require('body-parser');
   var errorhandler = require('errorhandler');
   var flash = require('connect-flash');
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
-
-  // Generates hash using bCrypt
-  var createHash = function(password){
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-  };
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
+  var util = require('../services/util.js')(config, db);
 
   // passport serializer
   passport.serializeUser(function(user, done) {
@@ -68,10 +57,10 @@ module.exports = function(config, db) {
 
           // set the user's local credentials
           newUser.username = username;
-          newUser.password = createHash(password);
+          newUser.password = util.createHash(password);
 
           // validate user email
-          newUser.validEmail = validateEmail(newUser.username);
+          newUser.validEmail = util.validateEmail(newUser.username);
           
           // set calendar default name
           org.name = 'Guest';

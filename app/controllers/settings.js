@@ -8,18 +8,13 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
   var data = require('../services/data.js')(config, db);
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  }
+  var util = require('../services/util.js')(config, db);
 
   var viewSettings = function (req, res, next) {
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
 
@@ -154,7 +149,7 @@ module.exports = function(config, db) {
 
           // validate user email
 
-          var validEmail = validateEmail(username);
+          var validEmail = util.validateEmail(username);
 
           db.users.update({_id: org.userId}, {$set: {username: username, validEmail: validEmail}}, function (err, num) {
             if (err) {

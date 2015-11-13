@@ -8,7 +8,6 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
   var bCrypt = require('bcrypt-nodejs');
   var nodemailer = require('nodemailer');
@@ -21,16 +20,7 @@ module.exports = function(config, db) {
       pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
     }
   }));
-
-  // Generates hash using bCrypt
-  var createHash = function(password){
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-  };
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
+  var util = require('../services/util.js')(config, db);
 
   var view = function(req, res, next) {
 
@@ -82,10 +72,10 @@ module.exports = function(config, db) {
             var randompass = Math.random().toString(36).slice(-8);
 
             // hash password
-            var password = createHash(randompass)
+            var password = util.createHash(randompass)
 
             // send response
-            if (validateEmail(username)) {
+            if (util.validateEmail(username)) {
 
               // change temp parameter of events of this org
               db.events.update({
@@ -105,7 +95,7 @@ module.exports = function(config, db) {
                 $set: {
                   username: username,
                   password: password,
-                  validEmail: validateEmail(username)
+                  validEmail: util.validateEmail(username)
                 }
               }, function (err, num) {
                 
