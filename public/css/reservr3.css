@@ -572,6 +572,10 @@ textarea {
   margin-bottom: 120px;
 }
 
+.event-page {
+
+}
+
 .event-page-org-logo {
   max-width: 230px;
   display: block;
@@ -773,8 +777,27 @@ textarea {
   text-overflow: ellipsis;
 }
 
-.event-description--show {
+.event-page .event-description.event-description--show {
   max-height: none;
+}
+
+
+.event-page .event-item .event-description {
+  max-height: 27px;
+}
+
+.event-page .event-item .event-description.event-description--show {
+  max-height: none;
+}
+
+.event-page .event-item {
+  padding-bottom: 30px;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.event-page .event-item {
+
 }
 
 .event-toggle-description a {
@@ -811,6 +834,14 @@ textarea {
 
 .org-logo img {
   max-width: 100%;
+}
+
+.external-link {
+  white-space: nowrap;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
 }
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }

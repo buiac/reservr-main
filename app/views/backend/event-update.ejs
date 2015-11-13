@@ -1,6 +1,6 @@
 <%- include header %>
 
-<form method="post" action="/dashboard/<%= org._id %>/event" enctype="multipart/form-data">
+<form method="post" action="/dashboard/<%= org._id %>/event" enctype="multipart/form-data" class="event-update-form">
 <div class="rzv-lightbox">
   <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
 
@@ -11,6 +11,8 @@
   <% if (errors.length) { %>
           
     <div data-alert class="alert alert-warning">
+
+        <a href="" class="close">&times;</a>
         
         <% for(var i = 0; i < errors.length; i++) {%>
            
@@ -18,7 +20,7 @@
 
         <% } %>
 
-      <a href="" class="close">&times;</a>
+      
 
     </div>
 
@@ -73,6 +75,15 @@
         
         <textarea name="name" id="" class="form-control"><%= theEvent.name || 'Event title' %></textarea>
         
+        
+          <% if (theEvent._id) { %> 
+          
+            <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> <i class="fa fa-link"></i>http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
+          
+        <% } %>
+        
+        
+        
         <div class="event-group-action">
           
           <a class="btn btn-sm btn-primary btn-event-save">Save</a>
@@ -115,8 +126,17 @@
           <div class="event-input">
             
             <i class="fa fa-calendar-o"></i>
+            
+            <% if (theEvent.date) { %>
+              
+              <input type="text" class="form-control" name="date" value="<%= moment(theEvent.date).format() %>">
 
-            <input type="text" class="form-control" name="date" value="<%= moment(theEvent.date).format() || 'Event Date' %>">
+            <% } else { %>
+
+              <input type="text" class="form-control" name="date" value="Date &amp; Time">
+
+            <% } %>
+            
 
           </div>
 
@@ -144,6 +164,14 @@
 
             <input type="text" class="form-control" name="location" value="<%= theEvent.location || 'Event location' %>">
 
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
           </div>
           
         </div>
@@ -209,7 +237,9 @@
 
       <a href="/dashboard/<%= org._id %>/events" class="btn btn-default pull-right">Cancel</a>
 
+      <% if (theEvent._id) { %>
       <a href="/dashboard/<%= org._id %>/delete-event/<%= theEvent._id %>" class="btn btn-danger" onclick="confirm('Are you sure you want to delete this event?')">Delete event</a>
+      <% } %>
 
     </div>      
 

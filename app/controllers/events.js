@@ -115,27 +115,18 @@ module.exports = function(config, db) {
 
   // one event in front end
   var frontEventView = function (req, res, next) {
+
     db.orgs.findOne({
       name: req.params.orgName
     }, function (err, org) {
-      
-      if (err) {
-        res.send({ error: 'error'}, 400);
-        return
-      }
 
-      if (!org) {
-        res.redirect('/');
-        return
-      }
+      // TODO error handling
 
       db.events.findOne({
         _id: req.params.eventId
-      }).exec(function (err, event) {
-        
-        if(err) {
-          return res.send(err, 400);
-        }
+      }, function (err, event) {
+
+        // TODO error handling
 
         event.waiting = 0;
         event.invited = 0;
@@ -144,11 +135,10 @@ module.exports = function(config, db) {
           eventId: event._id
         }, function (err, reservations) {
 
-          if(err) {
-            return res.send(err, 400);
-          }
+          // TODO error handling
           
           reservations.forEach(function (reservation) {
+            console.log(reservations)
             if (reservation.waiting) {
 
               event.waiting = event.waiting + reservation.seats;
@@ -161,12 +151,14 @@ module.exports = function(config, db) {
 
           });
 
-          res.render('event', {
+          res.render('frontend/event', {
             event: event,
             org: org
           }); 
         });
-      });
+
+      })
+
     })
   };
 
@@ -220,7 +212,7 @@ module.exports = function(config, db) {
 
           });
 
-          res.render('events-front', {
+          res.render('frontend/events', {
             events: events,
             org: org
           });
@@ -269,6 +261,7 @@ module.exports = function(config, db) {
             _id: req.params.eventId
           }).exec(function (err, theEvent) {
 
+
             if(err) {
               return res.render('backend/event-update', {errors: err});
             }
@@ -307,7 +300,7 @@ module.exports = function(config, db) {
             res.render('backend/event-update', {
               errors: [],
               theEvent: {
-                date: moment().format(),
+                date: '',
                 user: req.user
               },
               events: events,
@@ -340,6 +333,7 @@ module.exports = function(config, db) {
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
+    var price = (req.body.price) ? req.body.price.trim() : '';
     var location = (req.body.location) ? req.body.location.trim() : '';
     var activeImage = parseInt(req.body.activeImage || 0);
     var mclistid = req.body.mclistid || '';
@@ -352,10 +346,13 @@ module.exports = function(config, db) {
       images: images,
       date: new Date(req.body.date),
       seats: seats,
+      price: price,
       location: location,
       activeImage: activeImage,
-      // mclistid: mclistid, // mailchimp list id
-      orgId: orgId
+      mclistid: mclistid, // mailchimp list id
+      orgId: orgId,
+      published: true,
+      temp: false
     };
 
     if (mclistid) {
@@ -365,12 +362,6 @@ module.exports = function(config, db) {
     if (eventId !== '') {
       theEvent._id = eventId;
     }
-
-    console.log('\n\n\n\n')
-    console.log('--------')
-    console.log(req.files)
-    console.log('--------')
-    console.log('\n\n\n\n')
     
     // check if there's an image
     if (!req.files.images) {
@@ -383,11 +374,13 @@ module.exports = function(config, db) {
 
       } else {
 
-        errors = errors || [];
+        // errors = errors || [];
 
-        errors.push({
-          msg: 'Please upload an event image'
-        });  
+        // errors.push({
+        //   msg: 'Please upload an event image'
+        // });  
+
+        theEvent.images = [{path: '/images/reservr-placeholder-2.png'}]
         
       }
 
@@ -691,7 +684,7 @@ module.exports = function(config, db) {
         _id: req.params.orgId
       }, function (err, org) {
 
-        res.render('front-event', {
+        res.render('frontend/event', {
           event: event,
           org: org
         }); 

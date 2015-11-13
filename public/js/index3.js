@@ -277,7 +277,7 @@ $(document).ready(function () {
   }
 
   function init () {
-    updateDateField()
+    // updateDateField()
     parseFields()
     checkImage()
     setupCalendar()
@@ -438,6 +438,14 @@ $(document).ready(function () {
 
   }
 
+  function preventSubmitOnEnter (e) {
+    
+    var code = e.keyCode || e.which;
+    if (code == 13) { 
+      e.preventDefault();
+      return false;
+    }
+  }
 
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
   $('body').on('click','.btn-reserv', makeReservation)
@@ -449,6 +457,8 @@ $(document).ready(function () {
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
   $('body').on('click', '.event-toggle-description a', toggleDescription)
+  
+  $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
   $('.event-image input').change(function(){
     readURL(this);
