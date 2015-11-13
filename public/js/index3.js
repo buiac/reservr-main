@@ -196,14 +196,14 @@ $(document).ready(function () {
     var $eventGroups = $('.rzv-lightbox .event-group')
 
     $eventGroups.each(function (i, eventGroup) {
+
       var field = $(eventGroup).find('[name]')[0]
       var $placeholder = $(eventGroup).find('.event-placeholder')
       var value = $(field).val()
       var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
 
-
-
       if (field && field.type !== 'file' && value) {
+        
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
         } else {
@@ -252,9 +252,8 @@ $(document).ready(function () {
     if (!$date.val()) {
       $date.val(date)
     } else {
-      $date.val(moment(date).format())
+      $date.val($date.val())
     }
-    
   }
 
   function init () {
