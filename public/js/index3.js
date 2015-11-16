@@ -447,6 +447,74 @@ $(document).ready(function () {
     }
   }
 
+  var submitReserveForm = function() {
+      
+    var $this = $(this);
+    var name = $this.find('.reserve-name').val();
+    var email = $this.find('.reserve-email').val();
+    var seats = parseInt($this.find('.reserve-seats').val(), 10);
+    var eventId = $this.find('.reserve-id').val();
+    var orgId = $this.find('.reserve-orgId').val();
+    var mclistid = $this.find('.reserve-newsletter').val();
+    var seatsLeft = parseInt($($this.parents('.reserve-actions')).find('#seats-left').html(), 10);
+  
+
+    if (seats <= seatsLeft || seatsLeft === 0 ) {
+
+      $this.removeClass('container-reserve-form--success container-reserve-form--error');
+      
+      $this.addClass('container-reserve-form--loading');
+      
+      $.ajax('/u/' +orgId + '/reservations/' + eventId, {
+        type: 'POST',
+        data: {
+          name: name,
+          email: email,
+          seats: seats,
+          mclistid: mclistid
+        },
+        success: function(res) {
+
+          $this.addClass('container-reserve-form--success');
+
+          seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
+          $('#seats-left').html(Math.abs(seatsLeft));
+        },
+        error: function(err) {
+          
+          $this.addClass('container-reserve-form--error');
+          
+          // allow me to try again 
+          setTimeout(function() {
+            
+            $this.removeClass('container-reserve-form--error');
+            
+          }, 5000);
+          
+        },
+        complete: function() {
+         
+          $this.removeClass('container-reserve-form--loading');
+          
+        }
+      });
+    } else {
+      $this.addClass('container-reserve-form--error');
+      $('span.container-reserve-form-error').html('Numarul locurilor rezervate nu poate fi mai mare decat numarul locurilor disponibile');
+
+      // allow me to try again 
+      setTimeout(function() {
+        
+        $this.removeClass('container-reserve-form--error');
+        $('span.container-reserve-form-error').html('Rezervarea a esuat. Incercati mai tarziu.');
+        
+      }, 5000);
+    }
+
+    return false;
+  };
+
+  $('.event-form form').on('submit', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
   $('body').on('click','.btn-reserv', makeReservation)
   $('body').on('click', '.event-placeholder', toggleGroup);
