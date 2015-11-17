@@ -85,7 +85,7 @@ $(document).ready(function () {
     var $parent = $eventLink.parents('.event-details')
     var $button = $parent.find('.btn-publish')
     var $icon = $eventLink.find('.fa')
-    var url = config.baseUrl + '/t/' + eventModel.orgId + '/event/' + eventModel._id
+    var url = config.baseUrl + '/u/' + eventModel.org.name + '/event/' + eventModel._id
 
     $eventLink.html(url)
     $eventLink.prepend($icon)
@@ -97,7 +97,7 @@ $(document).ready(function () {
     $parent.addClass('event-publish--published')
   }
 
-  function syncData () {
+  function syncData() {
 
     $.ajax({
       method: 'POST',
@@ -108,6 +108,7 @@ $(document).ready(function () {
     }).done(function (res) {
 
       // set the event orgId
+      eventModel.org = res.org
       eventModel.orgId = res.orgId
       eventModel._id = res.event._id
 
@@ -419,24 +420,7 @@ $(document).ready(function () {
     $form.addClass('event-form--show-fields')
   }
 
-  function makeReservation (e) {
-    var $this = $(this)
-    var $form = $this.parents('.event-form')
-
-    $form.addClass('event-form--loading')
-
-    setTimeout(function() {
-      $form.removeClass('event-form--loading')
-      $form.addClass('event-form--success')
-
-      setTimeout(function() {
-        $form.removeClass('event-form--show-fields')  
-        $form.removeClass('event-form--success')
-      }, 10000);
-    }, 1000);
-
-
-  }
+  
 
   function preventSubmitOnEnter (e) {
     
@@ -447,23 +431,81 @@ $(document).ready(function () {
     }
   }
 
+  function formAccountSubmit (e) {
+    
+    var $form = $(this)
+    var email = $form.find('[name=email]').val()
+    var orgName = $form.find('[name=orgname]').val()
+    var orgId = $form.find('[name=orgid]').val()
+
+    var loadingClass = 'form--loading';
+    var successClass = 'form--success';
+    var errorClass = 'form--error';
+
+    $form.addClass(loadingClass)
+
+    $.ajax({
+      method: 'POST',
+      url: config.baseUrl + '/updateUser',
+      data: {
+        email: email,
+        orgId: orgId,
+        orgName: orgName
+      }
+    }).done(function (res) {
+      
+      $form.removeClass(loadingClass)      
+      $form.addClass(successClass)
+
+      // update url with org name and redirect to it
+      var oldOrgName = window.location.pathname.split('/')[2]
+      var newPath = window.location.pathname.replace(oldOrgName, res.orgName)
+      var origin = window.location.origin;
+      var href = origin + newPath
+
+      setTimeout(function () {
+        window.location = href
+      }, 3000)
+
+
+    }).fail(function (err) {
+
+      $form.removeClass(loadingClass)
+      $form.addClass(errorClass)
+
+      $('.form-error-message .form-message').html(err.responseJSON.message)
+
+      setTimeout(function() {
+        $form.removeClass(errorClass)
+      }, 4000);
+    })
+
+    // // $form.removeClass(loadingClass)
+    // // $form.addClass(successClass)
+
+    return false;
+  }
+
   var submitReserveForm = function() {
       
     var $this = $(this);
+    var $eventform = $this.parent();
     var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
     var seats = parseInt($this.find('.reserve-seats').val(), 10);
     var eventId = $this.find('.reserve-id').val();
     var orgId = $this.find('.reserve-orgId').val();
-    var mclistid = $this.find('.reserve-newsletter').val();
-    var seatsLeft = parseInt($($this.parents('.reserve-actions')).find('#seats-left').html(), 10);
-  
+    var invited = parseInt($this.find('.reserve-invited').val(), 10);
+    var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
+    var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
+    var seatsLeft = totalSeats - invited;
+
+    // var mclistid = $this.find('.reserve-newsletter').val();
 
     if (seats <= seatsLeft || seatsLeft === 0 ) {
 
-      $this.removeClass('container-reserve-form--success container-reserve-form--error');
-      
-      $this.addClass('container-reserve-form--loading');
+      $eventform.removeClass('event-form--success event-form--error');
+      $eventform.addClass('event-form--loading');
       
       $.ajax('/u/' +orgId + '/reservations/' + eventId, {
         type: 'POST',
@@ -471,42 +513,70 @@ $(document).ready(function () {
           name: name,
           email: email,
           seats: seats,
-          mclistid: mclistid
+          // mclistid: mclistid
         },
         success: function(res) {
 
-          $this.addClass('container-reserve-form--success');
+          $eventform.addClass('event-form--success');
+          $eventform.removeClass('event-form--loading');
 
-          seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
-          $('#seats-left').html(Math.abs(seatsLeft));
+          console.log(res)
+
+          // update the number of seats invited
+          $('.seats-invited').html(res.event.invited)
+
+          // clear the form fields
+          $this.find('.reserve-name').val('');
+          $this.find('.reserve-email').val('');
+          $this.find('.reserve-seats').val('');
+
+
+          setTimeout(function() {
+            
+            $eventform.removeClass('event-form--loading');
+            $eventform.removeClass('event-form--success');
+            
+          }, 5000);
+
+          // seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
+          // $('#seats-left').html(Math.abs(seatsLeft));
         },
         error: function(err) {
           
-          $this.addClass('container-reserve-form--error');
+          $eventform.removeClass('event-form--loading');
+          $eventform.addClass('event-form--error');
           
           // allow me to try again 
           setTimeout(function() {
             
-            $this.removeClass('container-reserve-form--error');
+            $eventform.removeClass('event-form--loading event-form--error');
             
           }, 5000);
           
         },
         complete: function() {
-         
-          $this.removeClass('container-reserve-form--loading');
           
+          // setTimeout(function() {
+          //   $eventform.removeClass('event-form--error event-form--loading event-form--success');
+          // })
         }
+
       });
+
     } else {
-      $this.addClass('container-reserve-form--error');
-      $('span.container-reserve-form-error').html('Numarul locurilor rezervate nu poate fi mai mare decat numarul locurilor disponibile');
+
+      $eventform.addClass('event-form--error');
+
+      $defaultErrorMessage = $('.form-error .reservation-message').html()
+      $tempErrorMessage = $('<p></p>').html('Not enough seats left. Please select less seats.')
+
+      $('.form-error .reservation-message').html($tempErrorMessage)
 
       // allow me to try again 
       setTimeout(function() {
         
-        $this.removeClass('container-reserve-form--error');
-        $('span.container-reserve-form-error').html('Rezervarea a esuat. Incercati mai tarziu.');
+        $eventform.removeClass('event-form--error');
+        $('.form-error .reservation-message').html($defaultErrorMessage);
         
       }, 5000);
     }
@@ -514,9 +584,14 @@ $(document).ready(function () {
     return false;
   };
 
-  $('.event-form form').on('submit', submitReserveForm);
+  function closeAlert (e) {
+    e.preventDefault();
+    $(this).parent().hide()
+  };
+
+  $('body').on('submit', '.form-account', formAccountSubmit)
+  $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
-  $('body').on('click','.btn-reserv', makeReservation)
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.btn-event-save', saveData);
   $('body').on('mouseover', '.btn-event-save', preventBlur);
@@ -525,6 +600,8 @@ $(document).ready(function () {
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
   $('body').on('click', '.event-toggle-description a', toggleDescription)
+  $('body').on('click', '.alert a.close', closeAlert)
+  $('body').on('click', '.form-error-message .close, .form-success-message .close', closeAlert)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 

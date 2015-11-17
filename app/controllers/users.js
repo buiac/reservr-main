@@ -44,6 +44,7 @@ module.exports = function(config, db) {
   var updateUser = function (req, res, next) {
     var username = req.body.email
     var orgId = req.body.orgId
+    var orgName = req.body.orgName || ''
 
     // check if user already exists
     db.users.findOne({
@@ -56,76 +57,106 @@ module.exports = function(config, db) {
         })
       } else {
 
-        // find user by orgId
         db.orgs.findOne({
-          _id: orgId
-        }, function (err, org) {
+          name: orgName
+        }, function (err, orgByName) {
           
-          // TODO error handling
+          if (!orgByName) {
 
-          db.users.findOne({
-            _id: org.userId
-          }, function (err, user) {
-            // TODO error handling
+            db.orgs.findOne({
+              _id: orgId
+            }, function (err, org) {
+              
+              // TODO error handling
 
-            // create temporary password
-            var randompass = Math.random().toString(36).slice(-8);
+              
 
-            // hash password
-            var password = util.createHash(randompass)
+              db.users.findOne({
+                _id: org.userId
+              }, function (err, user) {
+                // TODO error handling
 
-            // send response
-            if (util.validateEmail(username)) {
+                // create temporary password
+                var randompass = Math.random().toString(36).slice(-8);
 
-              // change temp parameter of events of this org
-              db.events.update({
-                orgId: org._id
-              }, {
-                $set: {
-                  temp: false
+                // hash password
+                var password = util.createHash(randompass)
+
+                // send response
+                if (util.validateEmail(username)) {
+
+                  // change temp parameter of events of this org
+                  db.events.update({
+                    orgId: org._id
+                  }, {
+                    $set: {
+                      temp: false
+                    }
+                  },{
+                    multi: true
+                  });
+
+                  // update orgname
+                  if (orgName) {
+                    db.orgs.update({
+                      _id: orgId
+                    }, {
+                      $set:{
+                        name: orgName
+                      }
+                    })
+                  }
+
+                  // update username and password
+                  db.users.update({
+                    _id: user._id
+                  }, {
+                    $set: {
+                      username: username,
+                      password: password,
+                      validEmail: util.validateEmail(username)
+                    }
+                  }, function (err, num) {
+                    
+                    // send user an email with the password
+                    var userEmailConfig = {
+                      from: 'contact@reservr.com',
+                      to: username,
+                      subject: 'reservr account and password',
+                      html: 'Hello, <br /><br /> You signed up with <strong>' + username + '</strong> and your temporary password is <strong>' + randompass + '</strong>. <br /><br /> You can change it anytime in the Settings panel. <br /><br /> Cheers.'
+                    };
+
+                    transport.sendMail(userEmailConfig, function (err, info) {
+                      console.log(err);
+                      console.log(info);
+                    });
+
+                    res.json({
+                      message: 'done',
+                      orgName: orgName
+                    })
+                    
+                  })
+
+                } else {
+                  res.status(400).json({
+                    message: 'Email address is not valid.'
+                  })
                 }
-              },{
-                multi: true
-              });
 
-              // update username and password
-              db.users.update({
-                _id: user._id
-              }, {
-                $set: {
-                  username: username,
-                  password: password,
-                  validEmail: util.validateEmail(username)
-                }
-              }, function (err, num) {
-                
-                // send user an email with the password
-                var userEmailConfig = {
-                  from: 'contact@reservr.com',
-                  to: username,
-                  subject: 'reservr account and password',
-                  html: 'Hello, <br /><br /> You signed up with <strong>' + username + '</strong> and your temporary password is <strong>' + randompass + '</strong>. <br /><br /> You can change it anytime in the Settings panel. <br /><br /> Cheers.'
-                };
-
-                transport.sendMail(userEmailConfig, function (err, info) {
-                  console.log(err);
-                  console.log(info);
-                });
-
-                res.json({
-                  message: 'done'
-                })
-                
               })
+            })
+          } else {
 
-            } else {
-              res.status(400).json({
-                message: 'Email address is not valid.'
-              })
-            }
+            res.status(400).json({
+              message: 'Organization name is already in use.'
+            })
 
-          })
+          }
         })
+
+        // find user by orgId
+        
       }
     })
   }

@@ -115,7 +115,7 @@ module.exports = function(config, db) {
 
   // one event in front end
   var frontEventView = function (req, res, next) {
-
+    
     db.orgs.findOne({
       name: req.params.orgName
     }, function (err, org) {
@@ -127,13 +127,23 @@ module.exports = function(config, db) {
       }, function (err, event) {
 
         // TODO error handling
-
+        console.log('\n\n\n\n')
+        console.log('--------')
+        console.log(event)
+        console.log('--------')
+        console.log('\n\n\n\n')
         event.waiting = 0;
         event.invited = 0;
 
         db.reservations.find({
           eventId: event._id
         }, function (err, reservations) {
+
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(reservations)
+          console.log('--------')
+          console.log('\n\n\n\n')
 
           // TODO error handling
           
@@ -150,6 +160,12 @@ module.exports = function(config, db) {
             }
 
           });
+
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(event)
+          console.log('--------')
+          console.log('\n\n\n\n')
 
           res.render('frontend/event', {
             event: event,
@@ -598,6 +614,9 @@ module.exports = function(config, db) {
     if (typeof event.temp === 'string') {
       event.temp = (event.temp === 'true')
     }
+
+    event.invited = 0
+    event.waiting = 0
     
     if (!event._id) {
       // this is a new event so we need to create a user and an org
@@ -623,14 +642,14 @@ module.exports = function(config, db) {
           // update event org id
           event.orgId = org._id
 
-          db.events.insert(event, function (err, event) {
+          db.events.insert(event, function (err, newEvent) {
 
             // TODO error handling
             
             res.json({
               userId: user._id,
-              orgId: org._id,
-              event: event
+              org: org,
+              event: newEvent
             })
           })
         })
@@ -638,7 +657,11 @@ module.exports = function(config, db) {
 
     } else {
       // the event has already been saved at least once
-
+      console.log('\n\n\n\n')
+      console.log('--------')
+      console.log(event)
+      console.log('--------')
+      console.log('\n\n\n\n')
       db.orgs.findOne({
         _id: event.orgId
       }, function (err, org) {

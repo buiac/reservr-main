@@ -563,7 +563,7 @@ module.exports = function(config, db) {
             if (!prevRes) {
 
               db.reservations.insert(reservation, function (err, newReservation) {
-                
+
                 if (err) {
                   res.status(400).json(err);
                   return;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reservr 3</title>
+  <title>Reservr - <%= event.name %></title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
@@ -44,6 +44,9 @@
 
       <a href="/u/<%= org.name %>" class="event-page-org-logo">
         
-        <img src="<%= org.logo %>" alt="">
-        
+        <% if (org.logo) { %> 
+          <img src="<%= org.logo %>" alt="">
+        <% } else { %>
+          <img src="/media/org-logo-placeholder.png" alt="">
+        <% } %>
       </a>
