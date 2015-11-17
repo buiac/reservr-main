@@ -156,7 +156,7 @@ module.exports = function(config, db) {
         if (partial) {
           
           var userEmailConfig = {
-            from: user.username,
+            from: 'contact@reservr.net', // user.username
             to: reservation.email,
             subject: template.subject,
             html: template.bodyPartial
@@ -170,7 +170,7 @@ module.exports = function(config, db) {
         } else {
 
           var userEmailConfig = {
-            from: user.username,
+            from: 'contact@reservr.net', // user.username
             to: reservation.email,
             subject: template.subject,
             html: template.body
@@ -245,14 +245,14 @@ module.exports = function(config, db) {
       }, function (err, user) {
         
         var userEmailConfig = {
-          from: org.confirmationEmail,
+          from: 'contact@reservr.net',
           to: reservation.email,
           subject: template.userSubject,
           html: template.userBody
         };
 
         var userWaitingEmailConfig = {
-          from: org.confirmationEmail,
+          from: 'contact@reservr.net',
           to: reservation.email,
           subject: template.userSubjectWaiting,
           html: template.userBodyWaiting
