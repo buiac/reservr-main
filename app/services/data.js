@@ -4,6 +4,7 @@ module.exports = function(config, db) {
   var moment = require('moment');
 
   var getOrgEvents = function (params) {
+
     var deferred = q.defer();
     var parrams = {
       orgId: params.orgId || params._id

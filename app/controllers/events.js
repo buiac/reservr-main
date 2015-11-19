@@ -85,7 +85,7 @@ module.exports = function(config, db) {
 
     var user = req.user;
     user.validEmail = util.validateEmail(user.username);
-
+    
     if (user.validEmail) {
 
       data.getOrgEvents({
@@ -127,11 +127,7 @@ module.exports = function(config, db) {
       }, function (err, event) {
 
         // TODO error handling
-        console.log('\n\n\n\n')
-        console.log('--------')
-        console.log(event)
-        console.log('--------')
-        console.log('\n\n\n\n')
+        
         event.waiting = 0;
         event.invited = 0;
 
@@ -139,16 +135,11 @@ module.exports = function(config, db) {
           eventId: event._id
         }, function (err, reservations) {
 
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(reservations)
-          console.log('--------')
-          console.log('\n\n\n\n')
-
+          
           // TODO error handling
           
           reservations.forEach(function (reservation) {
-            console.log(reservations)
+            
             if (reservation.waiting) {
 
               event.waiting = event.waiting + reservation.seats;
@@ -160,12 +151,6 @@ module.exports = function(config, db) {
             }
 
           });
-
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(event)
-          console.log('--------')
-          console.log('\n\n\n\n')
 
           res.render('frontend/event', {
             event: event,
@@ -180,40 +165,14 @@ module.exports = function(config, db) {
 
 
   var listFrontEventsView = function (req, res, next) {
-
-    
-
     data.getOrgByName({
       name: req.params.orgName
     }).then(function (org) {
-      // body... 
-
-      console.log('\n\n\n\n')
-        console.log('--------')
-        console.log(org)
-        console.log('--------')
-        console.log('\n\n\n\n')
-
-      db.events.findAll({
-        orgId: org._id
-      }, function (err, events) {
-        console.log('\n\n\n\n')
-        console.log('---futai-----')
-        console.log(events)
-        console.log('--------')
-        console.log('\n\n\n\n')
-      })
 
       data.getOrgEvents({
         orgId: org._id,
         fromDate: new Date() // render events starting from now
       }).then(function (events) {
-
-        console.log('\n\n\n\n')
-        console.log('--------')
-        console.log(events)
-        console.log('--------')
-        console.log('\n\n\n\n')
         
         var arr = [];
         
@@ -260,9 +219,11 @@ module.exports = function(config, db) {
       });
     }).catch(function (err) {
       
+      
       res.redirect('/');
 
     })
+
   };
 
   var redirectToEventsList = function (req, res, next) {
@@ -290,7 +251,7 @@ module.exports = function(config, db) {
     data.getOrgEvents({
       orgId: req.params.orgId
     }).then(function (events) {
-      
+
       db.orgs.findOne({
         _id: req.params.orgId
       }, function (err, org) {
@@ -630,6 +591,9 @@ module.exports = function(config, db) {
 
     var event = req.body.event
 
+    // format date
+    event.date = new Date(event.date)
+
     // convert strings to booleans
     if (typeof event.published === 'string') {
       event.published = (event.published === 'true')
@@ -642,7 +606,8 @@ module.exports = function(config, db) {
     event.invited = 0
     event.waiting = 0
     
-    if (!event._id) {
+    if (!event._id && !event.orgId) {
+    
       // this is a new event so we need to create a user and an org
       db.users.insert({
         timecreated: new Date(),
@@ -680,8 +645,8 @@ module.exports = function(config, db) {
       })
 
     } else {
-      // the event has already been saved at least once
 
+      // the event has already been saved at least once
       db.orgs.findOne({
         _id: event.orgId
       }, function (err, org) {
@@ -692,26 +657,53 @@ module.exports = function(config, db) {
           
           // TODO error handling
 
-          db.events.update({
-            _id: event._id
-          }, event, function (err, num) {
-
-            // TODO error handling
-            
-            db.events.findOne({
+          if (event._id) {
+            db.events.update({
               _id: event._id
-            }, function (err, theEvent) {
+            }, event, function (err, num) {
 
               // TODO error handling
               
-              res.json({
-                userId: user._id,
-                org: org,
-                orgId: org._id,
-                event: theEvent
+              db.events.findOne({
+                _id: event._id
+              }, function (err, theEvent) {
+
+                // TODO error handling
+                
+                res.json({
+                  userId: user._id,
+                  org: org,
+                  orgId: org._id,
+                  event: theEvent
+                })
               })
             })
-          })
+          } else {
+
+            db.events.insert(event, function (err, num) {
+
+              // TODO error handling
+              
+              db.events.findOne({
+                _id: event._id
+              }, function (err, theEvent) {
+
+                // TODO error handling
+                
+                res.json({
+                  userId: user._id,
+                  org: org,
+                  orgId: org._id,
+                  event: theEvent
+                })
+              })
+            })
+
+          }
+          
+
+          
+
         })
       })
     }

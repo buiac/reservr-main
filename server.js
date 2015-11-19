@@ -43,7 +43,7 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (req.hostname === 'localhost') {
+    if (false) { // req.hostname === 'localhost'
       db.users.findOne({
         username: 'sebi.kovacs@gmail.com'
       }, function (err, user) {
@@ -152,14 +152,14 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
-  app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
   app.get('/dashboard/:orgId/event/:eventId/deleteimage/:pictureIndex', isAuthenticated, events.eventDeleteImage);
   app.get('/dashboard/:orgId/delete-event/:eventId', isAuthenticated, events.deleteEvent);
+  app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
-  app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
+  app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   
   // reservations  
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservation);

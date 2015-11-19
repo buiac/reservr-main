@@ -1,7 +1,10 @@
+<% var event = '' %>
 <%- include header %>
 
 <% if (events.length === 0) { %>
-  <h2>Nu sunt evenimente pentru aceasta perioada.</h2>
+
+  <h3 style="text-align: center;">There are no events.</h3>
+
 <% } else { %>
   
   <% events.forEach(function(event, i) { %>

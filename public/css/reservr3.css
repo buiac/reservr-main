@@ -756,6 +756,8 @@ textarea {
   padding: 7px 5px;
   border-radius: 3px;
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-form--success .form-success a:hover {

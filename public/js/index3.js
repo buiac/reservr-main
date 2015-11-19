@@ -100,6 +100,8 @@ $(document).ready(function () {
 
   function syncData() {
 
+    eventModel.date = new Date(eventModel.date)
+
     $.ajax({
       method: 'POST',
       url: config.baseUrl + '/tempEvent',
@@ -413,7 +415,7 @@ $(document).ready(function () {
         processData: false,
         type: 'POST',
         success: function(res){
-          eventModel.orgId = res.orgId
+          eventModel.orgId = res.org._id
           eventModel._id = res.event._id
         }
       });
@@ -485,6 +487,12 @@ $(document).ready(function () {
 
     }).fail(function (err) {
 
+      console.log('\n\n\n\n')
+      console.log('--------')
+      console.log('futai')
+      console.log('--------')
+      console.log('\n\n\n\n')
+
       $form.removeClass(loadingClass)
       $form.addClass(errorClass)
 
@@ -504,6 +512,7 @@ $(document).ready(function () {
   var submitReserveForm = function() {
       
     var $this = $(this);
+
     var $eventform = $this.parent();
     var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
@@ -514,8 +523,6 @@ $(document).ready(function () {
     var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
     var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
     var seatsLeft = totalSeats - invited;
-
-    // var mclistid = $this.find('.reserve-newsletter').val();
 
     if (seats <= seatsLeft || seatsLeft === 0 ) {
 
@@ -532,41 +539,46 @@ $(document).ready(function () {
         },
         success: function(res) {
 
-          $eventform.addClass('event-form--success');
           $eventform.removeClass('event-form--loading');
-
-          console.log(res)
+          $eventform.addClass('event-form--success');
+          
 
           // update the number of seats invited
           $('.seats-invited').html(res.event.invited)
 
-          // clear the form fields
-          $this.find('.reserve-name').val('');
-          $this.find('.reserve-email').val('');
-          $this.find('.reserve-seats').val('');
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(res)
+          console.log('--------')
+          console.log('\n\n\n\n')
+
+          // // clear the form fields
+          // $this.find('.reserve-name').val('');
+          // $this.find('.reserve-email').val('');
+          // $this.find('.reserve-seats').val('');
 
 
-          setTimeout(function() {
+          // setTimeout(function() {
             
-            $eventform.removeClass('event-form--loading');
-            $eventform.removeClass('event-form--success');
+          //   $eventform.removeClass('event-form--loading');
+          //   $eventform.removeClass('event-form--success');
             
-          }, 5000);
+          // }, 5000);
 
           // seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
           // $('#seats-left').html(Math.abs(seatsLeft));
         },
         error: function(err) {
           
-          $eventform.removeClass('event-form--loading');
-          $eventform.addClass('event-form--error');
+          // $eventform.removeClass('event-form--loading');
+          // $eventform.addClass('event-form--error');
           
-          // allow me to try again 
-          setTimeout(function() {
+          // // allow me to try again 
+          // setTimeout(function() {
             
-            $eventform.removeClass('event-form--loading event-form--error');
+          //   $eventform.removeClass('event-form--loading event-form--error');
             
-          }, 5000);
+          // }, 5000);
           
         },
         complete: function() {

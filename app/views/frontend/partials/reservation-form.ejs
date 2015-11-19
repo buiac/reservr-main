@@ -1,29 +1,5 @@
   <div class="event-form">
 
-      <div class="form-error">
-
-        <h4> <i class="fa fa-exclamation-triangle"></i> Hmmm, something's not right</h4>
-        
-        <div class="reservation-message">
-          <p>Looks like there was an error.</p>
-
-          <p>You can try again a bit latter or just shoot us an email and we'll set up your reservation manually: contact@reservr.com.</p>
-        </div>
-
-      </div>
-      
-      <div class="form-success">
-
-        <h4> <i class="fa fa-check"></i> Success!</h4>
-
-        <p>Your reservation was made and <br> a confirmation email was sent to your email address.</p>
-
-        <p>Click the link bellow to manage your reservation.</p>
-
-        <a href="http://www.reservr.net/r/MQnKlp6Fzwv4MNdp" target="_blank">http://www.reservr.net/r/MQnKlp6Fzwv4MNdp</a>
-        
-      </div>
-
       <div class="row">
 
         <div class="col-md-6">
@@ -115,6 +91,28 @@
 
             <form action="" class="form-reserve">
 
+              <div class="form-error">
+
+                <h4> <i class="fa fa-exclamation-triangle"></i> Hmmm, something's not right</h4>
+                
+                <div class="reservation-message">
+                  <p>Looks like there was an error.</p>
+
+                  <p>You can try again a bit latter or just shoot us an email and we'll set up your reservation manually: contact@reservr.com.</p>
+                </div>
+
+              </div>
+              
+              <div class="form-success">
+
+                <h4> <i class="fa fa-check"></i> Success!</h4>
+
+                <p>Check out your reservation:</p>
+
+                <a href="http://www.reservr.net/r/MQnKlp6Fzwv4MNdp" target="_blank">http://www.reservr.net/r/MQnKlp6Fzwv4MNdp</a>
+                
+              </div>
+
               <div class="form-group">
                 <label for="">Seats:</label>
                 <select name="" id="" class="form-control input-lg reserve-seats" required>
@@ -128,13 +126,13 @@
               </div>
               <div class="form-group">
 
-                <input type="text" name="" class="form-control input-lg reserve-name" id="" placeholder="Name" required>
+                <input type="text" name="" class="form-control input-lg reserve-name" id="" placeholder="Name" required value="<%= 'sebi+' + new Date().getTime() %>">
 
               </div>
 
               <div class="form-group">
 
-                <input type="email" name="" class="form-control input-lg reserve-email" id="" placeholder="Email" required>
+                <input type="email" name="" class="form-control input-lg reserve-email" id="" placeholder="Email" required value="<%= 'sebi.kovacs+' + new Date().getTime() + '@gmail.com' %>">
 
               </div>
 

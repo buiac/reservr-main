@@ -489,6 +489,78 @@ module.exports = function(config, db) {
     });
   };
 
+  var updateReservationTmp = function (req, res, next) {
+    
+    req.checkBody('name', 'Please add your name.').notEmpty();
+    req.checkBody('email', 'Please add your email address.').notEmpty();
+    req.checkBody('seats', 'Please select number of seats.').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+      res.status(400).json(errors);
+      return;
+    }
+
+    var reservation = {
+      name: req.body.name.trim(),
+      email: req.body.email.trim(),
+      seats: parseInt(req.body.seats, 10),
+      eventId: req.params.eventId,
+      orgId: req.params.orgId,
+      mclistid: req.body.mclistid,
+      waiting: false
+    };
+    
+    
+  
+    
+
+    data.getOrgEvents({
+      orgId: req.params.orgId
+    }).then(function (events) {
+
+      var event = events.filter(function (item) {
+        return item._id === req.params.eventId
+      })
+
+      event = event[0]
+      
+      db.reservations.update({
+        email: req.body.email.trim()
+      }, {
+        $set: reservation
+      }, {
+        upsert: true
+      }, function (err, numReplaced, upsert) {
+
+
+        
+
+        if (!upsert) {
+          // update
+
+        } else {
+          // insert
+
+        }
+
+        res.json({
+          reservation: reservation,
+          message: '',
+          event: event
+        })
+
+      })
+      
+    });
+      
+    
+
+    // notify user about the reservation
+
+  }
+
   var updateReservation = function (req, res, next) {
     req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
     req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
@@ -637,6 +709,7 @@ module.exports = function(config, db) {
                 email: reservation.email
               }, function (err, reserv) {
 
+                  // if user has made a previous reservations with the same number of seats
                   if (reserv.seats === reservation.seats) {
                     res.json({
                       message: 'Same seats',
@@ -646,18 +719,11 @@ module.exports = function(config, db) {
                     return;
                   }
 
-                  if (reserv.seats < reservation.seats) {
-                    reservedSeats = reservedSeats + (parseInt(reservation.seats) - reserv.seats);
-                  }
-
-                  if (reserv.seats > reservation.seats) {
-                    reservedSeats = reservedSeats - (reserv.seats - parseInt(reservation.seats)); 
-                  }
-
                   db.reservations.update(
                     {email: reservation.email, eventId: eventId},
                     {$set: {seats: reservation.seats}},
                     function (err, num) {
+                      // update the previous number of seats with the new ones
                       if (err) {
                         res.status(400).json(err);
                         return;
@@ -675,11 +741,11 @@ module.exports = function(config, db) {
                         ev.invited = 0;
                         ev.waiting = 0;
 
-                        if (reservation.waiting) {
-                          ev.waiting = ev.waiting + newReservation.seats
-                        } else {
-                          ev.invited = ev.invited + newReservation.seats
-                        }
+                        // if (reservation.waiting) {
+                        //   ev.waiting = ev.waiting + newReservation.seats
+                        // } else {
+                        //   ev.invited = ev.invited + newReservation.seats
+                        // }
 
                         reservations.forEach(function (reservation) {
                           
@@ -748,7 +814,8 @@ module.exports = function(config, db) {
     viewReservation: viewReservation,
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
-    userReservationsDeleteView: userReservationsDeleteView
+    userReservationsDeleteView: userReservationsDeleteView,
+    updateReservationTmp: updateReservationTmp
   };
 
 };
