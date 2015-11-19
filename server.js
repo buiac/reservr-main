@@ -43,7 +43,7 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (false) { //req.hostname === 'localhost'
+    if (req.hostname === 'localhost') {
       db.users.findOne({
         username: 'sebi.kovacs@gmail.com'
       }, function (err, user) {
@@ -196,8 +196,6 @@ module.exports = (function() {
   */
 
   var auth = require('./app/controllers/authenticate.js')(config, db);
-
-  
   
   app.post('/createTempUser', auth.createTempUser);
 

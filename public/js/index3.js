@@ -81,6 +81,7 @@ $(document).ready(function () {
   }
 
   function updateEventUrl () {
+
     var $eventLink = $('.event-link')
     var $parent = $eventLink.parents('.event-details')
     var $button = $parent.find('.btn-publish')
@@ -106,10 +107,10 @@ $(document).ready(function () {
         event: eventModel
       }
     }).done(function (res) {
-
+      
       // set the event orgId
       eventModel.org = res.org
-      eventModel.orgId = res.orgId
+      eventModel.orgId = res.orgId || res.org._id
       eventModel._id = res.event._id
 
       if (res.event.published) {
@@ -162,7 +163,6 @@ $(document).ready(function () {
     eventModel[field.name] = field.value
 
     syncData()
-
   }
 
 
@@ -277,13 +277,28 @@ $(document).ready(function () {
     }
   }
 
+  function updateHiddenFields () {
+    var $hidden = $('[type=hidden]');
+
+    $hidden.each(function (i, field) {
+      if (field.name === 'temp' || field.name === 'published') {
+        eventModel[field.name] = (field.value === 'true')  
+      } else {
+        if (field.value !== '') {
+          eventModel[field.name] = field.value
+        }
+      }
+      
+    });
+  }
+
   function init () {
     // updateDateField()
     parseFields()
     checkImage()
     setupCalendar()
     initBootstrapWidgets()
-    
+    updateHiddenFields()
   }
 
   function updateEventPrice (e) {

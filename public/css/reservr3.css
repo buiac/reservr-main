@@ -333,18 +333,6 @@ textarea {
   color: #000;
 }
 
-.btn-publish,
-.btn-save-event {
-  background: #02766C;
-  border-radius: 2px;
-  display: block;
-}
-
-.btn-publish:hover,
-.btn-save-event:hover {
-  background: #03655C;
-}
-
 .rd-day-body {
   padding: 5px;
 }

@@ -1,8 +1,10 @@
 <%- include header %>
 
-<form method="post" action="/dashboard/<%= org._id %>/event" enctype="multipart/form-data" class="event-update-form">
+
 <div class="rzv-lightbox">
   <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
+  <input type="hidden" name="temp" value="false">
+  <input type="hidden" name="published" value="<%= theEvent.published %>">
 
   <% if(theEvent.images && theEvent.images.length) { %>
     <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
@@ -231,9 +233,9 @@
         
       </div>
 
-      <button type="submit" class="btn btn-primary btn-save-event pull-right" style="margin-left: 10px;">
+      <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
         Save event
-      </button>
+      </a>
 
       <a href="/dashboard/<%= org._id %>/events" class="btn btn-default pull-right">Cancel</a>
 
@@ -246,7 +248,5 @@
   </div>
 
 </div>
-
-</form>          
  
 <%- include footer %>

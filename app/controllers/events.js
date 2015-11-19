@@ -181,15 +181,39 @@ module.exports = function(config, db) {
 
   var listFrontEventsView = function (req, res, next) {
 
+    
+
     data.getOrgByName({
       name: req.params.orgName
     }).then(function (org) {
       // body... 
 
+      console.log('\n\n\n\n')
+        console.log('--------')
+        console.log(org)
+        console.log('--------')
+        console.log('\n\n\n\n')
+
+      db.events.findAll({
+        orgId: org._id
+      }, function (err, events) {
+        console.log('\n\n\n\n')
+        console.log('---futai-----')
+        console.log(events)
+        console.log('--------')
+        console.log('\n\n\n\n')
+      })
+
       data.getOrgEvents({
         orgId: org._id,
         fromDate: new Date() // render events starting from now
       }).then(function (events) {
+
+        console.log('\n\n\n\n')
+        console.log('--------')
+        console.log(events)
+        console.log('--------')
+        console.log('\n\n\n\n')
         
         var arr = [];
         
@@ -657,17 +681,11 @@ module.exports = function(config, db) {
 
     } else {
       // the event has already been saved at least once
-      console.log('\n\n\n\n')
-      console.log('--------')
-      console.log(event)
-      console.log('--------')
-      console.log('\n\n\n\n')
+
       db.orgs.findOne({
         _id: event.orgId
       }, function (err, org) {
 
-        // TODO error handling
-        
         db.users.findOne({
           _id: org.userId
         }, function (err, user) {
@@ -688,6 +706,7 @@ module.exports = function(config, db) {
               
               res.json({
                 userId: user._id,
+                org: org,
                 orgId: org._id,
                 event: theEvent
               })
