@@ -487,6 +487,7 @@ textarea {
 
 .event-summary.event-active {
   opacity: 1;
+  border: 3px solid #02766C;
 }
 
 .event-list {

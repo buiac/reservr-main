@@ -124,9 +124,8 @@ $(document).ready(function () {
         updateEventUrl()
 
         if (eventId && !eventId.value) {
-          // this means we are in the backend
           window.location = window.location.href + '/' + res.event._id
-        } else {
+        } else if (eventId && eventId.value) {
           window.location = window.location.href
         }
       }
