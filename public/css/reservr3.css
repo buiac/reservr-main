@@ -960,6 +960,13 @@ textarea {
   padding: 10px;
 }
 
+.event-price-text {
+  margin: 30px 0 0 0;  
+}
+
+.event-has-price .event-price-text {
+  margin: 0;
+}
 
 
 

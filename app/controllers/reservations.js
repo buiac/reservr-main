@@ -476,14 +476,20 @@ module.exports = function(config, db) {
           _id: req.params.orgId
         }, function (err, org) {
 
+          var event = events.filter(function (ev) {
+            return ev._id === req.params.eventId
+          })
+
           res.render('backend/reservations-view',{
             org: org,
             orgId: req.params.orgId,
             user: req.user,
             reservations: reservations,
             eventId: req.params.eventId,
-            events: events
+            events: events,
+            event: event[0]
           });
+
         });
       });
     });
