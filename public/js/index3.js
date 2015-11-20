@@ -5,7 +5,7 @@ $(document).ready(function () {
   var saveHover = false
   var calendar
   var eventModel = {
-    name: 'My cool event name',
+    name: 'Demo event title',
     description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
     images: [
       {
@@ -98,7 +98,11 @@ $(document).ready(function () {
     $parent.addClass('event-publish--published')
   }
 
+
+
   function syncData() {
+
+    var eventId = $('[name=_id]')[0]
 
     eventModel.date = new Date(eventModel.date)
 
@@ -118,6 +122,13 @@ $(document).ready(function () {
       if (res.event.published) {
         // update the unique event url
         updateEventUrl()
+
+        if (eventId && !eventId.value) {
+          // this means we are in the backend
+          window.location = window.location.href + '/' + res.event._id
+        } else {
+          window.location = window.location.href
+        }
       }
 
     }).fail(function (err) {
@@ -486,12 +497,6 @@ $(document).ready(function () {
 
 
     }).fail(function (err) {
-
-      console.log('\n\n\n\n')
-      console.log('--------')
-      console.log('futai')
-      console.log('--------')
-      console.log('\n\n\n\n')
 
       $form.removeClass(loadingClass)
       $form.addClass(errorClass)

@@ -34,7 +34,7 @@
         <div class="event-list">
           
           <% events.forEach(function(event){ %>
-            <div class="box-white event-summary event-active">
+            <div class="box-white event-summary <% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">
               
               <div class="event-date">
                 
