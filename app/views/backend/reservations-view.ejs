@@ -63,9 +63,17 @@
           </td>
         </tfoot>
       </table>
+      <% var waiting = false %>
+      <% reservations.forEach(function(r){ %>
+        <% if (r.waiting) { %>
+          <% waiting = true %>
+        <% } %>
+      <% }) %>
 
+      <% if (waiting) { %>
+      
       <h2>Waiting list</h2>
-
+    
       <table class="table-reservations table table-striped">
         <thead>
           <tr>
@@ -121,7 +129,7 @@
           </td>
         </tfoot>
       </table>
-
+      <% } %>
     </div>
 
       
