@@ -27,7 +27,7 @@ module.exports = function(config, db) {
 
   });
 
-  passport.use('createTempUser', new LocalStrategy({
+  passport.use('signup', new LocalStrategy({
       passReqToCallback : true
     },
     function (req, username, password, done) {
@@ -76,14 +76,16 @@ module.exports = function(config, db) {
               org.userId = newDoc._id;
               db.orgs.insert(org, function (err, newOrg) {
                 
-                var newEvent = {
-                  orgId: newOrg._id,
-                  userId: newDoc._id
-                };
+                // var newEvent = {
+                //   orgId: newOrg._id,
+                //   userId: newDoc._id
+                // };
 
-                db.events.insert(newEvent, function (err, newEv) {
-                  return done(null, newDoc, req);  
-                });
+                return done(null, newDoc, req);  
+
+                // db.events.insert(newEvent, function (err, newEv) {
+                  
+                // });
 
               });
             }
@@ -98,7 +100,7 @@ module.exports = function(config, db) {
     }
   ));
 
-  var createTempUser = passport.authenticate('createTempUser', {
+  var signup = passport.authenticate('signup', {
     failureRedirect: '/signup',
     successRedirect: '/dashboard',
     failureFlash : true
@@ -162,7 +164,7 @@ module.exports = function(config, db) {
 
   return {
     signupView: signupView,
-    createTempUser: createTempUser,
+    signup: signup,
     signinView: signinView,
     signin: signin
   };

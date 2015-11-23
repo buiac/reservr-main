@@ -197,7 +197,8 @@ module.exports = (function() {
 
   var auth = require('./app/controllers/authenticate.js')(config, db);
   
-  app.post('/createTempUser', auth.createTempUser);
+  // signup 
+  app.post('/createTempUser', auth.signup);
 
   app.get('/signin', auth.signinView);
   app.post('/signin', auth.signin);
