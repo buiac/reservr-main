@@ -8,13 +8,13 @@
 <% } else { %>
   
   <% events.forEach(function(event, i) { %>
+    <% if (event.published) { %>
+      <div class="row event-item">
+        <% var eventLink = true %>
+        <%- include partials/event-partial %>
 
-    <div class="row event-item">
-      <% var eventLink = true %>
-      <%- include partials/event-partial %>
-
-    </div>
-    
+      </div>
+    <% } %>
   <% }) %>
 
 <% } %>

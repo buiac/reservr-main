@@ -71,20 +71,20 @@
     </div>
 
     <div class="col-md-6 event-details">
+      <div class="event-status event-status--<%= theEvent.published ? 'published' : 'not-published' %>">
+        <div>
+          <span class="event-published text-muted">Published</span>
+        </div>
+        <div>
+          <span class="event-not-published text-muted">Not Published</span>
+        </div>
+      </div>
 
       <div class="form-group event-name event-group">
 
         <h1 class="event-placeholder">Event title</h1>
         
         <textarea name="name" id="" class="form-control"><%= theEvent.name || 'Event title' %></textarea>
-        
-        
-          <% if (theEvent._id) { %> 
-          
-            <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> <i class="fa fa-link"></i>http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
-          
-        <% } %>
-        
         
         
         <div class="event-group-action">
@@ -96,6 +96,17 @@
         </div>
 
       </div>
+
+      
+      <% if (theEvent._id) { %> 
+      
+        <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> <i class="fa fa-link"></i>http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
+        
+      <% } %>
+
+     
+
+
 
       <div class="form-group event-description event-group">
 
@@ -114,7 +125,7 @@
       
       <div class="event-meta">
 
-
+        
 
         <div class="event-group event-date">
           
@@ -233,10 +244,16 @@
         </div>
         
       </div>
-
-      <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
-        Save event
-      </a>
+      
+      <% if (theEvent.published) { %>
+        <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
+          Save event
+        </a>
+      <% } else { %>
+        <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
+          Publish event
+        </a>
+      <% } %>
 
       <a href="/dashboard/<%= org._id %>/events" class="btn btn-default pull-right">Cancel</a>
 

@@ -47,6 +47,11 @@ textarea {
   height: 92%;
 }
 
+
+.event-name {
+  margin-bottom: 0;
+}
+
 .event-name h1 {
   font-size: 22px;  
   margin: 0;
@@ -961,6 +966,10 @@ textarea {
   padding: 10px;
 }
 
+.external-link .fa {
+  margin-right: 10px;
+}
+
 .event-price-text {
   margin: 30px 0 0 0;  
 }
@@ -969,7 +978,32 @@ textarea {
   margin: 0;
 }
 
+.rsvr-dashboard .event-meta {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
 
+.event-status {
+  padding: 0 0 5px 0;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  font-size: 11px;
+  border-bottom: 1px solid #ccc;
+
+}
+
+.event-published,
+.event-not-published {
+  display: none;
+}
+
+.event-status--published .event-published {
+  display: block;
+}
+
+.event-status--not-published .event-not-published {
+  display: block;
+}
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }

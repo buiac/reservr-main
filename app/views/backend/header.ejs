@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/css/reservr3.css">
   <link rel="stylesheet" href="/css/fonts.css">
 </head>
-<body>
+<body class="rsvr-dashboard">
 
   <div class="container-fluid"  style="height: 100%">
 
@@ -53,6 +53,10 @@
               </div>
 
               <a class="event-title" href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
+
+              <% if (!event.published) { %> 
+                <span class="text-muted">Not Published</span>
+              <% } %>
 
               <div class="event-reservations">
                 <p class="text-muted" style="margin-bottom: 0">

@@ -63,7 +63,7 @@ module.exports = function(config, db) {
           newUser.validEmail = util.validateEmail(newUser.username);
           
           // set calendar default name
-          org.name = 'Guest';
+          org.name = 'guest-' + new Date().getTime();
 
            // save the user
           db.users.insert(newUser, function (err, newDoc) {
