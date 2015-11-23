@@ -74,7 +74,6 @@
 
                 <input type="hidden" name="orgid" value="<%= event.orgId %>">
 
-
                 <div class="form-group">
                   
                   <button type="submit" class="btn btn-sm btn-primary">Create Account</button>
@@ -139,6 +138,9 @@
               <input type="hidden" name="" class="reserve-id" value="<%= event._id %>">
               <input type="hidden" name="" class="reserve-orgId" value="<%= org._id %>"
               >
+              <input type="hidden" name="" class="reserve-timestamp" value="<%= new Date() %>"
+              >
+
               <input type="hidden" name="" class="reserve-invited" value="<%= event.invited %>"
               >
               <input type="hidden" name="" class="reserve-waiting" value="<%= event.waiting %>"

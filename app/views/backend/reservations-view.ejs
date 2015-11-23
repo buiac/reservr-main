@@ -15,6 +15,9 @@
               Name
             </th>
             <th>
+              Date &amp; time
+            </th>
+            <th>
               Email
             </th>
             <th>
@@ -33,6 +36,11 @@
                 <%= i %>. <%= reservation.name %>
                 <% i = i + 1 %>
 
+              </td>
+              <td>
+                <% if (reservation.timestamp) { %>
+                  <%= moment(reservation.timestamp).format() %>
+                <% } %>
               </td>
               <td>
                 <%= reservation.email %>

@@ -533,6 +533,7 @@ $(document).ready(function () {
     var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
     var seats = parseInt($this.find('.reserve-seats').val(), 10);
+    var timestamp = $this.find('.reserve-timestamp').val()
     var eventId = $this.find('.reserve-id').val();
     var orgId = $this.find('.reserve-orgId').val();
     var invited = parseInt($this.find('.reserve-invited').val(), 10);
@@ -551,6 +552,7 @@ $(document).ready(function () {
           name: name,
           email: email,
           seats: seats,
+          timestamp: timestamp
           // mclistid: mclistid
         },
         success: function(res) {

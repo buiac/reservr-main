@@ -575,6 +575,7 @@ module.exports = function(config, db) {
     var name = req.body.name.trim();
     var email = req.body.email.trim();
     var seats = req.body.seats;
+    var timestamp = req.body.timestamp;
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
     var mclistid = req.body.mclistid;
@@ -590,6 +591,7 @@ module.exports = function(config, db) {
       name: name,
       email: email,
       seats: parseInt(seats),
+      timestamp: moment(new Date(timestamp)).format(),
       eventId: eventId,
       orgId: orgId,
       mclistid: mclistid,
