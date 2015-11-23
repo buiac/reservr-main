@@ -603,8 +603,13 @@ module.exports = function(config, db) {
       event.temp = (event.temp === 'true')
     }
 
+    // update the event image
+    
+
     event.invited = 0
     event.waiting = 0
+
+    // check if there's an image
     
     if (!event._id && !event.orgId) {
     

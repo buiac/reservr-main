@@ -4,6 +4,7 @@ $(document).ready(function () {
   var $eventGroups = $('.event-group')
   var saveHover = false
   var calendar
+  var reloadPage = false
   var eventModel = {
     name: 'Demo event title',
     description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
@@ -98,14 +99,12 @@ $(document).ready(function () {
     $parent.addClass('event-publish--published')
   }
 
-
-
   function syncData() {
 
     var eventId = $('[name=_id]')[0]
 
     eventModel.date = new Date(eventModel.date)
-
+    
     $.ajax({
       method: 'POST',
       url: config.baseUrl + '/tempEvent',
@@ -123,11 +122,14 @@ $(document).ready(function () {
         // update the unique event url
         updateEventUrl()
 
-        if (eventId && !eventId.value) {
-          window.location = window.location.href + '/' + res.event._id
-        } else if (eventId && eventId.value) {
-          window.location = window.location.href
+        if (reloadPage) {
+          if (eventId && !eventId.value) {
+            window.location = window.location.href + '/' + res.event._id
+          } else if (eventId && eventId.value) {
+            window.location = window.location.href
+          }
         }
+        
       }
 
     }).fail(function (err) {
@@ -147,7 +149,6 @@ $(document).ready(function () {
     var toggleClass = 'event-group--toggle-placeholder'
     var value = $(field).val()
     
-
     if (!$icon.length) {
       $icon = $placeholder.find('.icomoon')
     }
@@ -173,6 +174,10 @@ $(document).ready(function () {
     }
 
     eventModel[field.name] = field.value
+    reloadPage = false
+
+    console.log('simple save data')
+    console.log(eventModel)
 
     syncData()
   }
@@ -205,7 +210,7 @@ $(document).ready(function () {
     saveHover = false
   }
 
-  function parseFields () {
+  function parseFieldsOnLoad () {
     var $eventGroups = $('.rzv-lightbox .event-group')
 
     $eventGroups.each(function (i, eventGroup) {
@@ -215,6 +220,12 @@ $(document).ready(function () {
       var value = $(field).val()
       var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
       
+      eventModel[field.name] = field.value
+
+      if (field.name === 'existingImages') {
+        eventModel.images = JSON.parse(field.value)
+      }
+    
       if ($(eventGroup).hasClass('event-seats')) {
         
 
@@ -306,7 +317,7 @@ $(document).ready(function () {
 
   function init () {
     // updateDateField()
-    parseFields()
+    parseFieldsOnLoad()
     checkImage()
     setupCalendar()
     initBootstrapWidgets()
@@ -334,6 +345,7 @@ $(document).ready(function () {
     $this.addClass('btn-state-loading')
 
     eventModel.published = true;
+    reloadPage = true
 
     syncData()
   }

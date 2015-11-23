@@ -963,7 +963,8 @@ textarea {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 10px;
+  padding: 10px 0 10px 5px;
+  max-width: 240px;
 }
 
 .external-link .fa {
@@ -978,30 +979,37 @@ textarea {
   margin: 0;
 }
 
-.rsvr-dashboard .event-meta {
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
 .event-status {
   padding: 0 0 5px 0;
   margin-left: 10px;
   margin-bottom: 15px;
   font-size: 11px;
   border-bottom: 1px solid #ccc;
+}
 
+.event-status .btn {
+  margin-top: 5px;
 }
 
 .event-published,
 .event-not-published {
+  padding: 10px 0;
+}
+
+.event-published,
+.event-not-published,
+.rzrvr-dashboard .event-publish,
+.event-unpublish {
   display: none;
 }
 
-.event-status--published .event-published {
+.event-status--published .event-published,
+.event-status--published .event-unpublish {
   display: block;
 }
 
-.event-status--not-published .event-not-published {
+.event-status--not-published .event-not-published,
+.event-status--not-published .event-publish {
   display: block;
 }
 
