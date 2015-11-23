@@ -998,7 +998,7 @@ textarea {
 
 .event-published,
 .event-not-published,
-.rzrvr-dashboard .event-publish,
+.event-publish,
 .event-unpublish {
   display: none;
 }

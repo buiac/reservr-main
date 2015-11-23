@@ -632,6 +632,16 @@ $(document).ready(function () {
     $(this).parent().hide()
   };
 
+  function eventUnpublish (e) {
+    eventModel.published = false 
+    syncData()
+  }
+
+  function eventPublish (e) {
+    eventModel.published = true 
+    syncData()
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -645,7 +655,11 @@ $(document).ready(function () {
   $('body').on('click', '.event-toggle-description a', toggleDescription)
   $('body').on('click', '.alert a.close', closeAlert)
   $('body').on('click', '.form-error-message .close, .form-success-message .close', closeAlert)
+  $('body').on('click', '.event-publish', eventPublish)
+  $('body').on('click', '.event-unpublish', eventUnpublish)
+  $('body').on('click', '.event-group-cancel', hideGroup)
   
+
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
   $('.event-image input').change(function(){
