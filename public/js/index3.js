@@ -1,6 +1,8 @@
 autosize(document.querySelectorAll('textarea'));
 
 $(document).ready(function () {
+
+  var defaultEventDate = new Date(new Date().getTime + (3 * 24 * 60 * 60 * 1000))
   var $eventGroups = $('.event-group')
   var saveHover = false
   var calendar
@@ -13,7 +15,7 @@ $(document).ready(function () {
         path: '/images/reservr-placeholder-2.png'
       }
     ],
-    date: new Date(),
+    date: defaultEventDate,
     seats: 120,
     price: '12$ / pers',
     location: 'London, 106 Lower Marsh, Waterloo, SE1 7AB',
