@@ -102,8 +102,6 @@ $(document).ready(function () {
   function syncData() {
 
     var eventId = $('[name=_id]')[0]
-
-    eventModel.date = new Date(eventModel.date)
     
     $.ajax({
       method: 'POST',
