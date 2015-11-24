@@ -589,7 +589,7 @@ module.exports = function(config, db) {
       name: name,
       email: email,
       seats: parseInt(seats),
-      timestamp: moment(new Date(timestamp)).format(),
+      timestamp: new Date(timestamp),
       eventId: eventId,
       orgId: orgId,
       mclistid: mclistid,
