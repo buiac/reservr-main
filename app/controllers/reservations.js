@@ -445,8 +445,9 @@ module.exports = function(config, db) {
               
               } else {
 
-                res.render('deleted-reservation',{
-                  org: org
+                res.render('frontend/user-reservation-deleted',{
+                  org: org,
+                  event: event
                 });
               
               }
@@ -804,7 +805,7 @@ module.exports = function(config, db) {
         db.orgs.findOne({
           _id: event.orgId
         }, function (err, org) {
-          res.render('user-reservations-view',{
+          res.render('frontend/user-reservations',{
             reservation: reservation,
             event: event,
             org: org
