@@ -566,21 +566,14 @@ $(document).ready(function () {
             $('.seats-waiting').html(res.event.waiting)            
           }
 
-          // // clear the form fields
-          $eventform.find('.reserve-name').val('');
-          $eventform.find('.reserve-email').val('');
-          $eventform.find('.reserve-seats').val('');
+          // if a reservation is made with the same email
+          if (res.resCode) {
+            var h4 = $eventform.find('.form-success h4')
+            var p = $('<p></p>').html(res.message)
+            h4.after(p)
 
+          }
 
-          setTimeout(function() {
-            
-            // $eventform.removeClass('event-form--loading');
-            $eventform.removeClass('event-form--success');
-            
-          }, 5000);
-
-          // seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
-          // $('#seats-left').html(Math.abs(seatsLeft));
         },
         error: function(err) {
           

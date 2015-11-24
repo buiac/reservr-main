@@ -718,7 +718,8 @@ module.exports = function(config, db) {
                   // if user has made a previous reservations with the same number of seats
                   if (reserv.seats === reservation.seats) {
                     res.json({
-                      message: 'Same seats',
+                      message: 'A reservation with your email address was made before so we just updated the number of seats.',
+                      resCode: 1,
                       reservation: reserv,
                       event: event
                     });
@@ -747,34 +748,36 @@ module.exports = function(config, db) {
                         ev.invited = 0;
                         ev.waiting = 0;
 
-                        // if (reservation.waiting) {
-                        //   ev.waiting = ev.waiting + newReservation.seats
-                        // } else {
-                        //   ev.invited = ev.invited + newReservation.seats
-                        // }
+                        data.getEventReservations({
+                          eventId: ev._id
+                        }).then(function (reservations) {
 
-                        reservations.forEach(function (reservation) {
-                          
-                          if (reservation.eventId === ev._id) {
+                          reservations.forEach(function (reservation) {
+                            
+                            if (reservation.eventId === ev._id) {
 
-                            if (reservation.waiting) {
+                              if (reservation.waiting) {
 
-                              ev.waiting = ev.waiting + reservation.seats;
+                                ev.waiting = ev.waiting + reservation.seats;
 
-                            } else {
+                              } else {
 
-                              ev.invited = ev.invited + reservation.seats
+                                ev.invited = ev.invited + reservation.seats
 
+                              }
                             }
-                          }
+
+                          });
+
+                          res.json({
+                            message: 'A reservation with your email address was made before so we just updated the number of seats.',
+                            resCode: 1,
+                            reservation: reserv,
+                            event: ev
+                          });
 
                         });
 
-                        res.json({
-                          message: 'Update successful.',
-                          reservation: reserv,
-                          event: ev
-                        });
                       });
                     }
                   );
