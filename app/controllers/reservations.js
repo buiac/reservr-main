@@ -469,7 +469,8 @@ module.exports = function(config, db) {
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
 
         db.orgs.findOne({
@@ -517,13 +518,10 @@ module.exports = function(config, db) {
       mclistid: req.body.mclistid,
       waiting: false
     };
-    
-    
-  
-    
 
     data.getOrgEvents({
-      orgId: req.params.orgId
+      orgId: req.params.orgId,
+      fromDate: new Date()
     }).then(function (events) {
 
       var event = events.filter(function (item) {

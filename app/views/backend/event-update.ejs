@@ -6,8 +6,6 @@
   <input type="hidden" name="orgId" value="<%= org._id || '' %>">
   <input type="hidden" name="temp" value="false">
   <input type="hidden" name="published" value="<%= theEvent.published %>">
-
-  
   
   <% if (errors.length) { %>
           
@@ -174,7 +172,7 @@
             
             <i class="fa fa-map-o"></i>
 
-            <input type="text" class="form-control" name="location" value="<%= theEvent.location || 'Event location' %>">
+            <input type="text" class="form-control" name="location" value="<%= theEvent.location || org.location || 'Event location' %>">
 
           </div>
 

@@ -445,7 +445,7 @@ $(document).ready(function () {
 
   function toggleDescription (e) {
     var $this = $(this)
-    var $eventDescription = $this.parent().prev()
+    var $eventDescription = $this.parent()
 
     $eventDescription.toggleClass('event-description--show')
   }
@@ -652,7 +652,7 @@ $(document).ready(function () {
   $('body').on('click', '.event-free', updateEventPrice);
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
-  $('body').on('click', '.event-toggle-description a', toggleDescription)
+  $('body').on('click', '.event-toggle-description', toggleDescription)
   $('body').on('click', '.alert a.close', closeAlert)
   $('body').on('click', '.form-error-message .close, .form-success-message .close', closeAlert)
   $('body').on('click', '.event-publish', eventPublish)

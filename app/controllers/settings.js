@@ -19,7 +19,8 @@ module.exports = function(config, db) {
     if (user.validEmail) {
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
         
         db.orgs.findOne({

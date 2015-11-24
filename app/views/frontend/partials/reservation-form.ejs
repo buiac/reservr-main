@@ -162,10 +162,10 @@
 
           </div>
         </div>
-        
-        <div class="col-md-6 <% if (event.price) { %> event-has-price <% } %>">
+
+        <div class="col-md-6 <% if (event.price && (event.price !== 'Event price')) { %> event-has-price <% } %>">
           
-          <% if (event.price) { %>
+          <% if (event.price && (event.price !== 'Event price')) { %>
           <span class="event-price ff-montserat">
             <%= event.price %>
           </span>
