@@ -177,7 +177,10 @@ module.exports = function(config, db) {
               }
 
               db.events.find({
-                orgId: org._id
+                orgId: org._id,
+                date: {
+                  $gte: new Date()
+                }
               }, function (err, events) {
 
                 res.render('backend/settings', {
