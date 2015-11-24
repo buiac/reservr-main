@@ -469,7 +469,8 @@ module.exports = function(config, db) {
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
 
         db.orgs.findOne({
@@ -517,13 +518,10 @@ module.exports = function(config, db) {
       mclistid: req.body.mclistid,
       waiting: false
     };
-    
-    
-  
-    
 
     data.getOrgEvents({
-      orgId: req.params.orgId
+      orgId: req.params.orgId,
+      fromDate: new Date()
     }).then(function (events) {
 
       var event = events.filter(function (item) {
@@ -575,6 +573,7 @@ module.exports = function(config, db) {
     var name = req.body.name.trim();
     var email = req.body.email.trim();
     var seats = req.body.seats;
+    var timestamp = req.body.timestamp;
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
     var mclistid = req.body.mclistid;
@@ -590,6 +589,7 @@ module.exports = function(config, db) {
       name: name,
       email: email,
       seats: parseInt(seats),
+      timestamp: new Date(timestamp),
       eventId: eventId,
       orgId: orgId,
       mclistid: mclistid,

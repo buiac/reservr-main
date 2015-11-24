@@ -2,9 +2,10 @@
 
       <div class="row">
 
-        <div class="col-md-6">
+        <div class="col-md-6 <% if ((event.seats - event.invited) === 0) { %> event-reserv--sold-out<% } %>">
 
           <a class="btn btn-toggle-fields btn-primary btn-lg">Reserv seats</a>
+          <a class="btn btn-toggle-fields btn-gray btn-lg">Waiting list</a>
           
           <% if (event.temp) { %>
             
@@ -74,7 +75,6 @@
 
                 <input type="hidden" name="orgid" value="<%= event.orgId %>">
 
-
                 <div class="form-group">
                   
                   <button type="submit" class="btn btn-sm btn-primary">Create Account</button>
@@ -87,7 +87,7 @@
             </div>
           <% } %>
 
-          <div class="event-reserv-fields">
+          <div class="event-reserv-fields ">
 
             <form action="" class="form-reserve">
 
@@ -139,6 +139,9 @@
               <input type="hidden" name="" class="reserve-id" value="<%= event._id %>">
               <input type="hidden" name="" class="reserve-orgId" value="<%= org._id %>"
               >
+              <input type="hidden" name="" class="reserve-timestamp" value="<%= moment(new Date()).format() %>"
+              >
+
               <input type="hidden" name="" class="reserve-invited" value="<%= event.invited %>"
               >
               <input type="hidden" name="" class="reserve-waiting" value="<%= event.waiting %>"
@@ -152,6 +155,8 @@
 
               <div class="form-group">
                 <button type="submit" class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Reserv seats</button>
+
+                <button type="submit" class="btn btn-reserv btn-gray btn-lg <% if (event.temp) { %> disabled <% } %>">Waiting list</button>
               </div>
 
             </form>
@@ -160,17 +165,22 @@
 
           </div>
         </div>
-        
-        <div class="col-md-6 <% if (event.price) { %> event-has-price <% } %>">
+
+        <div class="col-md-6 <% if (event.price && (event.price !== 'Event price')) { %> event-has-price <% } %>">
           
-          <% if (event.price) { %>
+          <% if (event.price && (event.price !== 'Event price')) { %>
           <span class="event-price ff-montserat">
             <%= event.price %>
           </span>
           <% } %>
 
           <p class="text-muted event-price-text">
-            <span class="seats-invited"><%= event.invited %></span> seats taken of <span class="seats-total"><%= event.seats %></span> available
+            <span class="seats-invited"><%= event.invited %></span> seats reservd of <span class="seats-total"><%= event.seats %></span> available
+            
+            <br>
+            <% if (event.waiting) { %>
+            <span> <span class="seats-waiting"><%= event.waiting %></span> on waiting list</span>
+            <% } %>
           </p>
 
         </div>

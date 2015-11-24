@@ -1,8 +1,14 @@
 <div class="col-md-6 event-image-wrap">
-            
+  
+  <% if (event.images.length) { %>
   <div class="event-image" style="clear:both">
     <img src="<%= event.images[0].path %>" alt="<%= event.name %>">
   </div>
+  <% } else { %>
+  <div class="event-image" style="clear:both">
+    <img src="/images/reservr-placeholder-2.png" alt="<%= event.name %>">
+  </div>
+  <% } %>
 
 </div>
 
@@ -43,12 +49,14 @@
   <div class="event-description ff-nobile">
 
     <%- marked(event.description) %>
+
+    <div class="event-toggle-description">
+      <a>Read more</a>
+    </div>
     
   </div>
 
-  <div class="event-toggle-description">
-    <a>Read more</a>
-  </div>
+  
 
   <%- include reservation-form %>
     

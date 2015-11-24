@@ -11,6 +11,20 @@
   border-color: #03655C;
 }
 
+.btn.btn-gray {
+  background: #BFBFBF;
+  border-color: #BFBFBF;
+  border-radius: 2px;
+  color: #000;
+}
+
+.btn.btn-gray:hover,
+.btn.btn-gray:active,
+.btn.btn-gray:focus {
+  background: #DAD9D9;
+  border-color: #DAD9D9;
+}
+
 html,
 body {
   min-height: 100%;
@@ -691,8 +705,24 @@ textarea {
   display: block;
 }
 
-.event-form--show-fields .btn-toggle-fields {
+.event-form--show-fields .btn-toggle-fields,
+.event-form--show-fields .event-reserv--sold-out .btn-toggle-fields.btn-gray {
   display: none;
+}
+
+.event-reserv--sold-out .btn-toggle-fields.btn-primary,
+.event-reserv--sold-out .btn-reserv.btn-primary {
+  display: none;
+}
+
+.btn-toggle-fields.btn-gray,
+.btn-reserv.btn-gray {
+  display: none;
+}
+
+.event-reserv--sold-out .btn-toggle-fields.btn-gray,
+.event-reserv--sold-out .btn-reserv.btn-gray {
+  display: block;
 }
 
 .event-form--loading:before {
@@ -899,17 +929,20 @@ textarea {
   text-overflow: ellipsis;
 }
 
-.event-page .event-description.event-description--show {
-  max-height: none;
-}
 
 
 .event-page .event-item .event-description {
   max-height: 27px;
 }
 
+.event-page .event-description.event-description--show,
 .event-page .event-item .event-description.event-description--show {
   max-height: none;
+}
+
+.event-page .event-description.event-description--show .event-toggle-description,
+.event-page .event-item .event-description.event-description--show .event-toggle-description{
+  display: none;
 }
 
 .event-page .event-item {
@@ -922,12 +955,31 @@ textarea {
 
 }
 
-.event-toggle-description a {
-  font-size: 16px;
-  text-align: center;
+.event-description {
+  position: relative;
+}
+.event-toggle-description {
+  position: absolute;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+40&amp;0+0,1+40 */
+  background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 40%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 40%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 40%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
   cursor: pointer;
-  padding: 20px;
+  width: 100%;
+  bottom: 0;
+  height: 90px;
+  display: table;
+}
+
+.event-toggle-description a{
+  bottom: 0;
   display: block;
+  width: 100%;
+  height: 50px;
+  display: table-cell;
+  vertical-align: bottom;
+
 }
 
 
@@ -963,7 +1015,8 @@ textarea {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 10px;
+  padding: 10px 0 10px 5px;
+  max-width: 240px;
 }
 
 .external-link .fa {
@@ -978,30 +1031,37 @@ textarea {
   margin: 0;
 }
 
-.rsvr-dashboard .event-meta {
-  border: 1px solid #ccc;
-  border-radius: 3px;
-}
-
 .event-status {
   padding: 0 0 5px 0;
   margin-left: 10px;
   margin-bottom: 15px;
   font-size: 11px;
   border-bottom: 1px solid #ccc;
+}
 
+.event-status .btn {
+  margin-top: 5px;
 }
 
 .event-published,
 .event-not-published {
+  padding: 10px 0;
+}
+
+.event-published,
+.event-not-published,
+.event-publish,
+.event-unpublish {
   display: none;
 }
 
-.event-status--published .event-published {
+.event-status--published .event-published,
+.event-status--published .event-unpublish {
   display: block;
 }
 
-.event-status--not-published .event-not-published {
+.event-status--not-published .event-not-published,
+.event-status--not-published .event-publish {
   display: block;
 }
 

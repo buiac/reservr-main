@@ -19,7 +19,8 @@ module.exports = function(config, db) {
     if (user.validEmail) {
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
         
         db.orgs.findOne({
@@ -176,7 +177,10 @@ module.exports = function(config, db) {
               }
 
               db.events.find({
-                orgId: org._id
+                orgId: org._id,
+                date: {
+                  $gte: new Date()
+                }
               }, function (err, events) {
 
                 res.render('backend/settings', {

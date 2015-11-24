@@ -6,10 +6,6 @@
   <input type="hidden" name="orgId" value="<%= org._id || '' %>">
   <input type="hidden" name="temp" value="false">
   <input type="hidden" name="published" value="<%= theEvent.published %>">
-
-  <% if(theEvent.images && theEvent.images.length) { %>
-    <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
-  <% } %>
   
   <% if (errors.length) { %>
           
@@ -35,6 +31,10 @@
       
         <div class="event-group event-image event-image--show-image">
           
+          <% if(theEvent.images && theEvent.images.length) { %>
+            <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
+          <% } %>
+          
           <div class="event-preview-image">
             <% if (theEvent.images && theEvent.images.length) { %>
               
@@ -52,32 +52,38 @@
 
               <a><i class="fa fa-edit"></i> Change Image</a>
 
-              <input type="file" name="images" id="">
+              <input type="file" name="images" id="" value="">
 
             </div>
 
           </div>
-          
-          <span class="event-placeholder">
-            
-            <i class="fa fa-picture-o"></i> Add an image
-
-            <input type="file" name="images" id="">
-
-          </span>
 
         </div>
 
     </div>
 
     <div class="col-md-6 event-details">
-      <div class="event-status event-status--<%= theEvent.published ? 'published' : 'not-published' %>">
-        <div>
-          <span class="event-published text-muted">Published</span>
+      
+      <div class="cf event-status event-status--<%= theEvent.published ? 'published' : 'not-published' %>">
+
+        <div class="pull-left">
+          <div>
+            <span class="event-published text-muted">Published:</span>
+          </div>
+
+          <div>
+            <span class="event-not-published text-muted">Not Published</span>
+          </div>
         </div>
-        <div>
-          <span class="event-not-published text-muted">Not Published</span>
-        </div>
+
+        <% if (theEvent._id) { %> 
+        
+          <a class="external-link pull-left" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
+          
+        <% } %>
+
+        <a href="" class="btn btn-xs btn-primary pull-right event-publish">Publish</a>
+        <a href="" class="btn btn-xs btn-default pull-right event-unpublish"> Unpublish</a>
       </div>
 
       <div class="form-group event-name event-group">
@@ -96,16 +102,6 @@
         </div>
 
       </div>
-
-      
-      <% if (theEvent._id) { %> 
-      
-        <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> <i class="fa fa-link"></i>http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
-        
-      <% } %>
-
-     
-
 
 
       <div class="form-group event-description event-group">
@@ -176,7 +172,7 @@
             
             <i class="fa fa-map-o"></i>
 
-            <input type="text" class="form-control" name="location" value="<%= theEvent.location || 'Event location' %>">
+            <input type="text" class="form-control" name="location" value="<%= theEvent.location || org.location || 'Event location' %>">
 
           </div>
 

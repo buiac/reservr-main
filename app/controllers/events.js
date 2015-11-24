@@ -89,7 +89,8 @@ module.exports = function(config, db) {
     if (user.validEmail) {
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
         
         db.orgs.findOne({
@@ -249,7 +250,8 @@ module.exports = function(config, db) {
     user.validEmail = util.validateEmail(user.username);
 
     data.getOrgEvents({
-      orgId: req.params.orgId
+      orgId: req.params.orgId,
+      fromDate: new Date()
     }).then(function (events) {
 
       db.orgs.findOne({
@@ -603,8 +605,13 @@ module.exports = function(config, db) {
       event.temp = (event.temp === 'true')
     }
 
+    // update the event image
+    
+
     event.invited = 0
     event.waiting = 0
+
+    // check if there's an image
     
     if (!event._id && !event.orgId) {
     

@@ -4,6 +4,7 @@ $(document).ready(function () {
   var $eventGroups = $('.event-group')
   var saveHover = false
   var calendar
+  var reloadPage = false
   var eventModel = {
     name: 'Demo event title',
     description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
@@ -98,14 +99,10 @@ $(document).ready(function () {
     $parent.addClass('event-publish--published')
   }
 
-
-
   function syncData() {
 
     var eventId = $('[name=_id]')[0]
-
-    eventModel.date = new Date(eventModel.date)
-
+    
     $.ajax({
       method: 'POST',
       url: config.baseUrl + '/tempEvent',
@@ -123,11 +120,14 @@ $(document).ready(function () {
         // update the unique event url
         updateEventUrl()
 
-        if (eventId && !eventId.value) {
-          window.location = window.location.href + '/' + res.event._id
-        } else if (eventId && eventId.value) {
-          window.location = window.location.href
+        if (reloadPage) {
+          if (eventId && !eventId.value) {
+            window.location = window.location.href + '/' + res.event._id
+          } else if (eventId && eventId.value) {
+            window.location = window.location.href
+          }
         }
+        
       }
 
     }).fail(function (err) {
@@ -147,7 +147,6 @@ $(document).ready(function () {
     var toggleClass = 'event-group--toggle-placeholder'
     var value = $(field).val()
     
-
     if (!$icon.length) {
       $icon = $placeholder.find('.icomoon')
     }
@@ -173,6 +172,10 @@ $(document).ready(function () {
     }
 
     eventModel[field.name] = field.value
+    reloadPage = false
+
+    console.log('simple save data')
+    console.log(eventModel)
 
     syncData()
   }
@@ -205,7 +208,7 @@ $(document).ready(function () {
     saveHover = false
   }
 
-  function parseFields () {
+  function parseFieldsOnLoad () {
     var $eventGroups = $('.rzv-lightbox .event-group')
 
     $eventGroups.each(function (i, eventGroup) {
@@ -215,6 +218,12 @@ $(document).ready(function () {
       var value = $(field).val()
       var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
       
+      eventModel[field.name] = field.value
+
+      if (field.name === 'existingImages') {
+        eventModel.images = JSON.parse(field.value)
+      }
+    
       if ($(eventGroup).hasClass('event-seats')) {
         
 
@@ -306,7 +315,7 @@ $(document).ready(function () {
 
   function init () {
     // updateDateField()
-    parseFields()
+    parseFieldsOnLoad()
     checkImage()
     setupCalendar()
     initBootstrapWidgets()
@@ -334,6 +343,7 @@ $(document).ready(function () {
     $this.addClass('btn-state-loading')
 
     eventModel.published = true;
+    reloadPage = true
 
     syncData()
   }
@@ -435,7 +445,7 @@ $(document).ready(function () {
 
   function toggleDescription (e) {
     var $this = $(this)
-    var $eventDescription = $this.parent().prev()
+    var $eventDescription = $this.parent()
 
     $eventDescription.toggleClass('event-description--show')
   }
@@ -521,6 +531,7 @@ $(document).ready(function () {
     var name = $this.find('.reserve-name').val();
     var email = $this.find('.reserve-email').val();
     var seats = parseInt($this.find('.reserve-seats').val(), 10);
+    var timestamp = $this.find('.reserve-timestamp').val()
     var eventId = $this.find('.reserve-id').val();
     var orgId = $this.find('.reserve-orgId').val();
     var invited = parseInt($this.find('.reserve-invited').val(), 10);
@@ -539,6 +550,7 @@ $(document).ready(function () {
           name: name,
           email: email,
           seats: seats,
+          timestamp: timestamp
           // mclistid: mclistid
         },
         success: function(res) {
@@ -550,24 +562,22 @@ $(document).ready(function () {
           // update the number of seats invited
           $('.seats-invited').html(res.event.invited)
 
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(res)
-          console.log('--------')
-          console.log('\n\n\n\n')
+          if ($('.seats-waiting')) {
+            $('.seats-waiting').html(res.event.waiting)            
+          }
 
           // // clear the form fields
-          // $this.find('.reserve-name').val('');
-          // $this.find('.reserve-email').val('');
-          // $this.find('.reserve-seats').val('');
+          $eventform.find('.reserve-name').val('');
+          $eventform.find('.reserve-email').val('');
+          $eventform.find('.reserve-seats').val('');
 
 
-          // setTimeout(function() {
+          setTimeout(function() {
             
-          //   $eventform.removeClass('event-form--loading');
-          //   $eventform.removeClass('event-form--success');
+            // $eventform.removeClass('event-form--loading');
+            $eventform.removeClass('event-form--success');
             
-          // }, 5000);
+          }, 5000);
 
           // seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
           // $('#seats-left').html(Math.abs(seatsLeft));
@@ -620,6 +630,16 @@ $(document).ready(function () {
     $(this).parent().hide()
   };
 
+  function eventUnpublish (e) {
+    eventModel.published = false 
+    syncData()
+  }
+
+  function eventPublish (e) {
+    eventModel.published = true 
+    syncData()
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -630,10 +650,14 @@ $(document).ready(function () {
   $('body').on('click', '.event-free', updateEventPrice);
   $('body').on('click', '.btn-publish', publishEvent);
   $('body').on('click', '.btn-create-account', createAccount);
-  $('body').on('click', '.event-toggle-description a', toggleDescription)
+  $('body').on('click', '.event-toggle-description', toggleDescription)
   $('body').on('click', '.alert a.close', closeAlert)
   $('body').on('click', '.form-error-message .close, .form-success-message .close', closeAlert)
+  $('body').on('click', '.event-publish', eventPublish)
+  $('body').on('click', '.event-unpublish', eventUnpublish)
+  $('body').on('click', '.event-group-cancel', hideGroup)
   
+
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
   $('.event-image input').change(function(){
