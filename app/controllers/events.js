@@ -591,6 +591,9 @@ module.exports = function(config, db) {
 
     var event = req.body.event
 
+    // format date
+    event.date = new Date(event.date)
+
     // convert strings to booleans
     if (typeof event.published === 'string') {
       event.published = (event.published === 'true')
