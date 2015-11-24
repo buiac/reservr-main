@@ -562,24 +562,22 @@ $(document).ready(function () {
           // update the number of seats invited
           $('.seats-invited').html(res.event.invited)
 
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(res)
-          console.log('--------')
-          console.log('\n\n\n\n')
+          if ($('.seats-waiting')) {
+            $('.seats-waiting').html(res.event.waiting)            
+          }
 
           // // clear the form fields
-          // $this.find('.reserve-name').val('');
-          // $this.find('.reserve-email').val('');
-          // $this.find('.reserve-seats').val('');
+          $eventform.find('.reserve-name').val('');
+          $eventform.find('.reserve-email').val('');
+          $eventform.find('.reserve-seats').val('');
 
 
-          // setTimeout(function() {
+          setTimeout(function() {
             
-          //   $eventform.removeClass('event-form--loading');
-          //   $eventform.removeClass('event-form--success');
+            // $eventform.removeClass('event-form--loading');
+            $eventform.removeClass('event-form--success');
             
-          // }, 5000);
+          }, 5000);
 
           // seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
           // $('#seats-left').html(Math.abs(seatsLeft));
