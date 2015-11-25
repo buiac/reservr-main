@@ -516,15 +516,22 @@ $(document).ready(function () {
 
     $eventDescription.toggleClass('event-description--show')
   }
-
-    function toggleFormFields (e) {
+    
+  function toggleFormFields (e) {
+    
     var $this = $(this)
     var $form = $this.parents('.event-form')
 
     $form.addClass('event-form--show-fields')
-  }
 
-  
+    if ($('.event-temporary').length) {
+      swal({
+        title: 'You\'ll need a FREE account for that',
+        text: "This way you can check who signed up for your awesome event.",
+        type: "warning"
+      }); 
+    }
+  }
 
   function preventSubmitOnEnter (e) {
     
