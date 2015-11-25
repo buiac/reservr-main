@@ -254,7 +254,7 @@
       <a href="/dashboard/<%= org._id %>/events" class="btn btn-default pull-right">Cancel</a>
 
       <% if (theEvent._id) { %>
-      <a href="/dashboard/<%= org._id %>/delete-event/<%= theEvent._id %>" class="btn btn-danger" onclick="confirm('Are you sure you want to delete this event?')">Delete event</a>
+        <a href="/dashboard/<%= org._id %>/delete-event/<%= theEvent._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure you want to delete this event?">Delete event</a>
       <% } %>
 
     </div>      

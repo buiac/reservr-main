@@ -361,8 +361,16 @@ textarea {
   background: #eaeaea;
 }
 
+.rd-day-selected {
+  background: #A94442;
+}
+
 .rd-day-selected:hover {
-  background: #000;
+  background: #AB5856;
+}
+
+.rd-day-selected, .rd-time-option:hover, .rd-time-selected {
+  background: #A94442; 
 }
 
 .btn-state-loading {

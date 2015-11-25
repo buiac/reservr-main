@@ -28,11 +28,47 @@ $(document).ready(function () {
     baseUrl: ''
   }
 
+  swal.setDefaults({ confirmButtonColor: '#02766C' });
+
+  var _validFileExtensions = ['.jpg', '.jpeg', '.png'];
+
   moment.defaultFormat = 'YYYY-MM-DD LT';
 
 
   if (window.location.hostname.indexOf('localhost') !== -1) {
     config.baseUrl = 'http://localhost:8080'
+  }
+
+
+
+  function validateImageExtension(oInput) {
+    
+
+    var sFileName = oInput.value;
+    if (sFileName.length > 0) {
+      var blnValid = false;
+      for (var j = 0; j < _validFileExtensions.length; j++) {
+        var sCurExtension = _validFileExtensions[j];
+        if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+          blnValid = true;
+          break;
+        }
+      }
+
+      if (!blnValid) {
+        swal({
+          title: 'This is not an image file!',
+          text: 'Supported file extensions are: .jpg, .jpeg and .png',
+          type: 'error',
+          confirmButtonText: 'Oke, got it'
+        });
+        return false;
+      }
+    }
+    
+
+    return true;
+
   }
 
   function toggleGroup (e) {
@@ -96,6 +132,14 @@ $(document).ready(function () {
     $eventLink.attr('href', url)
 
     $button.removeClass('btn-state-loading')
+
+    swal({
+      title: 'Your unique event link:',
+      text: '<a href="' + url + '" target="_blank" class="event-link">' + url + '</a>',
+      type: 'success',
+      confirmButtonText: 'Oke, got it',
+      html: true
+    });
 
     // show overlay
     $parent.addClass('event-publish--published')
@@ -392,10 +436,31 @@ $(document).ready(function () {
     // $form.addClass(successClass)
   }
 
+
+
   function readURL(input) {
 
     if (input.files && input.files[0]) {
+
+      
+      if (!validateImageExtension(input)) {
+        return
+      }
+
       var reader = new FileReader();
+
+      if ((input.files[0].size / 1000) > 100) {
+        // if file is bigger than 100kb
+        swal({
+          title: 'Try a smaller image!',
+          text: 'Image file is too big (' + parseInt(input.files[0].size / 1000, 10) + 'kb). Max. size is 100kb.',
+          type: 'error',
+          confirmButtonText: 'Oke, got it'
+        });
+
+        return;
+      }
+      
 
       eventModel.images = [{
         path: '/media/' + input.files[0].name
@@ -635,6 +700,25 @@ $(document).ready(function () {
     syncData()
   }
 
+  function removeItem (e) {
+    e.preventDefault()
+
+    var title = e.target.dataset.message
+    var href = e.target.href
+
+    swal({
+      title: title,
+      text: "You will not be able to recover the data after this.",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      closeOnConfirm: false
+    }, function() {
+      window.location = href
+    });
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -651,7 +735,7 @@ $(document).ready(function () {
   $('body').on('click', '.event-publish', eventPublish)
   $('body').on('click', '.event-unpublish', eventUnpublish)
   $('body').on('click', '.event-group-cancel', hideGroup)
-  
+  $('body').on('click', '.btn-remove-item', removeItem)
 
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
