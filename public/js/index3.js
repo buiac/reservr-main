@@ -2,7 +2,7 @@ autosize(document.querySelectorAll('textarea'));
 
 $(document).ready(function () {
 
-  var defaultEventDate = new Date(new Date().getTime + (3 * 24 * 60 * 60 * 1000))
+  var defaultEventDate = new Date(new Date().getTime() + (3 * 24 * 60 * 60 * 1000))
   var $eventGroups = $('.event-group')
   var saveHover = false
   var calendar
@@ -133,13 +133,15 @@ $(document).ready(function () {
 
     $button.removeClass('btn-state-loading')
 
-    swal({
-      title: 'Your unique event link:',
-      text: '<a href="' + url + '" target="_blank" class="event-link">' + url + '</a>',
-      type: 'success',
-      confirmButtonText: 'Oke, got it',
-      html: true
-    });
+    if ($('.rzvr-homepage').length) {
+      swal({
+        title: 'Your unique event link:',
+        text: '<a href="' + url + '" target="_blank" class="event-link">' + url + '</a>',
+        type: 'success',
+        confirmButtonText: 'Oke, got it',
+        html: true
+      });
+    }
 
     // show overlay
     $parent.addClass('event-publish--published')
@@ -328,20 +330,9 @@ $(document).ready(function () {
   }
 
   function updateDateField () {
-    // add todays date to the date field
-
+    var isHomepage = $('.rzvr-homepage').length
     $date = $('[name=date]')
-
-    var date = moment().format('YYYY')
-    date += '-' + moment().format('MM')
-    date += '-' + moment().format('DD')
-    date += ' ' + moment().format('HH:mm')
-
-    if (!$date.val()) {
-      $date.val(date)
-    } else {
-      $date.val($date.val())
-    }
+    $date.val(moment(defaultEventDate).format('LLLL'))
   }
 
   function updateHiddenFields () {
@@ -360,7 +351,7 @@ $(document).ready(function () {
   }
 
   function init () {
-    // updateDateField()
+    updateDateField()
     parseFieldsOnLoad()
     checkImage()
     setupCalendar()

@@ -86,9 +86,10 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label for="">Date locale</label>
+
                 <select name="locale" id="" class="form-control">
-                  <option value="en" selected>English</option>
-                  <option value="ro" >Romanian</option>
+                  <option value="en" <% if(org.locale === 'en') { %> selected <% } %>>English</option>
+                  <option value="ro" <% if(org.locale === 'ro') { %> selected <% } %>>Romanian</option>
                 </select>
               </div>
 
@@ -103,7 +104,7 @@
 
               </div>
 
-              <a href="/dashboard/delete-account/<%= user._id %>" class="btn btn-danger" onclick="if (!confirm('Sunteti sigura ca doriti sa stergeti contul?')) return false">Delete Account</a>
+              <a href="/dashboard/delete-account/<%= user._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure you want to delete your account?">Delete Account</a>
               <button class="btn btn-primary pull-right" type="submit">Save</button>
             </div>
           </div>
@@ -111,11 +112,5 @@
 
       </div>
       
-      
-        
-      
-
-    
-
 
 <%- include footer %>
