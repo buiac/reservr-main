@@ -28,7 +28,10 @@ $(document).ready(function () {
     baseUrl: ''
   }
 
-  swal.setDefaults({ confirmButtonColor: '#02766C' });
+  swal.setDefaults({
+    confirmButtonColor: '#02766C',
+    animation: false
+  });
 
   var _validFileExtensions = ['.jpg', '.jpeg', '.png'];
 
@@ -717,6 +720,37 @@ $(document).ready(function () {
     });
   }
 
+  function toggleNotificationEmail (e) {
+    if (!this.checked) {
+      $(this).parents('.rzv-panel').addClass('rzv-notifications--disabled')
+    } else {
+      $(this).parents('.rzv-panel').removeClass('rzv-notifications--disabled')
+    }
+  }
+
+  function displayPanels (e) {
+    e.preventDefault()
+
+    var $panelContainer = $('.rzv-panel-container');
+    var classes = 'rzv-panel--notifications,rzv-panel--account,rzv-panel--organization,rzv-panel--integrations,rzv-panel--templates'.split(',');
+    var panelName = $(this).attr('href').slice(1)
+    var $navListEls = $('.rzv-vnav li a')
+
+    
+    // remove previous classes
+    classes.forEach(function (className) {
+      $panelContainer.removeClass(className)
+    })
+
+    // add name of the panel to parent element
+    $panelContainer.addClass('rzv-panel--' + panelName)
+
+    // update nav list
+    $navListEls.removeClass('active-item')
+
+    $(this).addClass('active-item')
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -734,6 +768,9 @@ $(document).ready(function () {
   $('body').on('click', '.event-unpublish', eventUnpublish)
   $('body').on('click', '.event-group-cancel', hideGroup)
   $('body').on('click', '.btn-remove-item', removeItem)
+  $('body').on('change', '[name=notifications]', toggleNotificationEmail)
+  $('body').on('click', '.rzv-vnav li a', displayPanels)
+  
 
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 

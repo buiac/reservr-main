@@ -4,6 +4,7 @@
   "dependencies": {
     "rome": "~2.1.17",
     "fontawesome": "~4.4.0",
-    "marked":"0.3.4"
+    "marked": "0.3.4",
+    "css-toggle-switch": "~4.0.0"
   }
 }

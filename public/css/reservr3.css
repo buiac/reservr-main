@@ -51,6 +51,7 @@ textarea {
 }
 
 .rzv-lightbox {
+  position: relative;
   background: #fff;
   border-radius: 3px;
   box-shadow: rgba(0,0,0, .4) 0 0 4px;
@@ -1076,6 +1077,67 @@ textarea {
 
 .rzvr-homepage .event-publish {
   display: block;
+}
+
+/* Rezervr horizontal nav
+*/
+
+.rzv-vnav {
+  border-right: 1px solid #ccc;
+}
+.rzv-vnav li a {
+  display: block;
+  padding: 10px;
+}
+
+.rzv-vnav li a.active-item {
+  color: #000;
+}
+
+/* Show panels
+*/
+.rzv-panel--notifications .rzv-notifications,
+.rzv-panel--account .rzv-account,
+.rzv-panel--organization .rzv-organization,
+.rzv-panel--integrations .rzv-integrations,
+.rzv-panel--templates .rzv-templates {
+  display: block;
+}
+
+/* Settings notifications panel
+*/
+
+.form-group-notification-email {
+  display: block;  
+}
+
+.rzv-notifications--disabled .form-group-notification-email{
+  display: none;
+}
+
+.rzv-panel {
+  padding-bottom: 60px;
+  display: none;
+}
+
+.rzv-panel .rzv-panel-title {
+  border-bottom: 1px solid #ccc; 
+  margin-bottom: 20px; 
+  padding-bottom: 20px;
+}
+
+.rzv-panel input[type=text],
+.rzv-panel select {
+  margin-top: 20px;
+}
+
+.rzv-panel .label-no-description {
+  margin-top: 30px;
+}
+
+.rzv-panel-action {
+  height: 60px;
+  
 }
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }

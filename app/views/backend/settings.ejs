@@ -1,7 +1,6 @@
 <% var theEvent = '' %>
 <%- include header %>
     
-
       <div class="rzv-lightbox">
 
         <h2>Settings</h2>
@@ -9,105 +8,343 @@
         <form action="/dashboard/<%= org._id %>/settings" method="post" enctype="multipart/form-data">
 
           <div class="row">
+            
+            <div class="col-md-3">
+              <ul class="rzv-vnav list-unstyled">
+                <li><a href="#notifications" class="active-item">Notifications</a></li>
+                <li><a href="#account">Account</a></li>
+                <li><a href="#organization">Organization</a></li>
+                <li><a href="#integrations">Integrations</a></li>
+                <li><a href="#templates">Templates</a></li>
+              </ul>
+            </div>
 
-            <div class="col-md-6">
-              
-                <div class="form-group">
-                  
-                  <label for="">Organization name</label>
+            <div class="col-md-9 rzv-panel-container rzv-panel--notifications">
 
-                  <input type="text" value="<%= org.name %>" name="orgName" id="" class="form-control" required>
-
-                </div>
-
-                <div class="form-group">
-                  
-                  <label for="">Email</label>
-
-                  <input type="email" value="<%= user.username %>" name="username" id="" class="form-control" required>
-
-                </div>
-
-                <div class="form-group">
-                  
-                  <label for="">Where should the confirmation email be sent?</label>
-
-                  <input type="email" value="<%= org.confirmationEmail || user.username %>" name="confirmationEmail" id="" class="form-control" required>
-
-                </div>
-
+              <div class="rzv-panel rzv-notifications ">
                 
+                <h4 class="rzv-panel-title">Notifications</h4>
 
                 <div class="form-group">
                   
-                  <label for="">Location</label>
+                  <div class="row">
+                    
+                    <div class="col-md-6">
 
-                  <input type="text" value="<%= org.location || '' %>" name="location" id="" class="form-control">
-
-                </div>
-
-                <div class="form-group">
+                      <label>Turn email alerts On or Off</label>
+                      <p class="text-muted">Receive an email notification every time someone reservs a seat for your event. (Notifications are on by default)</p>
                       
-                  <label for="">Mailchimp Account 1</label>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="switch-light switch-material" onclick="">
+                        <input type="checkbox" <% if (org.notifications) { %> checked="checked" <% } %> name="notifications">
+
+                        <strong>
+                          
+                        </strong>
+
+                        <span>
+                          <span>Off</span>
+                          <span>On</span>
+                          <a></a>
+                        </span>
+                      </label>
+                    </div>
+
+                  </div> <!-- row -->
+
+                </div> <!-- form-group -->
+
+                <div class="form-group form-group-notification-email">
+                  
                   <div class="row">
                     
                     <div class="col-md-6">
                       
-                      <input type="text" name="mailchimpName1" id="" class="form-control" placeholder="Mailchimp Account Name 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].name %>" <% } else { %> value="" <% } %>>
+                      <label for="">Email</label>
+                      
+                      <p class="text-muted">Where should we send you the notification that someone has reservd a seat? (The default is the email that you used to sign up.) </p>
+
                     </div>
 
                     <div class="col-md-6">
-                      
-                      <input type="text" name="mailchimpAccount1" id="" class="form-control" placeholder="Mailchimp Account Number 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].account %>" <% } else { %> value="" <% } %> >
+                      <input type="email" value="<%= org.confirmationEmail || user.username %>" name="confirmationEmail" id="" class="form-control input-lg" required>
                     </div>
 
-                  </div>      
+                  </div>
 
                 </div>
 
+              </div> <!-- panel -->
+
+              <div class="rzv-panel rzv-account ">
+
+                <h4 class="rzv-panel-title">Account</h4>
+
                 <div class="form-group">
-                      
-                  <label for="">Mailchimp Account 2</label>
+
                   <div class="row">
-                    
-                    <div class="col-md-6">
-                      
-                      <input type="text" name="mailchimpName2" id="" class="form-control" placeholder="Mailchimp Account Name 2" <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].name %>" <% } else { %> value="" <% } %>>
-                    </div>
 
                     <div class="col-md-6">
-                      
-                      <input type="text" name="mailchimpAccount2" id="" class="form-control" placeholder="Mailchimp Account Number 2"  <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].account %>" <% } else { %> value="" <% } %>>
+                      <label for="">Username</label>
+                      <p class="text-muted">The username must be a valid email address.</p>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="email" value="<%= user.username %>" name="username" id="" class="form-control input-lg" required>
+                    </div>
+
+                  </div> <!-- row -->
+
+                </div> <!-- form-group -->
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="">Delete Account</label>
+                      <p class="text-muted">Your data will be destroyed and all your events and reservations will be lost. Forever.</p>
+
+                    </div>
+                    <div class="col-md-6">
+                      <a href="/dashboard/delete-account/<%= user._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure you want to delete your account?">Delete Account</a>
                     </div>
                   </div>
                 </div>
-            </div>
 
-            <div class="col-md-4">
-              <div class="form-group">
-                <label for="">Date locale</label>
-
-                <select name="locale" id="" class="form-control">
-                  <option value="en" <% if(org.locale === 'en') { %> selected <% } %>>English</option>
-                  <option value="ro" <% if(org.locale === 'ro') { %> selected <% } %>>Romanian</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="">Organization logo</label>
                 
-                <div class="org-logo">
-                  <img src="<%= org.logo %>" alt="" class="settings-org-logo">
+
+              </div> <!-- rzv-panel -->
+
+              <div class="rzv-panel rzv-organization ">
+
+                <h4 class="rzv-panel-title">Organization settings</h4>
+
+                <div class="form-group">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <label for="">Organization logo</label>
+                      <p class="text-muted">Make your event page look even more fabulous by setting your own logo. </p>
+                      
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <div class="org-logo">
+
+                        <img src="<%= org.logo %>" alt="" class="settings-org-logo">
+                      
+                      </div>
+
+                      <input type="file" value="" name="logo" id="">
+
+                    </div>
+
+                  </div>
+
                 </div>
 
-                <input type="file" value="" name="logo" id="">
+                <div class="form-group">
 
+                  <div class="row">
+                    
+                    <div class="col-md-6">
+
+                      <label for="">Organization name</label>
+                      <p class="text-muted">Your organization name will be added to the url of your event or events list (Ex. http://reservr.net/u/MyOrgName/event)</p>
+                        
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <input type="text" value="<%= org.name %>" name="orgName" id="" class="form-control input-lg" required>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <label for="">Location</label>
+                      <p class="text-muted">The location will be autocompleted in the Event creation form so you don't have to type it in every time.</p>
+
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <input type="text" value="<%= org.location || '' %>" name="location" id="" class="form-control input-lg">
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <label for="">Select Language</label>
+                      <p class="text-muted">Currently we support English and Romanian</p>
+                      
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <select name="locale" id="" class="form-control input-lg">
+                        <option value="en" <% if(org.locale === 'en') { %> selected <% } %>>English</option>
+                        <option value="ro" <% if(org.locale === 'ro') { %> selected <% } %>>Romanian</option>
+                      </select>
+                      
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div> <!-- panel -->
+
+              <div class="rzv-panel rzv-integrations">
+                
+                <h4 class="rzv-panel-title">
+                  Integrations  
+                </h4>
+                
+                <div class="row">
+
+                  <div class="col-md-2">
+                    
+                    <div class="form-group">
+                      
+                      <img src="/images/mailchimp.png" alt="" style="display: block;margin-top: 10px;max-width:100%">
+
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-10">
+                    
+                    <h4>Mailchimp integration</h4>
+
+                    <p>You can set up to two Mailchimp Lists where email's of those who reserv seats will be sent.</p>
+
+                  </div>
+
+                </div>
+
+                <h4 class="rzv-panel-title">
+                  
+                    Settup Mailchimp List 1
+                  
+                </h4>
+
+                <div class="form-group">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <label for="">List Name</label>
+                      <p class="text-muted">The list name will be displayed in the event creation form. The name can be identic to the one you have in Mailchimp.</p>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <input type="text" name="mailchimpName1" id="" class="form-control input-lg" placeholder="Mailchimp Account Name 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].name %>" <% } else { %> value="" <% } %>>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <label for="">List ID</label>
+                      <p>Here's a quick tutorial: <a href="http://kb.mailchimp.com/lists/managing-subscribers/find-your-list-id" target="_blank">http://kb.mailchimp.com/lists/managing-subscribers/find-your-list-id</a></p>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <input type="text" name="mailchimpAccount1" id="" class="form-control input-lg" placeholder="Mailchimp Account Number 1" <% if (org.mailchimp && org.mailchimp.length) { %> value="<%= org.mailchimp[0].account %>" <% } else { %> value="" <% } %> >
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <h4 class="rzv-panel-title">Settup Mailchimp List 2 (Optional)</h4>
+                
+                <div class="form-group">
+                  
+                  <div class="row">
+                    
+                    <div class="col-md-6">
+                      
+                      <label for="" class="label-no-description">List Name</label>
+
+                    </div>
+
+                    <div class="col-md-6">
+                      
+                      <input type="text" name="mailchimpName2" id="" class="form-control input-lg" placeholder="Mailchimp Account Name 2" <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].name %>" <% } else { %> value="" <% } %>>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+                  
+                  <div class="row">
+                    
+                    <div class="col-md-6">
+                      <label for="" class="label-no-description">List ID</label>
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <input type="text" name="mailchimpAccount2" id="" class="form-control input-lg" placeholder="Mailchimp Account Number 2"  <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].account %>" <% } else { %> value="" <% } %>>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div> <!-- rzv-panel -->
+
+              <div class="rzv-panel-action">
+
+                
+                <button class="btn btn-primary pull-right btn-lg" type="submit">Save</button>
+
+                <a href="/dashboard" class="btn btn-default pull-right btn-lg" style="margin-right: 20px;">Cancel</a>
+                
               </div>
 
-              <a href="/dashboard/delete-account/<%= user._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure you want to delete your account?">Delete Account</a>
-              <button class="btn btn-primary pull-right" type="submit">Save</button>
             </div>
+
           </div>
+
         </form>
 
       </div>

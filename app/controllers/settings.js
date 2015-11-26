@@ -74,6 +74,11 @@ module.exports = function(config, db) {
     var location = req.body.location;
     var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
+    var notifications = false;
+
+    if (req.body.notifications) {
+      notifications = true      
+    }
 
     if (req.body.mailchimpName1) {
       mailchimp.push({
@@ -121,7 +126,8 @@ module.exports = function(config, db) {
         locale: locale,
         logo: logo,
         mailchimp: mailchimp,
-        confirmationEmail: confirmationEmail
+        confirmationEmail: confirmationEmail,
+        notifications: notifications
       }},  function (err, num) {
         
         if (err) {

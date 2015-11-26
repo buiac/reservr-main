@@ -118,6 +118,7 @@ module.exports = function(config, db) {
   };
 
   var notifyUser = function (reservation, event, partial) {
+    // send waiting user a notification that a seat is available
 
     var params = {
       seats: reservation.seats,
@@ -263,8 +264,6 @@ module.exports = function(config, db) {
           html: template.orgBody
         };
 
-
-
         if (reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
             console.log(err);
@@ -277,10 +276,18 @@ module.exports = function(config, db) {
           });
         }
 
-        transport.sendMail(orgEmailConfig, function (err, info) {
-          console.log(err);
-          console.log(info);
-        });
+        console.log('\n\n\n\n')
+        console.log('----does org want notifications----')
+        console.log(org.notifications)
+        console.log('--------')
+        console.log('\n\n\n\n')
+
+        if (org.notifications) {
+          transport.sendMail(orgEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });  
+        }
 
       });
 
