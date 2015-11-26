@@ -19,7 +19,7 @@
               </ul>
             </div>
 
-            <div class="col-md-9 rzv-panel-container rzv-panel--notifications">
+            <div class="col-md-9 rzv-panel-container rzv-panel--templates">
 
               <div class="rzv-panel rzv-notifications ">
                 
@@ -331,6 +331,101 @@
                 </div>
 
               </div> <!-- rzv-panel -->
+
+              <div class="rzv-panel rzv-templates" style="display: block;">
+
+                <h4 class="rzv-panel-title">
+                  Reservation Message
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This is the message that is sent every time the user makes a reservation.</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" name="userSubject" class="form-control" id="" value="<%= org.userSubject || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="userBody" id="" cols="30" rows="5" class="form-control"><%= org.userBody || '' %></textarea>
+
+                </div>
+
+                <h4 class="rzv-panel-title" style="margin-top: 50px;">
+                  Included on the waiting list message
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This is the message that is sent every time the user is added to the waiting list.</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" name="userSubjectWaiting" class="form-control" id="" value="<%= org.userSubjectWaiting || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="userBodyWaiting" id="" cols="30" rows="5" class="form-control"><%= org.userBodyWaiting || '' %></textarea>
+
+                </div>
+
+                <h4 class="rzv-panel-title" style="margin-top: 50px;">
+                  Account holder notification
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This message is sent to you to let you know that a new reservation has been made.</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" name="orgSubject" class="form-control" id="" value="<%= org.orgSubject || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="orgBody" id="" cols="30" rows="5" class="form-control"><%= org.orgBody || '' %></textarea>
+
+                </div>
+
+              </div>
+
 
               <div class="rzv-panel-action">
 

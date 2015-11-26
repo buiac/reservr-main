@@ -16,6 +16,7 @@ module.exports = function(config, db) {
   var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
+  var marked = require('marked');
 
   db.reservations.find({},function (err, reservations) {
     
@@ -188,52 +189,7 @@ module.exports = function(config, db) {
 
   var sendConfirmationEmails = function (reservation, event) {
 
-    // send confirmation to user
-    var userEmail = reservation.email;
-
-    var userParams = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm')
-    };
-
-    var orgParams = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-      userName: reservation.name,
-      userEmail: reservation.email
-    }
-
-    var template = {
-      userSubject: 'Rezervarea a fost facuta',
-      userSubjectWaiting: 'Ai fost inclus pe lista de asteptare',
-      userBody: 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
-      userBodyWaiting: 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.',
-      orgSubject: 'O noua rezervare la "{eventName}"',
-      orgBody: 'Salut, <br /><br /> O noua rezervare de {seats} locuri a fost facuta pentru evenimentul "{eventName}" de {eventDate} de catre {userName}, {userEmail}. <br /><br /> O zi cat mai buna iti dorim.'
-    };
-
-    var userPlaceholders = getWordsBetweenCurlies(template.userBody);
-    var userWaitingPlaceholders = getWordsBetweenCurlies(template.userBodyWaiting);
-    var orgPlaceholders = getWordsBetweenCurlies(template.orgBody);
-    var orgSubjectPlacholders = getWordsBetweenCurlies(template.orgSubject);
-
-    userPlaceholders.forEach(function (item) {
-      template.userBody = template.userBody.replace('{' + item + '}', userParams[item]);
-    });
-
-    userWaitingPlaceholders.forEach(function (item) {
-      template.userBodyWaiting = template.userBodyWaiting.replace('{' + item + '}', userParams[item]);
-    });
-
-    orgPlaceholders.forEach(function (item) {
-      template.orgBody = template.orgBody.replace('{' + item + '}', orgParams[item]);
-    });
-
-    orgSubjectPlacholders.forEach(function (item) {
-      template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
-    });
+    
 
     db.orgs.findOne({
       _id: event.orgId
@@ -242,6 +198,64 @@ module.exports = function(config, db) {
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
+
+        // send confirmation to user
+        var userEmail = reservation.email;
+
+        var userParams = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
+        };
+
+        var orgParams = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          userName: reservation.name,
+          userEmail: reservation.email
+        }
+
+        var defaultTemplate = {
+          userSubject: 'Reservation Confirmation',
+          userSubjectWaiting: 'You\'ve been included on the waiting list', // 'Ai fost inclus pe lista de asteptare'
+          userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Cancel Reservation</a> \n\n Have a great day.',
+          userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Cancel Reservation</a> \n\n Have a great day.',
+          orgSubject: 'A new reservation for "{eventName}"',
+          orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+        }
+
+        var template = {
+          userSubject: org.userSubject, // 'Rezervarea a fost facuta'
+          userSubjectWaiting: org.userSubjectWaiting, // 'Ai fost inclus pe lista de asteptare'
+          userBody: marked(org.userBody), // 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.'
+          userBodyWaiting: marked(org.userBodyWaiting), // 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.'
+          orgSubject: org.orgSubject,
+          orgBody: marked(org.orgBody)
+        };
+
+        var userPlaceholders = getWordsBetweenCurlies(template.userBody);
+        var userWaitingPlaceholders = getWordsBetweenCurlies(template.userBodyWaiting);
+        var orgPlaceholders = getWordsBetweenCurlies(template.orgBody);
+        var orgSubjectPlacholders = getWordsBetweenCurlies(template.orgSubject);
+
+        userPlaceholders.forEach(function (item) {
+          template.userBody = template.userBody.replace('{' + item + '}', userParams[item]);
+        });
+
+        userWaitingPlaceholders.forEach(function (item) {
+          template.userBodyWaiting = template.userBodyWaiting.replace('{' + item + '}', userParams[item]);
+        });
+
+        orgPlaceholders.forEach(function (item) {
+          template.orgBody = template.orgBody.replace('{' + item + '}', orgParams[item]);
+        });
+
+        orgSubjectPlacholders.forEach(function (item) {
+          template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
+        });
+
         
         var userEmailConfig = {
           from: org.confirmationEmail,
@@ -275,12 +289,6 @@ module.exports = function(config, db) {
             console.log(info);
           });
         }
-
-        console.log('\n\n\n\n')
-        console.log('----does org want notifications----')
-        console.log(org.notifications)
-        console.log('--------')
-        console.log('\n\n\n\n')
 
         if (org.notifications) {
           transport.sendMail(orgEmailConfig, function (err, info) {

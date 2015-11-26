@@ -11,6 +11,7 @@ module.exports = function(config, db) {
   var passport = require('passport');
   var data = require('../services/data.js')(config, db);
   var util = require('../services/util.js')(config, db);
+  var marked = require('marked');
 
   var viewSettings = function (req, res, next) {
     var user = req.user;
@@ -51,6 +52,8 @@ module.exports = function(config, db) {
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
     req.checkBody('locale', 'Date locale name should not be empty').notEmpty();
+    
+    // TODO get the org and user and do the rest there so you can send a
 
     var errors = req.validationErrors();
 
@@ -75,6 +78,14 @@ module.exports = function(config, db) {
     var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
     var notifications = false;
+    var userSubject = req.body.userSubject;
+    var userSubjectWaiting = req.body.userSubjectWaiting;
+    var userBody = req.body.userBody;
+    var userBodyWaiting = req.body.userBodyWaiting;
+    var orgSubject = req.body.orgSubject;
+    var orgBody = req.body.orgBody;
+
+    
 
     if (req.body.notifications) {
       notifications = true      
@@ -127,7 +138,13 @@ module.exports = function(config, db) {
         logo: logo,
         mailchimp: mailchimp,
         confirmationEmail: confirmationEmail,
-        notifications: notifications
+        notifications: notifications,
+        userSubject: userSubject,
+        userSubjectWaiting: userSubjectWaiting,
+        userBody: userBody,
+        userBodyWaiting: userBodyWaiting,
+        orgSubject: orgSubject,
+        orgBody: orgBody
       }},  function (err, num) {
         
         if (err) {

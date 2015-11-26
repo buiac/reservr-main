@@ -1131,6 +1131,10 @@ textarea {
   margin-top: 20px;
 }
 
+.rzv-templates input[type=text] {
+  margin-top: 0;
+}
+
 .rzv-panel .label-no-description {
   margin-top: 30px;
 }

@@ -65,6 +65,22 @@ module.exports = function(config, db) {
           // set calendar default name
           org.name = 'guest-' + new Date().getTime();
 
+          org.defaultTemplate = {
+            userSubject: 'Reservation Confirmation',
+            userSubjectWaiting: 'You\'ve been included on the waiting list',
+            userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            orgSubject: 'A new reservation for "{eventName}"',
+            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+          }
+
+          org.userSubject = 'Reservation Confirmation',
+          org.userSubjectWaiting = 'You\'ve been included on the waiting list',
+          org.userBody = 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          org.userBodyWaiting = 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          org.orgSubject = 'A new reservation for "{eventName}"',
+          org.orgBody = 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+
            // save the user
           db.users.insert(newUser, function (err, newDoc) {
             
