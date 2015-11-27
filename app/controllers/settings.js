@@ -49,6 +49,7 @@ module.exports = function(config, db) {
   };
 
   var updateSettings = function (req, res, next) {
+
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
     req.checkBody('locale', 'Date locale name should not be empty').notEmpty();
@@ -78,6 +79,8 @@ module.exports = function(config, db) {
     var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
     var notifications = false;
+    
+    // templates 
     var userSubject = req.body.userSubject;
     var userSubjectWaiting = req.body.userSubjectWaiting;
     var userBody = req.body.userBody;
@@ -85,8 +88,13 @@ module.exports = function(config, db) {
     var orgSubject = req.body.orgSubject;
     var orgBody = req.body.orgBody;
 
-    
+    // reservation update templates
+    var userUpdateSubject = req.body.userUpdateSubject;
+    var userUpdateBody = req.body.userUpdateBody;
 
+    // TODO create a subject for the partial as well
+    var userUpdateBodyPartial = req.body.userUpdateBodyPartial;
+    
     if (req.body.notifications) {
       notifications = true      
     }
@@ -144,7 +152,10 @@ module.exports = function(config, db) {
         userBody: userBody,
         userBodyWaiting: userBodyWaiting,
         orgSubject: orgSubject,
-        orgBody: orgBody
+        orgBody: orgBody,
+        userUpdateSubject: userUpdateSubject,
+        userUpdateBody: userUpdateBody,
+        userUpdateBodyPartial: userUpdateBodyPartial
       }},  function (err, num) {
         
         if (err) {

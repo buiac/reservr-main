@@ -19,7 +19,7 @@
               </ul>
             </div>
 
-            <div class="col-md-9 rzv-panel-container rzv-panel--templates">
+            <div class="col-md-9 rzv-panel-container rzv-panel--notifications">
 
               <div class="rzv-panel rzv-notifications ">
                 
@@ -332,7 +332,7 @@
 
               </div> <!-- rzv-panel -->
 
-              <div class="rzv-panel rzv-templates" style="display: block;">
+              <div class="rzv-panel rzv-templates">
 
                 <h4 class="rzv-panel-title">
                   Reservation Message
@@ -421,6 +421,67 @@
                   <label for="">Email Body</label>
 
                   <textarea name="orgBody" id="" cols="30" rows="5" class="form-control"><%= org.orgBody || '' %></textarea>
+
+                </div>
+
+                <h4 class="rzv-panel-title">
+                  Reservation Update Message
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This message is sent to notify the user that seats have become available and that he has been moved from the Waiting list to the Invited list</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" name="userUpdateSubject" class="form-control" id="" value="<%= org.userUpdateSubject || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="userUpdateBody" id="" cols="30" rows="5" class="form-control"><%= org.userUpdateBody || '' %></textarea>
+
+                </div>
+
+
+                <h4 class="rzv-panel-title">
+                  Reservation Update Message for less seats
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This message is sent to notify the user when fewer seats have become available of the amount of seats he initially wanted and that he has been moved to the Invited List.</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" class="form-control" id="" value="<%= org.userUpdateSubject || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="userUpdateBodyPartial" id="" cols="30" rows="5" class="form-control"><%= org.userUpdateBodyPartial || '' %></textarea>
 
                 </div>
 

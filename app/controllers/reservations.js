@@ -121,30 +121,6 @@ module.exports = function(config, db) {
   var notifyUser = function (reservation, event, partial) {
     // send waiting user a notification that a seat is available
 
-    var params = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-      seatsAvaialable: reservation.seatsAvaialable || ''
-    };
-
-    var template = {
-      subject: 'Update rezervare',
-      body: 'Salut, <br /><br /> S-au eliberat {seats} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',      
-      bodyPartial: 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
-    };
-
-    var bodyPlaceholders = getWordsBetweenCurlies(template.body);
-    var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
-
-    bodyPlaceholders.forEach(function (item) {
-      template.body = template.body.replace('{' + item + '}', params[item]);
-    });
-
-    bodyPartialPlaceholders.forEach(function (item) {
-      template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
-    });
-
     db.orgs.findOne({
       _id: event.orgId
     }, function (err, org) {
@@ -152,6 +128,30 @@ module.exports = function(config, db) {
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
+
+        var params = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          seatsAvaialable: reservation.seatsAvaialable || ''
+        };
+
+        var template = {
+          subject: org.userUpdateSubject, //'Update rezervare'
+          body: marked(org.userUpdateBody), //'Salut, <br /><br /> S-au eliberat {seats} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.'
+          bodyPartial: marked(org.userUpdateBodyPartial) // 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
+        };
+
+        var bodyPlaceholders = getWordsBetweenCurlies(template.body);
+        var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
+
+        bodyPlaceholders.forEach(function (item) {
+          template.body = template.body.replace('{' + item + '}', params[item]);
+        });
+
+        bodyPartialPlaceholders.forEach(function (item) {
+          template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
+        });
 
         if (partial) {
           
@@ -215,15 +215,6 @@ module.exports = function(config, db) {
           eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
           userName: reservation.name,
           userEmail: reservation.email
-        }
-
-        var defaultTemplate = {
-          userSubject: 'Reservation Confirmation',
-          userSubjectWaiting: 'You\'ve been included on the waiting list', // 'Ai fost inclus pe lista de asteptare'
-          userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Cancel Reservation</a> \n\n Have a great day.',
-          userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Cancel Reservation</a> \n\n Have a great day.',
-          orgSubject: 'A new reservation for "{eventName}"',
-          orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
         }
 
         var template = {

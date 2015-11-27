@@ -637,13 +637,19 @@ module.exports = function(config, db) {
           userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
           orgSubject: 'A new reservation for "{eventName}"',
           orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+          userUpdateSubject: 'Reservation Update',
+          userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
           defaultTemplate: {
             userSubject: 'Reservation Confirmation',
             userSubjectWaiting: 'You\'ve been included on the waiting list',
             userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
             userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
             orgSubject: 'A new reservation for "{eventName}"',
-            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+            userUpdateSubject: 'Reservation Update',
+            userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
           }
         }, function (err, org) {
 
