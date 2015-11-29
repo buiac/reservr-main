@@ -33,7 +33,7 @@
             <tr>
               <td>
 
-                <%= i %>. <%= reservation.name %> <%= reservation._id %>
+                <%= i %>. <%= reservation.name %>
                 <% i = i + 1 %>
               </td>
               <td>
@@ -109,7 +109,7 @@
             <% if (reservation.waiting)  { %>
             <tr>
               <td>
-                <%= m %>. <%= reservation.name %>  <%= reservation._id %>
+                <%= m %>. <%= reservation.name %>
                 <% m = m +1; ws = ws + parseInt(reservation.seats) %>
               </td>
               <td>
