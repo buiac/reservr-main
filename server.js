@@ -43,9 +43,9 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (false) { // req.hostname === 'localhost'
+    if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
-        username: 'spatiureactor@gmail.com'
+        username: 'sebi.kovacs@gmail.com'
       }, function (err, user) {
 
         req.user = user;
@@ -145,6 +145,7 @@ module.exports = (function() {
   var users = require('./app/controllers/users.js')(config, db);
   var reservations = require('./app/controllers/reservations.js')(config, db);
   var settings = require('./app/controllers/settings.js')(config, db);
+  var reminders = require('./app/controllers/reminders.js')(config, db);
 
   // Backend routes
   // events
@@ -191,6 +192,10 @@ module.exports = (function() {
   app.get('/r/delete-reservation/:reservationId', reservations.deleteReservation);
   app.get('/r/deleted-reservation', reservations.userReservationsDeleteView);  
 
+  /* Reminders
+  */
+
+  app.get('/remind', reminders.sendReminders);
   
   /* Auth routes
   */

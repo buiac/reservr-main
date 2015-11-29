@@ -70,6 +70,18 @@ module.exports = (function() {
     config.env = 'local'
   }
 
+  // mandrill
+  config.mandrill = {
+    host: 'smtp.mandrillapp.com',
+    port: 587,
+    auth: {
+      user: 'contact@reservr.net',
+      pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
+    }
+  }
+
+  
+
   return config;
 
 }());

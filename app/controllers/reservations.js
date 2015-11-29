@@ -18,48 +18,6 @@ module.exports = function(config, db) {
   var data = require('../services/data.js')(config, db);
   var marked = require('marked');
 
-  db.reservations.find({},function (err, reservations) {
-    
-    reservations.forEach(function (reservation) {
-      if (reservation.waiting === 'false') {
-        reservation.waiting = false;
-        db.reservations.update({
-          _id: reservation._id
-        }, {
-          $set: {
-            waiting: false
-          }
-        });
-      }
-
-      if (reservation.waiting === 'true') {
-        reservation.waiting = true;
-
-        db.reservations.update({
-          _id: reservation._id
-        }, {
-          $set: {
-            waiting: true
-          }
-        });
-      }
-
-      if (reservation.waiting === undefined) {
-        reservation.waiting = false;
-
-        db.reservations.update({
-          _id: reservation._id
-        }, {
-          $set: {
-            waiting: false
-          }
-        });
-      }
-    });
-
-  });
-
-
   var addUserToMailingList = function (reservation) {
     var params = {
       update_existing: true,
@@ -98,14 +56,7 @@ module.exports = function(config, db) {
   // configure moment
   moment.defaultFormat = 'YYYY-MM-DD LT';
 
-  var transport = nodemailer.createTransport(smtpTransport({
-    host: 'smtp.mandrillapp.com',
-    port: 587,
-    auth: {
-      user: 'contact@reservr.net',
-      pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
-    }
-  }));
+  var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
   var getWordsBetweenCurlies = function (str) {
     var results = []
@@ -357,25 +308,23 @@ module.exports = function(config, db) {
 
             db.reservations.find({
               eventId: event._id
-            }, function (err, reservations) {
+            }).sort({
+              timestamp: 1
+            }).exec(function (err, reservations) {
 
-              // to be moved without seat number alteration
-              var toBeMoved = [];
-
-              // to be moved with seat number alteration
-              var toBeMovedWithSeats = [];
-
+              // to be executed only if the deleted reservation is 
+              // from the invited list thus making a seats available
               if (!rez.waiting) {
                 
                 // the number of seats that remain free after the rezervation is deleted
                 var seats = rez.seats;
 
-                // loop throgh the reservations until you 
+                // loop throgh the waiting reservations until you 
                 // remain out of seats
                 reservations.some(function (reserv) {
                   
-
                   if (reserv.waiting && seats >= reserv.seats) {
+
                     // number of free seats is greater than the number of needed
                     // by next on the waiting list
 
@@ -395,45 +344,48 @@ module.exports = function(config, db) {
                       }
                     });
 
+                    // we return false so the loop continues ... well, looping
                     return false;
 
                   } else if (reserv.waiting && seats !== 0 && seats < reserv.seats) {
                     
-                    // split this reservation into 2
+                    // number of seats available is less than the number of needed
+                    // by next on the waiting list
 
+                    // create a new reservation object model by cloning the
+                    // the next Waiting reservation
                     var clonedReserv = JSON.parse(JSON.stringify(reserv));
 
+                    // delete it's ID so we can later insert it
                     delete clonedReserv._id;
+
+                    // put the reservation on the Invited list
                     clonedReserv.waiting = false;
+
+                    // add the available seats to the cloned model
+                    clonedReserv.seats = seats;
                     
+                    // insert the model into the database
+                    db.reservations.insert(clonedReserv);
+
+                    // update the waiting reservation's seat number 
+                    // by subtracting the seats that have been redistributed
                     db.reservations.update({
-                      email: clonedReserv.email,
-                      eventId: rez.eventId,
-                      waiting: false
-                    },{
+                      _id: reserv._id
+                    }, {
                       $set: {
-                        seats: seats
+                        seats: reserv.seats - seats
                       }
                     }, function (err, num) {
-
-                      // notify user of change
+                      
+                      // add the number of seats that have been attributed to
+                      // the waiting user so it can be used in the 
+                      // email message that is sent to notify her
                       reserv.seatsAvaialable = seats;
+
+                      // send the message setting the partial parameter to 'true'
+                      // this will change the template of the message
                       notifyUser(reserv, event, true)
-
-                      if (!err && num === 0) {
-                        
-                        clonedReserv.seats = seats;
-                        db.reservations.insert(clonedReserv);
-
-                        db.reservations.update({
-                          _id: reserv._id,
-                          waiting: true
-                        }, {
-                          $set: {
-                            seats: reserv.seats - seats
-                          }
-                        });
-                      }
 
                     });
 
@@ -468,7 +420,10 @@ module.exports = function(config, db) {
 
     db.reservations.find({
       eventId: req.params.eventId
-    }, function (err, reservations) {
+    }).sort({
+      timestamp: 1
+    })
+    .exec( function (err, reservations) {
 
       if (err) {
         res.status(400).json(err);
