@@ -93,6 +93,7 @@
             <th>
               Name
             </th>
+            <th>Date &amp; Time</th>
             <th>
               Email
             </th>
@@ -108,8 +109,13 @@
             <% if (reservation.waiting)  { %>
             <tr>
               <td>
-                <%= m %>. <%= reservation.name %>
+                <%= m %>. <%= reservation.name %>  <%= reservation._id %>
                 <% m = m +1; ws = ws + parseInt(reservation.seats) %>
+              </td>
+              <td>
+                <% if (reservation.timestamp) { %>
+                  <%= moment(reservation.timestamp).format() %>
+                <% } %>
               </td>
               <td>
                 <%= reservation.email %>
@@ -118,9 +124,9 @@
                 <%= reservation.seats %>
               </td>
               <td>
-                <a href="/dashboard/<%= orgId %>/event/<%= eventId %>/delete/<%= reservation._id %>" class="btn-delete-reservation">
+                <a href="/u/delete-reservation/<%= reservation._id %>" class="btn btn-danger btn-xs btn-remove-item" data-message="Are you sure you want to delete this reservation?">
                   <i class="fa fa-times-circle"></i>
-                  Delete Reservation
+                  Delete
                 </a>
               </td>
             </tr>
