@@ -334,8 +334,12 @@ $(document).ready(function () {
 
   function updateDateField () {
     var isHomepage = $('.rzvr-homepage').length
-    $date = $('[name=date]')
-    $date.val(moment(defaultEventDate).format('LLLL'))
+
+    if (isHomepage) {
+      $date = $('[name=date]')
+      $date.val(moment(defaultEventDate).format('LLLL'))  
+    }
+    
   }
 
   function updateHiddenFields () {
