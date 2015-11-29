@@ -1,0 +1,188 @@
+  <div class="event-form">
+
+      <div class="row">
+
+        <div class="col-md-6 <% if ((event.seats - event.invited) === 0) { %> event-reserv--sold-out<% } %>">
+
+          <a class="btn btn-toggle-fields btn-primary btn-lg">Reserv seats</a>
+          <a class="btn btn-toggle-fields btn-gray btn-lg">Waiting list</a>
+          
+          <% if (event.temp) { %>
+            
+            <div class="event-account-fields">
+
+              <div class="alert alert-warning">
+                <a href="" class="close">×</a>
+                <p>You need a <a>FREE account</a> to enable this feature, so you can check who signed up for your awesome event.</p>
+              </div>
+              
+              <form action="" class="form-account">
+                
+                <div class="form-success-message">
+                  <a href="" class="close">×</a>
+                  
+                  <div class="display-table">
+                    
+                    <div class="display-table-cell">
+                      
+                      <h4><i class="fa fa-check"></i>Account created!</h4>
+                      
+                      <p class="form-message">You'll receive an email shortly with your password.</p>
+                    
+                    </div>
+                  
+                  </div>
+
+                </div>
+
+                <div class="form-error-message">
+                  <a href="" class="close">×</a>
+                  
+                  <div class="display-table">
+                  
+                    <div class="display-table-cell">
+                  
+                      <h4><i class="fa fa-warning"></i>There was an error</h4>
+                  
+                      <p class="form-message">This email is already in use.</p>
+                  
+                    </div>
+                  
+                  </div>
+                
+                </div>
+
+                <div class="form-group">
+                  
+                  <label for="">
+                    Email
+                    <i class="fa fa-info-circle" title="We'll create an account with the email you provide and send you the password"></i>
+                  </label>
+
+                  <input type="email" class="form-control" name="email" value="" placeholder="Your Email" required>
+
+                </div>
+
+                <div class="form-group">
+                  
+                  <label for="">
+                    Organization Name
+                  </label>
+
+                  <input type="text" class="form-control" name="orgname" value="" placeholder="Your Organization name" required>
+
+                </div>
+
+                <input type="hidden" name="orgid" value="<%= event.orgId %>">
+
+                <div class="form-group">
+                  
+                  <button type="submit" class="btn btn-sm btn-primary">Create Account</button>
+
+                  <a class="event-group-cancel event-cancel">Cancel</a>
+                  
+                </div>
+              </form>
+
+            </div>
+          <% } %>
+
+          <div class="event-reserv-fields ">
+
+            <form action="" class="form-reserve">
+
+              <div class="form-error">
+
+                <h4> <i class="fa fa-exclamation-triangle"></i> Hmmm, something's not right</h4>
+                
+                <div class="reservation-message">
+                  <p>Looks like there was an error.</p>
+
+                  <p>You can try again a bit latter or just shoot us an email and we'll set up your reservation manually: contact@reservr.com.</p>
+                </div>
+
+              </div>
+              
+              <div class="form-success">
+
+                <h4> <i class="fa fa-check"></i> Success!</h4>
+
+                <p>Check out your reservation:</p>
+
+                <a href="http://www.reservr.net/r/MQnKlp6Fzwv4MNdp" target="_blank">http://www.reservr.net/r/MQnKlp6Fzwv4MNdp</a>
+                
+              </div>
+
+              <div class="form-group">
+                <label for="">Seats:</label>
+                <select name="" id="" class="form-control input-lg reserve-seats" required>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+
+              </div>
+              <div class="form-group">
+
+                <input type="text" name="" class="form-control input-lg reserve-name" id="" placeholder="Name" required value="<%= 'sebi+' + new Date().getTime() %>">
+
+              </div>
+
+              <div class="form-group">
+
+                <input type="email" name="" class="form-control input-lg reserve-email" id="" placeholder="Email" required value="<%= 'sebi.kovacs+' + new Date().getTime() + '@gmail.com' %>">
+
+              </div>
+
+              <input type="hidden" name="" class="reserve-id" value="<%= event._id %>">
+              <input type="hidden" name="" class="reserve-orgId" value="<%= org._id %>"
+              >
+              <input type="hidden" name="" class="reserve-timestamp" value="<%= moment(new Date()).format() %>"
+              >
+
+              <input type="hidden" name="" class="reserve-invited" value="<%= event.invited %>"
+              >
+              <input type="hidden" name="" class="reserve-waiting" value="<%= event.waiting %>"
+              >
+
+              <input type="hidden" name="" class="reserve-total-seats" value="<%= event.seats %>"
+              >
+
+              <!-- <input type="hidden" name="" class="reserve-newsletter" value="<%= org._id %>"
+              > -->
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Reserv seats</button>
+
+                <button type="submit" class="btn btn-reserv btn-gray btn-lg <% if (event.temp) { %> disabled <% } %>">Waiting list</button>
+              </div>
+
+            </form>
+
+            
+
+          </div>
+        </div>
+
+        <div class="col-md-6 <% if (event.price && (event.price !== 'Event price')) { %> event-has-price <% } %>">
+          
+          <% if (event.price && (event.price !== 'Event price')) { %>
+          <span class="event-price ff-montserat">
+            <%= event.price %>
+          </span>
+          <% } %>
+
+          <p class="text-muted event-price-text">
+            <span class="seats-invited"><%= event.invited %></span> seats reservd of <span class="seats-total"><%= event.seats %></span> available
+            
+            <br>
+            <% if (event.waiting) { %>
+            <span> <span class="seats-waiting"><%= event.waiting %></span> on waiting list</span>
+            <% } %>
+          </p>
+
+        </div>
+      </div>
+  </div>

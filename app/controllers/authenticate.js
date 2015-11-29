@@ -1,25 +1,14 @@
 module.exports = function(config, db) {
 	var express = require('express');
   var expressSession = require('express-session');
-
   var expressValidator = require('express-validator');
   var bCrypt = require('bcrypt-nodejs');
-
   var bodyParser = require('body-parser');
   var errorhandler = require('errorhandler');
   var flash = require('connect-flash');
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
-
-  // Generates hash using bCrypt
-  var createHash = function(password){
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-  };
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
+  var util = require('../services/util.js')(config, db);
 
   // passport serializer
   passport.serializeUser(function(user, done) {
@@ -38,7 +27,7 @@ module.exports = function(config, db) {
 
   });
 
-  passport.use('createTempUser', new LocalStrategy({
+  passport.use('signup', new LocalStrategy({
       passReqToCallback : true
     },
     function (req, username, password, done) {
@@ -68,13 +57,37 @@ module.exports = function(config, db) {
 
           // set the user's local credentials
           newUser.username = username;
-          newUser.password = createHash(password);
+          newUser.password = util.createHash(password);
 
           // validate user email
-          newUser.validEmail = validateEmail(newUser.username);
+          newUser.validEmail = util.validateEmail(newUser.username);
           
           // set calendar default name
-          org.name = 'Guest';
+          org.name = 'guest-' + new Date().getTime();
+
+          org.defaultTemplate = {
+            userSubject: 'Reservation Confirmation',
+            userSubjectWaiting: 'You\'ve been included on the waiting list',
+            userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            orgSubject: 'A new reservation for "{eventName}"',
+            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+            userUpdateSubject: 'Reservation Update',
+            userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+          }
+
+          org.userSubject = 'Reservation Confirmation',
+          org.userSubjectWaiting = 'You\'ve been included on the waiting list',
+          org.userBody = 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          org.userBodyWaiting = 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          org.orgSubject = 'A new reservation for "{eventName}"',
+          org.orgBody = 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+
+          org.userUpdateSubject = 'Reservation Update'
+          org.userUpdateBody = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+          org.userUpdateBodyPartial = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+
 
            // save the user
           db.users.insert(newUser, function (err, newDoc) {
@@ -87,14 +100,16 @@ module.exports = function(config, db) {
               org.userId = newDoc._id;
               db.orgs.insert(org, function (err, newOrg) {
                 
-                var newEvent = {
-                  orgId: newOrg._id,
-                  userId: newDoc._id
-                };
+                // var newEvent = {
+                //   orgId: newOrg._id,
+                //   userId: newDoc._id
+                // };
 
-                db.events.insert(newEvent, function (err, newEv) {
-                  return done(null, newDoc, req);  
-                });
+                return done(null, newDoc, req);  
+
+                // db.events.insert(newEvent, function (err, newEv) {
+                  
+                // });
 
               });
             }
@@ -109,7 +124,7 @@ module.exports = function(config, db) {
     }
   ));
 
-  var createTempUser = passport.authenticate('createTempUser', {
+  var signup = passport.authenticate('signup', {
     failureRedirect: '/signup',
     successRedirect: '/dashboard',
     failureFlash : true
@@ -120,7 +135,6 @@ module.exports = function(config, db) {
     res.render('signup', {
       info: req.flash("message")
     });
-
   };
 
   // helper methods
@@ -174,7 +188,7 @@ module.exports = function(config, db) {
 
   return {
     signupView: signupView,
-    createTempUser: createTempUser,
+    signup: signup,
     signinView: signinView,
     signin: signin
   };

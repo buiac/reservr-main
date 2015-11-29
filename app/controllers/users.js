@@ -8,8 +8,19 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
+  var bCrypt = require('bcrypt-nodejs');
+  var nodemailer = require('nodemailer');
+  var smtpTransport = require('nodemailer-smtp-transport');
+  var transport = nodemailer.createTransport(smtpTransport({
+    host: 'smtp.mandrillapp.com',
+    port: 587,
+    auth: {
+      user: 'contact@reservr.net',
+      pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
+    }
+  }));
+  var util = require('../services/util.js')(config, db);
 
   var view = function(req, res, next) {
 
@@ -30,25 +41,128 @@ module.exports = function(config, db) {
     });
   };
 
+  var updateUser = function (req, res, next) {
+    var username = req.body.email
+    var orgId = req.body.orgId
+    var orgName = req.body.orgName || ''
 
-  var list = function (req, res, next) {
-    
-    db.contacts.find({calendarId: req.params.calendarId}, function (err, docs) {
-      if (err) {
-        res.send({error: err}, 400);
+    // check if user already exists
+    db.users.findOne({
+      username: username
+    }, function (err, user) {
+      
+      if (user) {
+        res.status(400).json({
+          message: 'User already exists'
+        })
+      } else {
+
+        db.orgs.findOne({
+          name: orgName
+        }, function (err, orgByName) {
+          
+          if (!orgByName) {
+
+            db.orgs.findOne({
+              _id: orgId
+            }, function (err, org) {
+              
+              // TODO error handling
+
+              
+
+              db.users.findOne({
+                _id: org.userId
+              }, function (err, user) {
+                // TODO error handling
+
+                // create temporary password
+                var randompass = Math.random().toString(36).slice(-8);
+
+                // hash password
+                var password = util.createHash(randompass)
+
+                // send response
+                if (util.validateEmail(username)) {
+
+                  // change temp parameter of events of this org
+                  db.events.update({
+                    orgId: org._id
+                  }, {
+                    $set: {
+                      temp: false
+                    }
+                  },{
+                    multi: true
+                  });
+
+                  // update orgname
+                  if (orgName) {
+                    db.orgs.update({
+                      _id: orgId
+                    }, {
+                      $set:{
+                        name: orgName
+                      }
+                    })
+                  }
+
+                  // update username and password
+                  db.users.update({
+                    _id: user._id
+                  }, {
+                    $set: {
+                      username: username,
+                      password: password,
+                      validEmail: util.validateEmail(username)
+                    }
+                  }, function (err, num) {
+                    
+                    // send user an email with the password
+                    var userEmailConfig = {
+                      from: 'contact@reservr.com',
+                      to: username,
+                      subject: 'reservr account and password',
+                      html: 'Hello, <br /><br /> You signed up with <strong>' + username + '</strong> and your temporary password is <strong>' + randompass + '</strong>. <br /><br /> You can change it anytime in the Settings panel. <br /><br /> Cheers.'
+                    };
+
+                    transport.sendMail(userEmailConfig, function (err, info) {
+                      console.log(err);
+                      console.log(info);
+                    });
+
+                    res.json({
+                      message: 'done',
+                      orgName: orgName
+                    })
+                    
+                  })
+
+                } else {
+                  res.status(400).json({
+                    message: 'Email address is not valid.'
+                  })
+                }
+
+              })
+            })
+          } else {
+
+            res.status(400).json({
+              message: 'Organization name is already in use.'
+            })
+
+          }
+        })
+
+        // find user by orgId
+        
       }
-
-      res.json({
-        contacts: docs,
-      });
-
-    });
-
-  };
+    })
+  }
 
   return {
-    // view: view,
-    list: list
+    updateUser: updateUser
   };
 
 };

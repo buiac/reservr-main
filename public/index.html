@@ -1,33 +1,315 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>
-    Reservr - hassle free reservations
-  </title>
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/site.css">
-
+  <meta charset="UTF-8">
+  <title>Reservr - event publishing and online reservations</title>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
+  <link rel="stylesheet" href="/css/reservr3.css">
+  <link rel="stylesheet" href="/css/fonts.css">
 </head>
-<body class="splash">
+<body class="rzvr-homepage">
   
-  <div class="container">
+  <div class="container-fluid"  style="height: 100%">
 
-    <div class="splash">
-    
-      <div class="logo">
-        <img src="/images/reservr-logo-white-big.png">
+    <div class="row"  style="height: 100%">
+
+      <div class="col-md-4 rzv-logo-wrap">
+
+        <a href="/" class="logo">
+
+          <img src="/images/logo-white.png" alt="">  
+
+        </a>
+
       </div>
 
-      <p>Private beta. Request access:</p>
-    
-      <a href="mailto:contact@reservr.net">
-        contact@reservr.net
-      </a>
-    
+      <div class="col-md-8" style="height: 100%">
+
+        <ul class="list list-unstyled pull-right header-menu">
+          <!-- <li><a href="">About</a></li>
+          <li><a href="">Features</a></li>
+          <li><a href="">Pricing</a></li> -->
+          <li><a href="/dashboard">Account</a></li>
+        </ul>
+
+          <div class="rzv-lightbox">
+            
+            <div class="row">
+              
+              <div class="col-md-6">
+                
+                <form enctype="multipart/form-data" method="post" name="fileinfo">
+                  
+                  <div class="event-group event-image event-image--show-image">
+                    
+                    <div class="event-preview-image">
+                      
+                      <img src="/images/reservr-placeholder-2.png" alt="">
+                      
+                      <div class="event-image-actions">
+
+                        <a><i class="fa fa-edit"></i> Change Image</a>
+
+                        <input type="file" name="" id="">
+
+                      </div>
+
+                    </div>
+                    
+                    <span class="event-placeholder">
+                      
+                      <i class="fa fa-picture-o"></i> Add an image
+
+                      <input type="file" name="image" id="">
+
+                    </span>
+
+                  </div>
+
+                </form>
+
+              </div>
+
+              <div class="col-md-6 event-details">
+
+                <div class="event-overlay">
+                  <div class="event-link-wrap">
+                    
+                    <span>Here's the event link:</span>
+
+                    <a href="/event-page.html" target="_blank" class="event-link"><i class="fa fa-link"></i> http://www.reservr.net/u/reactor/event/EJf8JVa3GQ7KNaCs</a>
+
+                  </div>
+
+                  <!-- <div class="event-save">
+
+                    <div class="event-error">
+                      
+                      <h4><i class="fa fa-exclamation-triangle"></i> Something's wrong!</h4>
+
+                      <p>There was some kind of error.</p>
+
+
+                    </div>
+
+                    <div class="event-success">
+                      
+                      <h4>
+                        <i class="fa fa-check"></i> Success! <br>
+                        Check your email for the password
+                      </h4>
+
+                      <a href="/dashboard" target="_blank" class="event-dashboard">
+                        Go to Your Account
+                      </a>
+
+                    </div>
+
+                    <label for="">
+                      Create an account <br> so people can sign up for your event.
+
+                      <i class="fa fa-info-circle" title="We'll create an account with the email you provide and send you the password"></i>
+                    </label>
+
+                    <input type="email" class="form-control" name="email" value="" placeholder="Your Email">
+
+                    <div>
+                      
+                      <a class="btn btn-sm btn-primary btn-create-account">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Nah, thanks!</a>
+                      
+                    </div>
+                    
+                  </div> -->
+                </div>
+
+                <div class="form-group event-name event-group">
+
+                  <h1 class="event-placeholder"></h1>
+                  
+                  <textarea name="name" id="" class="form-control">Demo event title</textarea>
+                  
+                  <div class="event-group-action">
+                    
+                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                    <a class="event-group-cancel event-cancel">Cancel</a>
+                    
+                  </div>
+
+                </div>
+
+                <div class="form-group event-description event-group">
+
+                  <span class="event-placeholder"></span>
+                  
+                  <textarea name="description" id="" class="form-control">Demo event description: this has all that it needs. Except a price. 
+
+- some strings
+- glue
+- paper
+- [links are included](http://google.com)
+                  </textarea>
+                  
+                  <div class="event-group-action">
+                    
+                    <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+                    <a class="event-group-cancel event-cancel">Cancel</a>
+                    
+                  </div>
+
+                </div>
+                
+                <div class="event-meta">
+
+
+
+                  <div class="event-group event-date">
+                    
+                    <span class="event-placeholder">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      Date &amp; Time
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-calendar-o"></i>
+
+                      <input type="text" class="form-control" name="date" value="">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+
+                  </div>
+
+                  <div class="event-group">
+
+                    <span class="event-placeholder">
+
+                      <i class="fa fa-map-o"></i>
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-map-o"></i>
+
+                      <input type="text" class="form-control" name="location" value="London, 106 Lower Marsh, Waterloo, SE1 7AB">
+
+                    </div>
+
+                    <div class="event-group-action">
+                    
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+                    
+                  </div>
+                  
+                  <div class="event-group">
+                    
+                    <span class="event-placeholder">
+                      <i class="fa fa-money"></i>
+
+                      Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
+
+                    </span>
+
+                    <div class="event-input">
+                      
+                      <i class="fa fa-money"></i>
+
+                      <input type="text" class="form-control" name="price" min="0" value="12$ / pers.">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+
+                  </div>
+
+                  <div class="event-group event-seats">
+
+                    <span class="event-placeholder">
+
+                      <i class="icomoon icon-chair"></i>
+
+                      Number of seats
+
+                    </span>
+
+                    <div class="event-input">
+
+                      <i class="icomoon icon-chair"></i>
+
+                      <input type="number" class="form-control" name="seats" value="120">
+
+                    </div>
+
+                    <div class="event-group-action">
+                      
+                      <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+                      <a class="event-group-cancel event-cancel">Cancel</a>
+                      
+                    </div>
+                    
+                  </div>
+                  
+                </div>
+
+                <div class="event-publish">
+                  
+                  
+
+                  <a class="btn btn-lg btn-publish btn-primary">Publish event</a>
+
+
+                  
+                </div>
+
+              </div>      
+
+            </div>
+
+          </div>
+      </div>
+
     </div>
-    
+
   </div>
+
+  
+
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/autosize/dist/autosize.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/ejs/ejs.js"></script>
+  <script src="/bower_components/rome/dist/rome.min.js"></script>
+  <script src="/bower_components/marked/lib/marked.js"></script>
+  <script src="/bower_components/moment/moment.js"></script>
+  <script src="/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="/js/index3.js"></script>
+
 </body>
 </html>

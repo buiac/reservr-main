@@ -1,0 +1,22 @@
+<% var event = '' %>
+<%- include header %>
+
+<% if (events.length === 0) { %>
+
+  <h3 style="text-align: center;">There are no events.</h3>
+
+<% } else { %>
+  
+  <% events.forEach(function(event, i) { %>
+    <% if (event.published) { %>
+      <div class="row event-item">
+        <% var eventLink = true %>
+        <%- include partials/event-partial %>
+
+      </div>
+    <% } %>
+  <% }) %>
+
+<% } %>
+
+<%- include footer %>

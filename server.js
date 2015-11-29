@@ -43,24 +43,26 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    // req.user = {
-    //    "username":"sebi.kovacs+304@gmail.com",
-    //    "password":"$2a$10$FqJGcWNu7UTqD2gYF/NQjOXSlUwDkuZ5mGiYaxfK/ZY/7poDSXw.y",
-    //    "validEmail":true,
-    //    "_id":"4BRj7GbkuwP9rx7D"
-    // }
+    if (false) { // req.hostname === 'localhost'
+      db.users.findOne({
+        username: 'spatiureactor@gmail.com'
+      }, function (err, user) {
 
-    // return next();
+        req.user = user;
+        return next()
+        
+      })
 
-    if (req.isAuthenticated()){
-      return next();
     } else {
-      res.redirect("/signin"); 
+
+      if (req.isAuthenticated()){
+        return next();
+      } else {
+        res.redirect("/signin"); 
+      }
     }
 
   };
-
-
 
   // config express
   app.use(bodyParser.json({
@@ -85,6 +87,9 @@ module.exports = (function() {
     dest: config.dataDir + config.publicDir + '/media',
     rename: function (fieldname, filename) {
       return filename;
+    },
+    onFileUploadStart: function (file) {
+        
     }
   }));
 
@@ -137,6 +142,7 @@ module.exports = (function() {
 
   // events
   var events = require('./app/controllers/events.js')(config, db);
+  var users = require('./app/controllers/users.js')(config, db);
   var reservations = require('./app/controllers/reservations.js')(config, db);
   var settings = require('./app/controllers/settings.js')(config, db);
 
@@ -146,14 +152,14 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
-  app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
   app.get('/dashboard/:orgId/event/:eventId/deleteimage/:pictureIndex', isAuthenticated, events.eventDeleteImage);
   app.get('/dashboard/:orgId/delete-event/:eventId', isAuthenticated, events.deleteEvent);
+  app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
-  app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
+  app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   
   // reservations  
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservation);
@@ -162,6 +168,15 @@ module.exports = (function() {
   
   /* Front-end routes
   */
+
+  // homepage
+  app.post('/tempEvent', events.updateTempEvent);
+
+  // temoporary event
+  app.get('/t/:orgId/event/:eventId', events.tempFrontEventView);
+
+  // update user
+  app.post('/updateUser', users.updateUser);
 
   // events
   app.get('/u/:orgName', events.listFrontEventsView);
@@ -181,13 +196,14 @@ module.exports = (function() {
   */
 
   var auth = require('./app/controllers/authenticate.js')(config, db);
-
-  app.get('/signup', auth.signupView);
   
-  app.post('/createTempUser', auth.createTempUser);
+  // signup 
+  app.post('/createTempUser', auth.signup);
 
   app.get('/signin', auth.signinView);
   app.post('/signin', auth.signin);
+
+  app.get('/signup', auth.signupView);
 
   // Logout
   app.get('/dashboard/signout', function(req, res) {
@@ -198,6 +214,26 @@ module.exports = (function() {
   // API routes
   app.get('/api/1/events/:orgId', events.listEvents);
 
+
+  app.use(function(req, res, next){
+    res.status(404);
+
+    // respond with html page
+    if (req.accepts('html')) {
+      res.render('404', { url: req.url });
+      return;
+    }
+
+    // respond with json
+    if (req.accepts('json')) {
+      res.send({ error: 'Not found' });
+      return;
+    }
+
+    // default to plain-text. send()
+    res.type('txt').send('Not found');
+  });
+
   // start express server
   app.listen(config.port, config.ipAddress, function() {
     console.log(
@@ -207,6 +243,8 @@ module.exports = (function() {
       config.port
     );
   });
+
+
 
   return app;
 

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservr 3</title>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/css/reservr3.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link href='https://fonts.googleapis.com/css?family=Cabin' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Fira+Sans' rel='stylesheet' type='text/css'>
+  <link href="http://fonts.googleapis.com/css?family=Nobile" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+</head>
+<body>
+  
+  <div class="container event-page">
+    
+    <div class="row event-page-header cf">
+
+      <div class="col-md-4 cf">
+
+        <a href="/" class="logo">
+
+          <img src="/images/logo-white.png" alt="">  
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="rzv-event">
+
+      <a href="" class="event-page-org-logo">
+        <img src="<%= org.logo %>" alt="">
+
+      </a>
+      
+      <div class="row">
+        
+        <div class="col-md-6 event-image-wrap">
+
+          <!-- <div class="event-temporary-overlay">
+            <h3>You need an account to enable this feature</h3>
+
+            <div class="form-group">
+              <input type="email" name="email" id="" class="form-control input-lg" placeholder="Valid email address">
+            </div>
+
+            <div class="form-group cf">
+              <a href="" class="btn btn-primary btn-lg pull-right">Create Account</a>
+            </div>
+
+            <p class="text-muted">We'll send you the password by email. <br> You'll be able to change it in the Settings pannel.</p>
+          </div> -->
+            
+          <div class="event-image" style="clear:both">
+            <img src="<%= event.images %>" alt="<%= event.name %>">
+          </div>
+
+        </div>
+
+        <div class="col-md-6 <% if (event.temp) { %> event-temporary <% } %>">
+
+          
+
+          <div class="event-name">
+
+            <h1 class="ff-cabin"><%= event.name %> <%= event.temp %> <%= event.published %></h1>
+
+          </div>
+
+          <div class="event-meta">
+            
+            <div class="meta-row">
+              <i class="fa fa-calendar-o"></i>
+              <%= moment(event.date).format('LLLL') %>
+            </div>
+
+            <div class="meta-row">
+              <i class="fa fa-map-marker"></i>
+              <%= event.location %>
+            </div>
+
+          </div>
+
+          <div class="event-description ff-nobile">
+
+            <%- marked(event.description) %>
+            
+          </div>
+
+          <div class="event-toggle-description">
+            <a>Read more</a>
+          </div>
+          
+          <div class="event-form"> 
+            
+            <div class="form-error">
+
+              <h4> <i class="fa fa-exclamation-triangle"></i> Hmmm, something's not right</h4>
+              
+              <p>Looks like there was an error.</p>
+
+              <p>You can try again a bit latter or just shoot us an email and we'll set up your reservation manually: contact@reservr.com.</p>
+
+            </div>
+            
+            <div class="form-success">
+
+              <h4> <i class="fa fa-check"></i> Success!</h4>
+
+              <p>Your reservation was made and <br> a confirmation email was sent to your email address.</p>
+
+              <p>Click the link bellow to manage your reservation.</p>
+
+              <a href="http://www.reservr.net/r/MQnKlp6Fzwv4MNdp" target="_blank">http://www.reservr.net/r/MQnKlp6Fzwv4MNdp</a>
+              
+            </div>
+
+            <div class="row">
+
+              <div class="col-md-6">
+                <a class="btn btn-toggle-fields btn-primary btn-lg">Reserv seats</a>
+
+                <div class="event-reserv-fields">
+
+                  <div class="form-group">
+                    <label for="">Seats:</label>
+                    <select name="" id="" class="form-control input-lg">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+
+                  </div>
+                  <div class="form-group">
+
+                    <input type="text" name="" class="form-control input-lg" id="" placeholder="Name">
+
+                  </div>
+
+                  <div class="form-group">
+
+                    <input type="email" name="" class="form-control input-lg" id="" placeholder="Email">
+
+                  </div>
+
+                  <div class="form-group">
+                    <a class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Reserv seats</a>
+                  </div>
+
+                  <% if (event.temp) { %>
+                    <p class="text-muted">You'll need to <a href="/signup">create an account</a> to enable this feature, so you can check who signed up for your awesome event.</p>
+                  <% } %>
+
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                
+                <span class="event-price ff-montserat">
+                  <%= event.price %>
+                </span>
+
+                <p class="text-muted"><span class="seats-invited">0</span> seats taken of <span class="seats-total"><%= event.seats %></span> available</p>
+
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/autosize/dist/autosize.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/bower_components/ejs/ejs.js"></script>
+  <script src="/bower_components/rome/dist/rome.min.js"></script>
+  <script src="/bower_components/marked/lib/marked.js"></script>
+  <script src="/bower_components/moment/moment.js"></script>
+  <script src="/js/index3.js"></script>
+
+</body>
+</html>

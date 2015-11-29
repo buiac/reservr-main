@@ -8,28 +8,39 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  }
+  var data = require('../services/data.js')(config, db);
+  var util = require('../services/util.js')(config, db);
+  var marked = require('marked');
 
   var viewSettings = function (req, res, next) {
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
 
-      db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
-        res.render('settings', {
-          errors: [],
-          orgId: req.params.orgId,
-          org: org,
-          user: user
+      data.getOrgEvents({
+        orgId: req.params.orgId,
+        fromDate: new Date()
+      }).then(function (events) {
+        
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
+
+          res.render('backend/settings', {
+            errors: [],
+            orgId: req.params.orgId,
+            org: org,
+            events: events,
+            user: user
+          });
+
         });
+
       });
+
+      
       
     } else {
       res.redirect('/dashboard')
@@ -38,14 +49,18 @@ module.exports = function(config, db) {
   };
 
   var updateSettings = function (req, res, next) {
+
     req.checkBody('username', 'Username should not be empty').notEmpty();
     req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
+    req.checkBody('locale', 'Date locale name should not be empty').notEmpty();
+    
+    // TODO get the org and user and do the rest there so you can send a
 
     var errors = req.validationErrors();
 
     if (errors) {
       
-      res.render('settings', {
+      res.render('backend/settings', {
         errors: errors,
         orgId: req.params.orgId,
         org: org,
@@ -61,7 +76,28 @@ module.exports = function(config, db) {
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
+    var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
+    var notifications = false;
+    
+    // templates 
+    var userSubject = req.body.userSubject;
+    var userSubjectWaiting = req.body.userSubjectWaiting;
+    var userBody = req.body.userBody;
+    var userBodyWaiting = req.body.userBodyWaiting;
+    var orgSubject = req.body.orgSubject;
+    var orgBody = req.body.orgBody;
+
+    // reservation update templates
+    var userUpdateSubject = req.body.userUpdateSubject;
+    var userUpdateBody = req.body.userUpdateBody;
+
+    // TODO create a subject for the partial as well
+    var userUpdateBodyPartial = req.body.userUpdateBodyPartial;
+    
+    if (req.body.notifications) {
+      notifications = true      
+    }
 
     if (req.body.mailchimpName1) {
       mailchimp.push({
@@ -83,7 +119,7 @@ module.exports = function(config, db) {
     
     db.orgs.findOne({_id: orgId}, function (err, org) {
       if (err) {
-        res.render('settings', {
+        res.render('backend/settings', {
           errors: err,
           orgId: req.params.orgId,
           org: org,
@@ -106,13 +142,24 @@ module.exports = function(config, db) {
       }, {$set: { 
         name: orgName, 
         location: location, 
+        locale: locale,
         logo: logo,
         mailchimp: mailchimp,
-        confirmationEmail: confirmationEmail
+        confirmationEmail: confirmationEmail,
+        notifications: notifications,
+        userSubject: userSubject,
+        userSubjectWaiting: userSubjectWaiting,
+        userBody: userBody,
+        userBodyWaiting: userBodyWaiting,
+        orgSubject: orgSubject,
+        orgBody: orgBody,
+        userUpdateSubject: userUpdateSubject,
+        userUpdateBody: userUpdateBody,
+        userUpdateBodyPartial: userUpdateBodyPartial
       }},  function (err, num) {
         
         if (err) {
-          res.render('settings', {
+          res.render('backend/settings', {
             errors: err,
             orgId: req.params.orgId,
             org: org,
@@ -125,7 +172,7 @@ module.exports = function(config, db) {
         db.orgs.findOne({_id: orgId}, function (err, org) {
           
           if (err) {
-            res.render('settings', {
+            res.render('backend/settings', {
               errors: err,
               orgId: req.params.orgId,
               org: org,
@@ -137,11 +184,11 @@ module.exports = function(config, db) {
 
           // validate user email
 
-          var validEmail = validateEmail(username);
+          var validEmail = util.validateEmail(username);
 
           db.users.update({_id: org.userId}, {$set: {username: username, validEmail: validEmail}}, function (err, num) {
             if (err) {
-              res.render('settings', {
+              res.render('backend/settings', {
                errors: err,
                orgId: req.params.orgId,
                org: org,
@@ -153,7 +200,7 @@ module.exports = function(config, db) {
 
             db.users.findOne({_id: org.userId}, function (err, user) {
               if (err) {
-                res.render('settings', {
+                res.render('backend/settings', {
                  errors: err,
                  orgId: req.params.orgId,
                  org: org,
@@ -162,22 +209,27 @@ module.exports = function(config, db) {
 
                 return;
               }
-              
-              res.render('settings', {
-                errors: errors,
-                orgId: req.params.orgId,
-                org: org,
-                user: user
+
+              db.events.find({
+                orgId: org._id,
+                date: {
+                  $gte: new Date()
+                }
+              }, function (err, events) {
+
+                res.render('backend/settings', {
+                  events: events,
+                  errors: errors,
+                  orgId: req.params.orgId,
+                  org: org,
+                  user: user
+                });
               });
-
             })
-
           });
         });
       });
-
     });
-
   };
 
   var deleteAccount = function (req, res, next) {
@@ -187,7 +239,7 @@ module.exports = function(config, db) {
     }, function (err, user) {
 
       if (err) {
-        res.render('settings', {
+        res.render('backend/settings', {
           errors: err,
           orgId: org.id,
           org: org,
@@ -201,7 +253,7 @@ module.exports = function(config, db) {
       }, function (err, org) {
 
         if (err) {
-          res.render('settings', {
+          res.render('backend/settings', {
             errors: err,
             orgId: org.id,
             org: org,
@@ -217,7 +269,7 @@ module.exports = function(config, db) {
         }, function (err, num) {
 
           if (err) {
-            res.render('settings', {
+            res.render('backend/settings', {
               errors: err,
               orgId: org.id,
               org: org,
@@ -233,7 +285,7 @@ module.exports = function(config, db) {
           }, function (err, num) {
 
             if (err) {
-              res.render('settings', {
+              res.render('backend/settings', {
                 errors: err,
                 orgId: org.id,
                 org: org,

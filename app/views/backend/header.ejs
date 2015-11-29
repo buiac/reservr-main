@@ -1,0 +1,89 @@
+<% moment.locale(org.locale); %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservr - dashboard</title>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/bower_components/sweetalert/dist/sweetalert.css">
+  <link rel="stylesheet" href="/bower_components/css-toggle-switch/dist/toggle-switch.css">
+  <link rel="stylesheet" href="/css/reservr3.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+</head>
+<body class="rsvr-dashboard">
+
+  <div class="container-fluid"  style="height: 100%">
+
+    <div class="row"  style="height: 100%">
+
+      <div class="col-md-4" style="height: 100%">
+
+        <div class="rzv-logo-wrap">
+          
+          <a href="/dashboard/<%= org._id %>/events" class="logo">
+
+            <img src="/images/logo-white.png" alt="">  
+
+          </a>  
+
+        </div>
+
+
+
+        <a href="/dashboard/<%= org._id %>/event" class="btn btn-primary btn-lg btn-add-new-event">Add new event</a>
+
+        <a href="/u/<%= org.name %>" target="_blank" style="color: #fff; display: block; margin-bottom: 10px; text-align: center; padding: 10px;">Event list</a>
+        
+        <div class="event-list">
+          
+          <% events.forEach(function(event){ %>
+            <div class="box-white event-summary <% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">
+              
+              <div class="event-date">
+                
+                <span class="text-small">
+                  <%= moment(event.date).format('dddd') %>
+                  
+                  <%= moment(event.date).format('DD') %>
+                
+                  <%= moment(event.date).format('MMM') %>,
+                
+                  <%= moment(event.date).format('HH:mm') %>
+                
+                  <%= moment(event.date).format('YYYY') %>
+                </span>
+
+              </div>
+
+              <a class="event-title" href="/dashboard/<%= orgId %>/event/<%= event._id %>"><%= event.name %></a>
+
+              <% if (!event.published) { %> 
+                <span class="text-muted">Not Published</span>
+              <% } %>
+
+              <div class="event-reservations">
+                <p class="text-muted" style="margin-bottom: 0">
+
+                    <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>"><%= event.invited %> seats reservd</a>
+                  
+                  
+                    of <%= event.seats %>.
+                  
+                  
+                    <%= event.waiting %> waiting.
+                  
+              </div>
+
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      <div class="col-md-8" style="height: 100%">
+
+        <ul class="list list-unstyled pull-right header-menu">
+          <li><a href="/dashboard/<%= org._id %>/settings">Settings</a></li>
+          <li><a href="/dashboard/signout">Sign Out</a></li>
+        </ul>

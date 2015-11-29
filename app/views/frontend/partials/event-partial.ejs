@@ -1,0 +1,63 @@
+<div class="col-md-6 event-image-wrap">
+  
+  <% if (event.images.length) { %>
+  <div class="event-image" style="clear:both">
+    <img src="<%= event.images[0].path %>" alt="<%= event.name %>">
+  </div>
+  <% } else { %>
+  <div class="event-image" style="clear:both">
+    <img src="/images/reservr-placeholder-2.png" alt="<%= event.name %>">
+  </div>
+  <% } %>
+
+</div>
+
+<div class="col-md-6 <% if (event.temp) { %> event-temporary <% } %>">
+
+  <div class="event-name">
+    <% if (eventLink) { %>
+      
+      <h1 class="ff-cabin">
+        <a href="/u/<%= org.name %>/event/<%= event._id %>">
+          <%= event.name %>
+        </a>
+      </h1>
+
+    <% } else { %>
+
+      <h1 class="ff-cabin"><%= event.name %></h1> 
+
+    <% } %>
+    
+
+  </div>
+
+  <div class="event-meta">
+    
+    <div class="meta-row">
+      <i class="fa fa-calendar-o"></i>
+      <%= moment(event.date).format('LLLL') %>
+    </div>
+
+    <div class="meta-row">
+      <i class="fa fa-map-marker"></i>
+      <%= event.location %>
+    </div>
+
+  </div>
+
+  <div class="event-description ff-nobile">
+
+    <%- marked(event.description) %>
+
+    <div class="event-toggle-description">
+      <a>Read more</a>
+    </div>
+    
+  </div>
+
+  
+
+  <%- include reservation-form %>
+    
+</div>

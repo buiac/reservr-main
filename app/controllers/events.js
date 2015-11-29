@@ -8,24 +8,14 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
   var moment = require('moment');
   var bCrypt = require('bcrypt-nodejs');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
+  var util = require('../services/util.js')(config, db);
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
-  moment.locale('ro');
-
-  var validateEmail = function (email) {
-    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  };
-
-  var createHash = function(password){
-    return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
-  };
 
   var eventDeleteImage = function(req, res, next) {
     
@@ -94,61 +84,24 @@ module.exports = function(config, db) {
     }
 
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
-
+    user.validEmail = util.validateEmail(user.username);
+    
     if (user.validEmail) {
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
         
-        var arr = [];
-        
-        events.forEach(function (event) {
-          arr.push(data.getEventReservations({
-            eventId: event._id
-          }));
-        });
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
 
-        q.all(arr).then(function (rez) {
-          
-          var reservations = [].concat.apply([], rez);
-
-          events.forEach(function (event) {
-            
-            event.invited = 0;
-            event.waiting = 0;
-
-            reservations.forEach(function (reservation) {
-              
-              if (reservation.eventId === event._id) {
-
-                if (reservation.waiting) {
-
-                  event.waiting = event.waiting + reservation.seats;
-
-                } else {
-
-                  event.invited = event.invited + reservation.seats
-
-                }
-              }
-
-            });
-
-          });
-
-          db.orgs.findOne({
-            _id: req.params.orgId
-          }, function (err, org) {
-
-            res.render('events', {
-              events: events,
-              user: user,
-              orgId: org._id,
-              org: org
-            });
-
+          res.render('backend/events', {
+            events: events,
+            user: user,
+            orgId: org._id,
+            org: org
           });
 
         });
@@ -163,28 +116,19 @@ module.exports = function(config, db) {
 
   // one event in front end
   var frontEventView = function (req, res, next) {
+    
     db.orgs.findOne({
       name: req.params.orgName
     }, function (err, org) {
-      
-      if (err) {
-        res.send({ error: 'error'}, 400);
-        return
-      }
 
-      if (!org) {
-        res.redirect('/');
-        return
-      }
+      // TODO error handling
 
       db.events.findOne({
         _id: req.params.eventId
-      }).exec(function (err, event) {
-        
-        if(err) {
-          return res.send(err, 400);
-        }
+      }, function (err, event) {
 
+        // TODO error handling
+        
         event.waiting = 0;
         event.invited = 0;
 
@@ -192,11 +136,11 @@ module.exports = function(config, db) {
           eventId: event._id
         }, function (err, reservations) {
 
-          if(err) {
-            return res.send(err, 400);
-          }
+          
+          // TODO error handling
           
           reservations.forEach(function (reservation) {
+            
             if (reservation.waiting) {
 
               event.waiting = event.waiting + reservation.seats;
@@ -209,22 +153,22 @@ module.exports = function(config, db) {
 
           });
 
-          res.render('event', {
+          res.render('frontend/event', {
             event: event,
             org: org
           }); 
         });
-      });
+
+      })
+
     })
   };
 
 
   var listFrontEventsView = function (req, res, next) {
-
     data.getOrgByName({
       name: req.params.orgName
     }).then(function (org) {
-      // body... 
 
       data.getOrgEvents({
         orgId: org._id,
@@ -268,7 +212,7 @@ module.exports = function(config, db) {
 
           });
 
-          res.render('events-front', {
+          res.render('frontend/events', {
             events: events,
             org: org
           });
@@ -276,9 +220,11 @@ module.exports = function(config, db) {
       });
     }).catch(function (err) {
       
+      
       res.redirect('/');
 
     })
+
   };
 
   var redirectToEventsList = function (req, res, next) {
@@ -300,65 +246,80 @@ module.exports = function(config, db) {
   };
 
   var updateEventView = function (req, res, next) {
-
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
-    if (req.params.eventId) {
+    data.getOrgEvents({
+      orgId: req.params.orgId,
+      fromDate: new Date()
+    }).then(function (events) {
 
-      db.events.findOne({
-        _id: req.params.eventId
-      }).exec(function (err, theEvent) {
+      db.orgs.findOne({
+        _id: req.params.orgId
+      }, function (err, org) {
 
-        if(err) {
-          return res.render('event-update', {errors: err});
-        }
+        if (req.params.eventId) {
 
-        if (!theEvent) {
-          theEvent = {};
-        }
+          db.events.findOne({
+            _id: req.params.eventId
+          }).exec(function (err, theEvent) {
 
-        db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-          
-          if(err) {
-            return res.render('event-update', {errors: err});
-          }
 
-          res.render('event-update', {
-            errors: [],
-            theEvent: theEvent,
-            orgId: req.params.orgId,
-            org: org,
-            user: user
+            if(err) {
+              return res.render('backend/event-update', {errors: err});
+            }
+
+            if (!theEvent) {
+              theEvent = {};
+            }
+
+            db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+              
+              if(err) {
+                return res.render('backend/event-update', {errors: err});
+              }
+
+              res.render('backend/event-update', {
+                errors: [],
+                events: events,
+                theEvent: theEvent,
+                orgId: req.params.orgId,
+                org: org,
+                user: user
+              });
+
+            })
+
           });
 
-        })
+        } else {
 
-      });
+          db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
+            
+            if(err) {
+              return res.render('backend/event-update', {errors: err});
+            }
 
-    } else {
+            res.render('backend/event-update', {
+              errors: [],
+              theEvent: {
+                date: '',
+                user: req.user
+              },
+              events: events,
+              user: user,
+              orgId: req.params.orgId,
+              org: org
+            });
 
-      db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-        
-        if(err) {
-          return res.render('event-update', {errors: err});
+          });
+
         }
 
-        res.render('event-update', {
-          errors: [],
-          theEvent: {
-            date: moment().format(),
-            user: req.user
-          },
-          user: user,
-          orgId: req.params.orgId,
-          org: org
-        });
-
       });
 
-    }
-    
+    });
+
   };
 
   var updateEvent = function (req, res, next) {
@@ -375,6 +336,7 @@ module.exports = function(config, db) {
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
     var seats = (req.body.seats) ? req.body.seats.trim() : '';
+    var price = (req.body.price) ? req.body.price.trim() : '';
     var location = (req.body.location) ? req.body.location.trim() : '';
     var activeImage = parseInt(req.body.activeImage || 0);
     var mclistid = req.body.mclistid || '';
@@ -387,10 +349,13 @@ module.exports = function(config, db) {
       images: images,
       date: new Date(req.body.date),
       seats: seats,
+      price: price,
       location: location,
       activeImage: activeImage,
-      // mclistid: mclistid, // mailchimp list id
-      orgId: orgId
+      mclistid: mclistid, // mailchimp list id
+      orgId: orgId,
+      published: true,
+      temp: false
     };
 
     if (mclistid) {
@@ -410,21 +375,15 @@ module.exports = function(config, db) {
 
         theEvent.images = JSON.parse(req.body.existingImages);
 
-        theEvent.images.forEach(function (image, i) {
-          if (i === activeImage) {
-            image.active = true;
-          } else {
-            image.active = false;
-          }
-        });
-
       } else {
 
-        errors = errors || [];
+        // errors = errors || [];
 
-        errors.push({
-          msg: 'Please upload an event image'
-        });  
+        // errors.push({
+        //   msg: 'Please upload an event image'
+        // });  
+
+        theEvent.images = [{path: '/images/reservr-placeholder-2.png'}]
         
       }
 
@@ -447,21 +406,36 @@ module.exports = function(config, db) {
     }
 
     if (errors) {
-      
-      res.render('event-update', {
-        theEvent: theEvent,
-        orgId: orgId,
-        errors: errors,
-        user: req.user
+
+      db.orgs.findOne({
+        _id: orgId
+      }, function (err, org) {
+        
+        // TODO error handling
+        
+        db.events.find({
+          orgId: org._id
+        }, function (err, events) {
+          
+          // TODO error handling
+
+          res.render('backend/event-update', {
+            theEvent: theEvent,
+            orgId: orgId,
+            org: org,
+            errors: errors,
+            user: req.user,
+            events: events
+          });
+        })
       });
 
       return;
-
     }
 
     // check if email is valid
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
       
@@ -469,7 +443,7 @@ module.exports = function(config, db) {
 
         db.events.findOne({_id: eventId}, function (err, event) {
           if (err) {
-            res.render('event-update', {
+            res.render('backend/event-update', {
               errors: err,
               theEvent: theEvent
             });
@@ -482,7 +456,7 @@ module.exports = function(config, db) {
           }, theEvent, function (err, num, newEvent) {
 
             if (err) {
-              res.render('event-update', {
+              res.render('backend/event-update', {
                 errors: err,
                 theEvent: theEvent
               });
@@ -504,7 +478,7 @@ module.exports = function(config, db) {
         db.events.insert(theEvent, function (err, newEvent) {
 
           if (err) {
-            res.render('event-update', {errors: err});
+            res.render('backend/event-update', {errors: err});
           }
 
           res.redirect('/dashboard');
@@ -522,7 +496,7 @@ module.exports = function(config, db) {
       
       if (errors) {
         
-        res.render('event-update', {
+        res.render('backend/event-update', {
           theEvent: theEvent,
           orgId: orgId,
           errors: errors,
@@ -535,15 +509,15 @@ module.exports = function(config, db) {
 
       var username = req.body.username;
       var orgName = req.body.org_name;
-      var password = createHash(req.body.password);
+      var password = util.createHash(req.body.password);
 
       // TODO further validate email
       user.username = username;
-      user.validEmail = validateEmail(username);
+      user.validEmail = util.validateEmail(username);
 
       var updateEvent = function (err, num) {
         if (err) {
-         res.render('event-update', {errors: err, user: user, orgId: orgId});
+         res.render('backend/event-update', {errors: err, user: user, orgId: orgId});
         }
 
         res.redirect('/dashboard');
@@ -552,7 +526,7 @@ module.exports = function(config, db) {
       var updateOrg = function (err, num) {
 
         if (err) {
-         res.render('event-update', {errors: err});
+         res.render('backend/event-update', {errors: err});
         }
 
         //find event by org id and update the event
@@ -565,7 +539,7 @@ module.exports = function(config, db) {
       var updateUser = function (err, num) {
         
         if (err) {
-         res.render('event-update', {errors: err});
+         res.render('backend/event-update', {errors: err});
         }
 
          //find org by user id and update org name
@@ -587,12 +561,12 @@ module.exports = function(config, db) {
   var redirectToEventUpdate = function (req, res, next) {
 
     var user = req.user;
-    user.validEmail = validateEmail(user.username);
+    user.validEmail = util.validateEmail(user.username);
 
-    db.orgs.findOne({'userId': req.user._id}, function (err, org) {
+    db.orgs.findOne({userId: req.user._id}, function (err, org) {
           
       if (!org) {
-        res.send({error: 'error'}, 400);
+        res.status(400).send({error: 'error'});
       }
       
       if (org) {
@@ -614,6 +588,172 @@ module.exports = function(config, db) {
       }
     });
   };
+
+  var updateTempEvent = function (req, res, next) {
+
+    var event = req.body.event
+
+    // format date
+    event.date = new Date(event.date)
+
+    // convert strings to booleans
+    if (typeof event.published === 'string') {
+      event.published = (event.published === 'true')
+    }
+    
+    if (typeof event.temp === 'string') {
+      event.temp = (event.temp === 'true')
+    }
+
+    // update the event image
+    
+
+    event.invited = 0
+    event.waiting = 0
+
+    // check if there's an image
+    
+    if (!event._id && !event.orgId) {
+    
+      // this is a new event so we need to create a user and an org
+      db.users.insert({
+        timecreated: new Date(),
+        username: 'guest-' + new Date().getTime(),
+        password: '',
+        validEmail:false
+      }, function (err, user) {
+
+        // TODO error handling
+        
+        db.orgs.insert({
+          name: 'guest-' + new Date().getTime(),
+          userId: user._id,
+          logo: '/media/org-logo-placeholder.png',
+          mailchimp: [],
+          confirmationEmail: 'contact@reservr.net',
+          userSubject: 'Reservation Confirmation',
+          userSubjectWaiting: 'You\'ve been included on the waiting list',
+          userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          orgSubject: 'A new reservation for "{eventName}"',
+          orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+          userUpdateSubject: 'Reservation Update',
+          userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+          defaultTemplate: {
+            userSubject: 'Reservation Confirmation',
+            userSubjectWaiting: 'You\'ve been included on the waiting list',
+            userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            orgSubject: 'A new reservation for "{eventName}"',
+            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+            userUpdateSubject: 'Reservation Update',
+            userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+          }
+        }, function (err, org) {
+
+          // TODO error handling
+          
+          // update event org id
+          event.orgId = org._id
+
+          db.events.insert(event, function (err, newEvent) {
+
+            // TODO error handling
+            
+            res.json({
+              userId: user._id,
+              org: org,
+              event: newEvent
+            })
+          })
+        })
+      })
+
+    } else {
+
+      // the event has already been saved at least once
+      db.orgs.findOne({
+        _id: event.orgId
+      }, function (err, org) {
+
+        db.users.findOne({
+          _id: org.userId
+        }, function (err, user) {
+          
+          // TODO error handling
+
+          if (event._id) {
+            db.events.update({
+              _id: event._id
+            }, event, function (err, num) {
+
+              // TODO error handling
+              
+              db.events.findOne({
+                _id: event._id
+              }, function (err, theEvent) {
+
+                // TODO error handling
+                
+                res.json({
+                  userId: user._id,
+                  org: org,
+                  orgId: org._id,
+                  event: theEvent
+                })
+              })
+            })
+          } else {
+
+            db.events.insert(event, function (err, num) {
+
+              // TODO error handling
+              
+              db.events.findOne({
+                _id: event._id
+              }, function (err, theEvent) {
+
+                // TODO error handling
+                
+                res.json({
+                  userId: user._id,
+                  org: org,
+                  orgId: org._id,
+                  event: theEvent
+                })
+              })
+            })
+
+          }
+          
+
+          
+
+        })
+      })
+    }
+  };
+
+  var tempFrontEventView = function (req, res, next) {
+    db.events.findOne({
+      _id: req.params.eventId
+    }, function (err, event) {
+      
+      db.orgs.findOne({
+        _id: req.params.orgId
+      }, function (err, org) {
+
+        res.render('frontend/event', {
+          event: event,
+          org: org
+        }); 
+
+      })
+    })
+  }
+    
   
   return {
     listEventsView: listEventsView,
@@ -625,7 +765,9 @@ module.exports = function(config, db) {
     listFrontEventsView: listFrontEventsView,
     frontEventView: frontEventView,
     eventDeleteImage: eventDeleteImage,
-    deleteEvent: deleteEvent
+    deleteEvent: deleteEvent,
+    updateTempEvent: updateTempEvent,
+    tempFrontEventView: tempFrontEventView
   };
 
 };

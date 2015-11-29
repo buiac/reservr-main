@@ -1,11 +1,8 @@
 <%- include dashboard-header %>
-    <div class="row">
+    
 
-      <div class="col-md-2">
-        <%- include nav-left %>
-      </div>
-      
-      <div class="col-md-10">
+      <div class="rzv-lightbox">
+
         <h2>Settings</h2>
         
         <form action="/dashboard/<%= org._id %>/settings" method="post" enctype="multipart/form-data">
@@ -81,15 +78,19 @@
                       
                       <input type="text" name="mailchimpAccount2" id="" class="form-control" placeholder="Mailchimp Account Number 2"  <% if (org.mailchimp && org.mailchimp.length > 1) { %> value="<%= org.mailchimp[1].account %>" <% } else { %> value="" <% } %>>
                     </div>
-
-                  </div>      
-
+                  </div>
                 </div>
-                
-              
             </div>
 
             <div class="col-md-4">
+              <div class="form-group">
+                <label for="">Date locale</label>
+                <select name="locale" id="" class="form-control">
+                  <option value="en" selected>English</option>
+                  <option value="ro" >Romanian</option>
+                </select>
+              </div>
+
               <div class="form-group">
                 <img src="<%= org.logo %>" alt="" class="settings-org-logo">
 
@@ -104,9 +105,14 @@
             </div>
           </div>
         </form>
-      </div>
 
-    </div>
+      </div>
+      
+      
+        
+      
+
+    
 
 
 <%- include dashboard-footer %>

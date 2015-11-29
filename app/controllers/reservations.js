@@ -8,7 +8,6 @@ module.exports = function(config, db) {
   var request = require('superagent');
   var async = require('async');
   var fs = require('fs');
-  var util = require('util');
   var passport = require('passport');
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
@@ -17,6 +16,7 @@ module.exports = function(config, db) {
   var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
+  var marked = require('marked');
 
   db.reservations.find({},function (err, reservations) {
     
@@ -97,7 +97,6 @@ module.exports = function(config, db) {
 
   // configure moment
   moment.defaultFormat = 'YYYY-MM-DD LT';
-  moment.locale('ro');
 
   var transport = nodemailer.createTransport(smtpTransport({
     host: 'smtp.mandrillapp.com',
@@ -120,30 +119,7 @@ module.exports = function(config, db) {
   };
 
   var notifyUser = function (reservation, event, partial) {
-
-    var params = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-      seatsAvaialable: reservation.seatsAvaialable || ''
-    };
-
-    var template = {
-      subject: 'Update rezervare',
-      body: 'Salut, <br /><br /> S-au eliberat {seats} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',      
-      bodyPartial: 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
-    };
-
-    var bodyPlaceholders = getWordsBetweenCurlies(template.body);
-    var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
-
-    bodyPlaceholders.forEach(function (item) {
-      template.body = template.body.replace('{' + item + '}', params[item]);
-    });
-
-    bodyPartialPlaceholders.forEach(function (item) {
-      template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
-    });
+    // send waiting user a notification that a seat is available
 
     db.orgs.findOne({
       _id: event.orgId
@@ -152,6 +128,30 @@ module.exports = function(config, db) {
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
+
+        var params = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          seatsAvaialable: reservation.seatsAvaialable || ''
+        };
+
+        var template = {
+          subject: org.userUpdateSubject, //'Update rezervare'
+          body: marked(org.userUpdateBody), //'Salut, <br /><br /> S-au eliberat {seats} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.'
+          bodyPartial: marked(org.userUpdateBodyPartial) // 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
+        };
+
+        var bodyPlaceholders = getWordsBetweenCurlies(template.body);
+        var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
+
+        bodyPlaceholders.forEach(function (item) {
+          template.body = template.body.replace('{' + item + '}', params[item]);
+        });
+
+        bodyPartialPlaceholders.forEach(function (item) {
+          template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
+        });
 
         if (partial) {
           
@@ -189,52 +189,7 @@ module.exports = function(config, db) {
 
   var sendConfirmationEmails = function (reservation, event) {
 
-    // send confirmation to user
-    var userEmail = reservation.email;
-
-    var userParams = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm')
-    };
-
-    var orgParams = {
-      seats: reservation.seats,
-      eventName: event.name,
-      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-      userName: reservation.name,
-      userEmail: reservation.email
-    }
-
-    var template = {
-      userSubject: 'Rezervarea a fost facuta',
-      userSubjectWaiting: 'Ai fost inclus pe lista de asteptare',
-      userBody: 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
-      userBodyWaiting: 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.',
-      orgSubject: 'O noua rezervare la "{eventName}"',
-      orgBody: 'Salut, <br /><br /> O noua rezervare de {seats} locuri a fost facuta pentru evenimentul "{eventName}" de {eventDate} de catre {userName}, {userEmail}. <br /><br /> O zi cat mai buna iti dorim.'
-    };
-
-    var userPlaceholders = getWordsBetweenCurlies(template.userBody);
-    var userWaitingPlaceholders = getWordsBetweenCurlies(template.userBodyWaiting);
-    var orgPlaceholders = getWordsBetweenCurlies(template.orgBody);
-    var orgSubjectPlacholders = getWordsBetweenCurlies(template.orgSubject);
-
-    userPlaceholders.forEach(function (item) {
-      template.userBody = template.userBody.replace('{' + item + '}', userParams[item]);
-    });
-
-    userWaitingPlaceholders.forEach(function (item) {
-      template.userBodyWaiting = template.userBodyWaiting.replace('{' + item + '}', userParams[item]);
-    });
-
-    orgPlaceholders.forEach(function (item) {
-      template.orgBody = template.orgBody.replace('{' + item + '}', orgParams[item]);
-    });
-
-    orgSubjectPlacholders.forEach(function (item) {
-      template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
-    });
+    
 
     db.orgs.findOne({
       _id: event.orgId
@@ -243,6 +198,55 @@ module.exports = function(config, db) {
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
+
+        // send confirmation to user
+        var userEmail = reservation.email;
+
+        var userParams = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
+        };
+
+        var orgParams = {
+          seats: reservation.seats,
+          eventName: event.name,
+          eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+          userName: reservation.name,
+          userEmail: reservation.email
+        }
+
+        var template = {
+          userSubject: org.userSubject, // 'Rezervarea a fost facuta'
+          userSubjectWaiting: org.userSubjectWaiting, // 'Ai fost inclus pe lista de asteptare'
+          userBody: marked(org.userBody), // 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.'
+          userBodyWaiting: marked(org.userBodyWaiting), // 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.'
+          orgSubject: org.orgSubject,
+          orgBody: marked(org.orgBody)
+        };
+
+        var userPlaceholders = getWordsBetweenCurlies(template.userBody);
+        var userWaitingPlaceholders = getWordsBetweenCurlies(template.userBodyWaiting);
+        var orgPlaceholders = getWordsBetweenCurlies(template.orgBody);
+        var orgSubjectPlacholders = getWordsBetweenCurlies(template.orgSubject);
+
+        userPlaceholders.forEach(function (item) {
+          template.userBody = template.userBody.replace('{' + item + '}', userParams[item]);
+        });
+
+        userWaitingPlaceholders.forEach(function (item) {
+          template.userBodyWaiting = template.userBodyWaiting.replace('{' + item + '}', userParams[item]);
+        });
+
+        orgPlaceholders.forEach(function (item) {
+          template.orgBody = template.orgBody.replace('{' + item + '}', orgParams[item]);
+        });
+
+        orgSubjectPlacholders.forEach(function (item) {
+          template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
+        });
+
         
         var userEmailConfig = {
           from: 'contact@reservr.net',
@@ -265,8 +269,6 @@ module.exports = function(config, db) {
           html: template.orgBody
         };
 
-
-
         if (reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
             console.log(err);
@@ -279,10 +281,12 @@ module.exports = function(config, db) {
           });
         }
 
-        transport.sendMail(orgEmailConfig, function (err, info) {
-          console.log(err);
-          console.log(info);
-        });
+        if (org.notifications) {
+          transport.sendMail(orgEmailConfig, function (err, info) {
+            console.log(err);
+            console.log(info);
+          });  
+        }
 
       });
 
@@ -447,8 +451,9 @@ module.exports = function(config, db) {
               
               } else {
 
-                res.render('deleted-reservation',{
-                  org: org
+                res.render('frontend/user-reservation-deleted',{
+                  org: org,
+                  event: event
                 });
               
               }
@@ -465,32 +470,107 @@ module.exports = function(config, db) {
       eventId: req.params.eventId
     }, function (err, reservations) {
 
-
-
       if (err) {
         res.status(400).json(err);
         return;
       }
 
-      db.orgs.findOne({_id: req.params.orgId}, function (err, org) {
-        
-        if (err) {
-          res.status(400).json(err);
-          return;
-        }
+      data.getOrgEvents({
+        orgId: req.params.orgId,
+        fromDate: new Date()
+      }).then(function (events) {
 
-        res.render('reservations-view',{
-          org: org,
-          orgId: req.params.orgId,
-          user: req.user,
-          reservations: reservations,
-          eventId: req.params.eventId
+        db.orgs.findOne({
+          _id: req.params.orgId
+        }, function (err, org) {
+
+          var event = events.filter(function (ev) {
+            return ev._id === req.params.eventId
+          })
+
+          res.render('backend/reservations-view',{
+            org: org,
+            orgId: req.params.orgId,
+            user: req.user,
+            reservations: reservations,
+            eventId: req.params.eventId,
+            events: events,
+            event: event[0]
+          });
+
         });
-
       });
     });
-    
   };
+
+  var updateReservationTmp = function (req, res, next) {
+    
+    req.checkBody('name', 'Please add your name.').notEmpty();
+    req.checkBody('email', 'Please add your email address.').notEmpty();
+    req.checkBody('seats', 'Please select number of seats.').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+      res.status(400).json(errors);
+      return;
+    }
+
+    var reservation = {
+      name: req.body.name.trim(),
+      email: req.body.email.trim(),
+      seats: parseInt(req.body.seats, 10),
+      eventId: req.params.eventId,
+      orgId: req.params.orgId,
+      mclistid: req.body.mclistid,
+      waiting: false
+    };
+
+    data.getOrgEvents({
+      orgId: req.params.orgId,
+      fromDate: new Date()
+    }).then(function (events) {
+
+      var event = events.filter(function (item) {
+        return item._id === req.params.eventId
+      })
+
+      event = event[0]
+      
+      db.reservations.update({
+        email: req.body.email.trim()
+      }, {
+        $set: reservation
+      }, {
+        upsert: true
+      }, function (err, numReplaced, upsert) {
+
+
+        
+
+        if (!upsert) {
+          // update
+
+        } else {
+          // insert
+
+        }
+
+        res.json({
+          reservation: reservation,
+          message: '',
+          event: event
+        })
+
+      })
+      
+    });
+      
+    
+
+    // notify user about the reservation
+
+  }
 
   var updateReservation = function (req, res, next) {
     req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
@@ -500,6 +580,7 @@ module.exports = function(config, db) {
     var name = req.body.name.trim();
     var email = req.body.email.trim();
     var seats = req.body.seats;
+    var timestamp = req.body.timestamp;
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
     var mclistid = req.body.mclistid;
@@ -515,6 +596,7 @@ module.exports = function(config, db) {
       name: name,
       email: email,
       seats: parseInt(seats),
+      timestamp: new Date(timestamp),
       eventId: eventId,
       orgId: orgId,
       mclistid: mclistid,
@@ -566,7 +648,7 @@ module.exports = function(config, db) {
             if (!prevRes) {
 
               db.reservations.insert(reservation, function (err, newReservation) {
-                
+
                 if (err) {
                   res.status(400).json(err);
                   return;
@@ -640,27 +722,22 @@ module.exports = function(config, db) {
                 email: reservation.email
               }, function (err, reserv) {
 
+                  // if user has made a previous reservations with the same number of seats
                   if (reserv.seats === reservation.seats) {
                     res.json({
-                      message: 'Same seats',
+                      message: 'A reservation with your email address was made before so we just updated the number of seats.',
+                      resCode: 1,
                       reservation: reserv,
                       event: event
                     });
                     return;
                   }
 
-                  if (reserv.seats < reservation.seats) {
-                    reservedSeats = reservedSeats + (parseInt(reservation.seats) - reserv.seats);
-                  }
-
-                  if (reserv.seats > reservation.seats) {
-                    reservedSeats = reservedSeats - (reserv.seats - parseInt(reservation.seats)); 
-                  }
-
                   db.reservations.update(
                     {email: reservation.email, eventId: eventId},
                     {$set: {seats: reservation.seats}},
                     function (err, num) {
+                      // update the previous number of seats with the new ones
                       if (err) {
                         res.status(400).json(err);
                         return;
@@ -678,34 +755,36 @@ module.exports = function(config, db) {
                         ev.invited = 0;
                         ev.waiting = 0;
 
-                        if (reservation.waiting) {
-                          ev.waiting = ev.waiting + newReservation.seats
-                        } else {
-                          ev.invited = ev.invited + newReservation.seats
-                        }
+                        data.getEventReservations({
+                          eventId: ev._id
+                        }).then(function (reservations) {
 
-                        reservations.forEach(function (reservation) {
-                          
-                          if (reservation.eventId === ev._id) {
+                          reservations.forEach(function (reservation) {
+                            
+                            if (reservation.eventId === ev._id) {
 
-                            if (reservation.waiting) {
+                              if (reservation.waiting) {
 
-                              ev.waiting = ev.waiting + reservation.seats;
+                                ev.waiting = ev.waiting + reservation.seats;
 
-                            } else {
+                              } else {
 
-                              ev.invited = ev.invited + reservation.seats
+                                ev.invited = ev.invited + reservation.seats
 
+                              }
                             }
-                          }
+
+                          });
+
+                          res.json({
+                            message: 'A reservation with your email address was made before so we just updated the number of seats.',
+                            resCode: 1,
+                            reservation: reserv,
+                            event: ev
+                          });
 
                         });
 
-                        res.json({
-                          message: 'Update successful.',
-                          reservation: reserv,
-                          event: ev
-                        });
                       });
                     }
                   );
@@ -732,7 +811,7 @@ module.exports = function(config, db) {
         db.orgs.findOne({
           _id: event.orgId
         }, function (err, org) {
-          res.render('user-reservations-view',{
+          res.render('frontend/user-reservations',{
             reservation: reservation,
             event: event,
             org: org
@@ -751,7 +830,8 @@ module.exports = function(config, db) {
     viewReservation: viewReservation,
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
-    userReservationsDeleteView: userReservationsDeleteView
+    userReservationsDeleteView: userReservationsDeleteView,
+    updateReservationTmp: updateReservationTmp
   };
 
 };

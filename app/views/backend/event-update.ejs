@@ -1,0 +1,266 @@
+<%- include header %>
+
+
+<div class="rzv-lightbox">
+  <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">
+  <input type="hidden" name="orgId" value="<%= org._id || '' %>">
+  <input type="hidden" name="temp" value="false">
+  <input type="hidden" name="published" value="<%= theEvent.published %>">
+  
+  <% if (errors.length) { %>
+          
+    <div data-alert class="alert alert-warning">
+
+        <a href="" class="close">&times;</a>
+        
+        <% for(var i = 0; i < errors.length; i++) {%>
+           
+          <p><%= errors[i].msg %></p>
+
+        <% } %>
+
+      
+
+    </div>
+
+  <% } %>
+
+  <div class="row">
+    
+    <div class="col-md-6">
+      
+        <div class="event-group event-image event-image--show-image">
+          
+          <% if(theEvent.images && theEvent.images.length) { %>
+            <input type="hidden" name="existingImages" value="<%= JSON.stringify(theEvent.images) %>">
+          <% } %>
+          
+          <div class="event-preview-image">
+            <% if (theEvent.images && theEvent.images.length) { %>
+              
+              <img src="<%= theEvent.images[0].path %>" alt="">
+
+            <% } else { %>
+
+              <img src="/images/reservr-placeholder-2.png" alt="">
+
+            <% } %>
+
+            
+            
+            <div class="event-image-actions">
+
+              <a><i class="fa fa-edit"></i> Change Image</a>
+
+              <input type="file" name="images" id="" value="">
+
+            </div>
+
+          </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6 event-details">
+      
+      <div class="cf event-status event-status--<%= theEvent.published ? 'published' : 'not-published' %>">
+
+        <div class="pull-left">
+          <div>
+            <span class="event-published text-muted">Published:</span>
+          </div>
+
+          <div>
+            <span class="event-not-published text-muted">Not Published</span>
+          </div>
+        </div>
+
+        <% if (theEvent._id) { %> 
+        
+          <a class="external-link pull-left" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
+          
+        <% } %>
+
+        <a href="" class="btn btn-xs btn-primary pull-right event-publish">Publish</a>
+        <a href="" class="btn btn-xs btn-default pull-right event-unpublish"> Unpublish</a>
+      </div>
+
+      <div class="form-group event-name event-group">
+
+        <h1 class="event-placeholder">Event title</h1>
+        
+        <textarea name="name" id="" class="form-control"><%= theEvent.name || 'Event title' %></textarea>
+        
+        
+        <div class="event-group-action">
+          
+          <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+          <a class="event-group-cancel event-cancel">Cancel</a>
+          
+        </div>
+
+      </div>
+
+
+      <div class="form-group event-description event-group">
+
+        <span class="event-placeholder"></span>
+        
+        <textarea name="description" id="" class="form-control"><%= theEvent.description || 'Event description' %></textarea>
+        
+        <div class="event-group-action">
+          
+          <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+          <a class="event-group-cancel event-cancel">Cancel</a>
+          
+        </div>
+
+      </div>
+      
+      <div class="event-meta">
+
+        
+
+        <div class="event-group event-date">
+          
+          <span class="event-placeholder">
+            
+            <i class="fa fa-calendar-o"></i>
+
+            Date &amp; Time
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-calendar-o"></i>
+            
+            <% if (theEvent.date) { %>
+              
+              <input type="text" class="form-control" name="date" value="<%= moment(theEvent.date).format() %>">
+
+            <% } else { %>
+
+              <input type="text" class="form-control" name="date" value="Date &amp; Time">
+
+            <% } %>
+            
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+
+        </div>
+
+        <div class="event-group">
+
+          <span class="event-placeholder">
+
+            <i class="fa fa-map-o"></i>
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-map-o"></i>
+
+            <input type="text" class="form-control" name="location" value="<%= theEvent.location || org.location || 'Event location' %>">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+          
+        </div>
+        
+        <div class="event-group">
+          
+          <span class="event-placeholder">
+            <i class="fa fa-money"></i>
+
+            Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
+
+          </span>
+
+          <div class="event-input">
+            
+            <i class="fa fa-money"></i>
+
+            <input type="text" class="form-control" name="price" min="0" value="<%= theEvent.price || 'Event price' %>">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+
+        </div>
+
+        <div class="event-group event-seats">
+
+          <span class="event-placeholder">
+
+            <i class="icomoon icon-chair"></i>
+
+          </span>
+
+          <div class="event-input">
+
+            <i class="icomoon icon-chair"></i>
+
+            <input type="number" class="form-control" name="seats" value="<%= parseInt(theEvent.seats, 10) || 'Event seats' %>">
+
+          </div>
+
+          <div class="event-group-action">
+            
+            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
+
+            <a class="event-group-cancel event-cancel">Cancel</a>
+            
+          </div>
+          
+        </div>
+        
+      </div>
+      
+      <% if (theEvent.published) { %>
+        <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
+          Save event
+        </a>
+      <% } else { %>
+        <a class="btn btn-primary btn-publish pull-right" style="margin-left: 10px;">
+          Publish event
+        </a>
+      <% } %>
+
+      <a href="/dashboard/<%= org._id %>/events" class="btn btn-default pull-right">Cancel</a>
+
+      <% if (theEvent._id) { %>
+        <a href="/dashboard/<%= org._id %>/delete-event/<%= theEvent._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure you want to delete this event?">Delete event</a>
+      <% } %>
+
+    </div>      
+
+  </div>
+
+</div>
+ 
+<%- include footer %>
