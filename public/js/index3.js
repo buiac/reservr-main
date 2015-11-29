@@ -638,6 +638,9 @@ $(document).ready(function () {
             $('.seats-waiting').html(res.event.waiting)            
           }
 
+          // update the reservation link
+          $eventform.find('.form-success a').html('http://reservr.net/r/' + res.reservation._id).attr('href','http://reservr.net/r/' + res.reservation._id)
+
           // if a reservation is made with the same email
           if (res.resCode) {
             var h4 = $eventform.find('.form-success h4')
