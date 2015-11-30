@@ -139,9 +139,7 @@ module.exports = function(config, db) {
   };
 
   var sendConfirmationEmails = function (reservation, event) {
-
     
-
     db.orgs.findOne({
       _id: event.orgId
     }, function (err, org) {

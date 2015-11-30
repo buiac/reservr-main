@@ -22,6 +22,7 @@ module.exports = function(config, db) {
 
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
+  // TODO move to util
   var uniqueTest = function (arr) {
     var n, y, x, i, r;
     var arrResult = {},
@@ -37,6 +38,18 @@ module.exports = function(config, db) {
     return unique;
   }
 
+  // TODO move to util
+  var getWordsBetweenCurlies = function (str) {
+    var results = []
+    var re = /{([^}]+)}/g
+    var text = re.exec(str)
+    while (text) {
+      results.push(text[1])
+      text = re.exec(str)
+    }
+    return results
+  };
+
   var sendReminders = function (req, res, next) {
     // var lte = moment().add(24, 'hours').toDate();
     // var gte = moment().toDate();
@@ -44,83 +57,100 @@ module.exports = function(config, db) {
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    var tempEmailConfig = {
-      from: 'contact@reservr.net',
-      to: 'sebi.kovacs@gmail.com',
-      subject: 'Reminders test',
-      html: 'reminders test'
-    }
-    transport.sendMail(tempEmailConfig, function (err, info) {
-      console.log(err);
-      console.log(info);
-    });
-
-    if (false) { //date.getHours === 4
+    if (date.getHours === 4) { //date.getHours === 4
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
-      db.events.find({
-        date: {
-          $lte: lte,
-          $gte: gte
-        },
-        sent: {
-          $ne: true
-        }
-      }).exec(function (err, events) {
-        
-        var arr = [];
-              
-        events.forEach(function (event) {
-          arr.push(data.getEventReservations({
-            eventId: event._id
-          }));
-        });
-
-        q.all(arr).then(function (rez) {
-          var reservations = [].concat.apply([], rez);
-          var arr = [];
-
-          reservations.forEach(function (reservation, i) {
-            // if the user has reservations for more than one event the next day
-            // createa a list of those event
-
-            if (!reservation.waiting) {
-              arr.push({
-                email: reservation.email,
-                eventId: reservation.eventId
-              })
+      db.orgs.find({}, function (err, orgs) {
+        orgs.forEach(function (org) {
+          
+          db.events.find({
+            orgId: org._id,
+            date: {
+              $lte: lte,
+              $gte: gte
+            },
+            sent: {
+              $ne: true
             }
-          })
+          }).exec(function (err, events) {
 
-          arr = uniqueTest(arr)
-
-          arr.forEach(function (reservation) {
             events.forEach(function (event) {
               
-              if (reservation.eventId === event._id) {
-                reservation.event = event;
-              }
+              // find the reservations for each of these events
+              db.reservations.find({
+                eventId: event._id
+              }, function (err, reservations) {
 
-            })
+                var arr = []
 
+                reservations.forEach(function (reservation) {
 
+                  // console.log(arr.indexOf(reservation.email))
+                  if (arr.indexOf(reservation.email) === -1 ) {
+                    
+                    var params = {
+                      eventName: event.name,
+                      eventLocation: event.location,
+                      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+                      deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
+                    }
 
-            var userEmailConfig = {
-              from: 'contact@reservr.net', // user.username
-              to: reservation.email,
-              subject: 'Reminder for event "' + reservation.event.name + '"',
-              html: marked('Hello, \n\n This is a reminder that you have reservd seats for the "' + reservation.event.name + '", that will take place ' + moment(reservation.event.date).format() + ' at ' + reservation.event.location + '. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: <a href="http://reservr.net/r/">delete reservation</a>. \n\n Have a great day!')
-            };
+                    var template = {
+                      subject: org.remindSubject,
+                      body: org.remindBody
+                    };
 
-            transport.sendMail(userEmailConfig, function (err, info) {
-              console.log(err);
-              console.log(info);
+                    var bodyPlaceholders = getWordsBetweenCurlies(template.body)
+                    var subjectPlaceholders = getWordsBetweenCurlies(template.body)
+
+                    bodyPlaceholders.forEach(function (item) {
+                      template.body = template.body.replace('{' + item + '}', params[item]);
+                    });
+
+                    subjectPlaceholders.forEach(function (item) {
+                      template.subject = template.subject.replace('{' + item + '}', params[item]);
+                    });
+
+                    var reminderEmailConfig = {
+                      from: 'contact@reservr.net', // user.username
+                      to: reservation.email,
+                      subject: template.subject,
+                      html: marked(template.body)
+                    };
+
+                    transport.sendMail(reminderEmailConfig, function (err, info) {
+                      console.log(err);
+                      console.log(info);
+                    });
+
+                  }
+
+                  arr.push(reservation.email)
+
+                });
+              });
+
+              // update event so we know that is has already sent out notifications
+              db.events.update({
+                _id: event._id
+              }, {
+                $set: {
+                  sent: true
+                }
+              })
+
             });
+
           })
 
         })
+      })
 
+      
+
+      res.json({
+        status: 'sent'
       })
       
     }

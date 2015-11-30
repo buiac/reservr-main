@@ -92,6 +92,11 @@ module.exports = function(config, db) {
     var userUpdateSubject = req.body.userUpdateSubject;
     var userUpdateBody = req.body.userUpdateBody;
 
+    // reservation reminder templates
+    var remindSubject = req.body.remindSubject;
+    var remindBody = req.body.remindBody;
+
+
     // TODO create a subject for the partial as well
     var userUpdateBodyPartial = req.body.userUpdateBodyPartial;
     
@@ -155,7 +160,9 @@ module.exports = function(config, db) {
         orgBody: orgBody,
         userUpdateSubject: userUpdateSubject,
         userUpdateBody: userUpdateBody,
-        userUpdateBodyPartial: userUpdateBodyPartial
+        userUpdateBodyPartial: userUpdateBodyPartial,
+        remindSubject: remindSubject,
+        remindBody: remindBody
       }},  function (err, num) {
         
         if (err) {

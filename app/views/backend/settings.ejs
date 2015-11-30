@@ -485,6 +485,39 @@
 
                 </div>
 
+              
+
+                <h4 class="rzv-panel-title">
+                  Reservation Reminder
+                </h4>
+
+                <div class="form-group">
+
+                  <p class="text-muted">This message is sent to notify the user that he/she has reservd seats for the following day's event.</p>
+                  
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label for="">Email Subject</label>
+
+                        <input type="text" class="form-control" id="" name="remindSubject" value="<%= org.remindSubject || '' %>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <label for="">Email Body</label>
+
+                  <textarea name="remindBody" id="" cols="30" rows="5" class="form-control"><%= org.remindBody || '' %></textarea>
+
+                </div>
+                
+
               </div>
 
 

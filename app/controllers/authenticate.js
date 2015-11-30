@@ -74,7 +74,9 @@ module.exports = function(config, db) {
             orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
             userUpdateSubject: 'Reservation Update',
             userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+            remindSubject: 'Reminder for event {eventName}',
+            remindBody: 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!',
           }
 
           org.userSubject = 'Reservation Confirmation',
@@ -88,6 +90,8 @@ module.exports = function(config, db) {
           org.userUpdateBody = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
           org.userUpdateBodyPartial = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
 
+          org.remindSubject = 'Reminder for event {eventName}';
+          org.remindBody = 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!';
 
            // save the user
           db.users.insert(newUser, function (err, newDoc) {
