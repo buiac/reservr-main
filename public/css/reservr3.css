@@ -645,7 +645,7 @@ textarea {
 
 .event-page .event-image img {
   display: block;
-  max-width: 100%;
+  width: 100%;
 }
 
 .event-page .event-description h4 {
@@ -995,6 +995,11 @@ textarea {
 
 .event-image-wrap {
   position: relative;
+  width: 565px;
+}
+
+.event-image-wrap > .event-image {
+  width: 535px;
 }
 
 .event-temporary-overlay {
@@ -1025,8 +1030,7 @@ textarea {
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 10px 0 10px 5px;
-  max-width: 240px;
+  padding: 10px 0 10px 0;
 }
 
 .external-link .fa {
@@ -1073,6 +1077,11 @@ textarea {
 .event-status--not-published .event-not-published,
 .event-status--not-published .event-publish {
   display: block;
+}
+
+
+.rzvr-homepage .container-fluid {
+  max-width: 1312px;
 }
 
 .rzvr-homepage .event-publish {

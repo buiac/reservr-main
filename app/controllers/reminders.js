@@ -72,6 +72,9 @@ module.exports = function(config, db) {
             },
             sent: {
               $ne: true
+            },
+            reminders: {
+              $ne: false
             }
           }).exec(function (err, events) {
 

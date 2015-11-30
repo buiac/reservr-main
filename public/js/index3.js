@@ -698,13 +698,13 @@ $(document).ready(function () {
     $(this).parent().hide()
   };
 
-  function eventUnpublish (e) {
-    eventModel.published = false 
+  function togglePublish (e) {
+    eventModel.published = e.target.checked
     syncData()
   }
 
-  function eventPublish (e) {
-    eventModel.published = true 
+  function toggleReminders (e) {
+    eventModel.reminders = e.target.checked
     syncData()
   }
 
@@ -771,12 +771,14 @@ $(document).ready(function () {
   $('body').on('click', '.event-toggle-description', toggleDescription)
   $('body').on('click', '.alert a.close', closeAlert)
   $('body').on('click', '.form-error-message .close, .form-success-message .close', closeAlert)
-  $('body').on('click', '.event-publish', eventPublish)
-  $('body').on('click', '.event-unpublish', eventUnpublish)
   $('body').on('click', '.event-group-cancel', hideGroup)
   $('body').on('click', '.btn-remove-item', removeItem)
   $('body').on('change', '[name=notifications]', toggleNotificationEmail)
   $('body').on('click', '.rzv-vnav li a', displayPanels)
+
+  $('body').on('change', '[name="published"]', togglePublish)
+  $('body').on('change', '[name="reminders"]', toggleReminders)
+  
   
 
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
