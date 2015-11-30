@@ -605,6 +605,10 @@ module.exports = function(config, db) {
       event.temp = (event.temp === 'true')
     }
 
+    if (typeof event.reminders === 'string') {
+      event.reminders = (event.reminders === 'true')
+    }
+
     // update the event image
     
 
