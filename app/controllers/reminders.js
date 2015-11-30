@@ -44,7 +44,18 @@ module.exports = function(config, db) {
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    if (true) { //date.getHours === 4
+    var tempEmailConfig = {
+      from: 'contact@reservr.net',
+      to: 'sebi.kovacs@gmail.com',
+      subject: 'Reminders test',
+      html: 'reminders test'
+    }
+    transport.sendMail(tempEmailConfig, function (err, info) {
+      console.log(err);
+      console.log(info);
+    });
+
+    if (false) { //date.getHours === 4
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
@@ -93,7 +104,7 @@ module.exports = function(config, db) {
 
             })
 
-            console.log(reservation)
+
 
             var userEmailConfig = {
               from: 'contact@reservr.net', // user.username
