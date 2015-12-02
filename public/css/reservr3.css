@@ -1153,6 +1153,26 @@ textarea {
   
 }
 
+.event-features {
+  padding: 30px 50px;
+}
+
+.event-features h1 {
+  margin-bottom: 50px;
+}
+
+.event-features .list-unstyled li:first-child h5 {
+  margin-top: 0;
+}
+.event-features h5 {
+  font-weight: bold;
+  font-size: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  margin-top: 50px;
+}
+
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}
