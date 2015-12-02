@@ -45,7 +45,7 @@ module.exports = (function() {
     
     if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
-        username: 'sebi.kovacs@gmail.com'
+        username: 'spatiureactor@gmail.com'
       }, function (err, user) {
 
         req.user = user;
