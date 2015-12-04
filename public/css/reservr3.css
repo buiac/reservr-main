@@ -527,7 +527,7 @@ textarea {
 }
 
 .event-menu .event-menu-button {
-  padding: 5px 5px;
+  padding: 5px 5px 15px 15px;
   display: block;
 }
 
@@ -542,6 +542,41 @@ textarea {
 
 .event-menu .event-menu-button:hover span{
   background: #333;
+}
+
+.event-menu .event-menu-dropdown {
+  display: none;
+  position: absolute;
+  width: 120px;
+  right: 0;
+  top: 25px;
+  font-size: 12px;
+  padding: 5px;
+  background: #FFF;
+  box-shadow: rgba(0,0,0, .8) 0 0 10px;
+}
+
+.event-menu.event-menu--open .event-menu-dropdown {
+  display: block;
+}
+
+.event-menu .event-menu-dropdown li {
+  margin-bottom: 5px;
+}
+
+.event-menu .event-menu-dropdown a {
+  color: #999;
+}
+
+.event-menu .event-menu-dropdown a .icon-wrap {
+  display: inline-block;
+  width: 15px;
+  text-align: center;
+}
+
+.event-menu .event-menu-dropdown a:hover {
+  text-decoration: none;
+  color: #333;
 }
 
 

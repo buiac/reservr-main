@@ -155,6 +155,7 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event/:eventId/deleteimage/:pictureIndex', isAuthenticated, events.eventDeleteImage);
   app.get('/dashboard/:orgId/delete-event/:eventId', isAuthenticated, events.deleteEvent);
+  app.get('/dashboard/:orgId/duplicate-event/:eventId', isAuthenticated, events.duplicateEvent);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
   // settings

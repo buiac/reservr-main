@@ -771,6 +771,19 @@ $(document).ready(function () {
     window.location = eventHref
   }
 
+  function toggleEventContextMenu (e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    var $this = $(this)
+    $this.parent().toggleClass('event-menu--open')
+
+  }
+
+  function preventPropagation (e) {
+    e.stopPropagation()
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -793,9 +806,12 @@ $(document).ready(function () {
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
+  $('body').on('click', '.event-menu-button', toggleEventContextMenu)
+  $('body').on('click', '.event-menu-dropdown a', preventPropagation)
   
-
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
+
+  
 
   $('.event-image input').change(function(){
     readURL(this);

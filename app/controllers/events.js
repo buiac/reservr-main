@@ -761,8 +761,50 @@ module.exports = function(config, db) {
       })
     })
   }
+
+  var duplicateEvent = function (req, res, next) {
     
-  
+    db.orgs.findOne({
+      _id: req.params.orgId
+    }, function (err, org) {
+      
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+
+        db.events.find({
+          orgId: org._id,
+          date: {
+            $gte: new Date()
+          }
+        }, function (err, events) {
+          
+          db.events.findOne({
+            _id: req.params.eventId
+          }, function (err, event) {
+            
+            // duplicate event
+            var duplicateEvent = JSON.parse(JSON.stringify(event));
+            
+            // remove id
+            delete duplicateEvent._id
+
+            // change name
+
+            duplicateEvent.name = 'Copy of ' + duplicateEvent.name
+
+
+            db.events.insert(duplicateEvent, function (err, newEvent) {
+
+              res.redirect('/dashboard/' + req.params.orgId + '/event/' + newEvent._id);
+              
+            });
+          });
+        })
+      })
+    })
+  };
+
   return {
     listEventsView: listEventsView,
     listEvents: listEvents,
@@ -775,7 +817,8 @@ module.exports = function(config, db) {
     eventDeleteImage: eventDeleteImage,
     deleteEvent: deleteEvent,
     updateTempEvent: updateTempEvent,
-    tempFrontEventView: tempFrontEventView
+    tempFrontEventView: tempFrontEventView,
+    duplicateEvent: duplicateEvent
   };
 
 };
