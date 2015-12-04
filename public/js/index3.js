@@ -758,6 +758,12 @@ $(document).ready(function () {
     $(this).addClass('active-item')
   }
 
+  function goToEvent (e) {
+    var $this = $(this)
+    var eventHref = $this.find('.event-title').attr('href')
+    window.location = eventHref
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -775,6 +781,8 @@ $(document).ready(function () {
   $('body').on('click', '.btn-remove-item', removeItem)
   $('body').on('change', '[name=notifications]', toggleNotificationEmail)
   $('body').on('click', '.rzv-vnav li a', displayPanels)
+
+  $('body').on('click', '.event-summary', goToEvent)
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
