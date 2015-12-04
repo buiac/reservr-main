@@ -1,85 +1,33 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <title>
-    Reservr login - hassle free reservations
-  </title>
-  
-  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+<%- include frontend/partials/auth-header %>
+          
+<h1>Log in</h1>
 
-  <link rel="stylesheet" href="css/site.css">
+<form action="/signin" method="POST">
 
-</head>
-<body class="splash sign-in">
-  
-  <div class="container">
-  
-    <div class="row">
-      
-      <div class="col-md-4 col-md-offset-4">
-
-        <div class="logo">
-
-          <img src="/images/reservr-logo-white-big.png">
-
-        </div>
-
-      </div>
-
+  <% if (info.length) { %>
+    <div class="alert alert-danger">
+      <%= info %>
     </div>
-    
-    <div class="row">
+  <% } %>
 
-      <div class="col-md-4 col-md-offset-4">
+  <div class="form-group">
 
-        <h1>Log in</h1>
+    <label for="" class="control-label">Email</label>
 
-        <form action="/signin" method="POST">
+    <input type="text" class="form-control" name="username">
 
-          <% if (info.length) { %>
-            <div class="alert alert-danger">
-              <%= info %>
-            </div>
-          <% } %>
-
-          <div class="form-group">
-
-            <label for="" class="control-label">Email</label>
-
-            <input type="text" class="form-control" name="username">
-
-          </div>
-
-          <div class="form-group">
-
-            <label for="" class="control-label">Password</label>
-
-            <input type="password" class="form-control" name="password">
-
-          </div>
-
-          <button type="submit" class="btn btn-default pull-right">Submit</button>
-
-        </form>
-
-      </div>
-
-    </div>
-    
   </div>
 
-  <script>
-    if (window.location.search.indexOf('email') !== -1) {
-      var email = window.location.search.split('=')[1]
-      var $emailInput = document.querySelector('[name=username]')
+  <div class="form-group">
 
-      $emailInput.value = email
-    }
-  </script>
+    <label for="" class="control-label">Password</label>
 
-</body>
+    <input type="password" class="form-control" name="password">
 
-</html>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg">Go to Dashboard</button>
+
+</form>
+
+<%- include frontend/partials/auth-footer %>
