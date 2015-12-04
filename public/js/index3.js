@@ -357,6 +357,12 @@ $(document).ready(function () {
     });
   }
 
+  function scrollEventList () {
+    $('.event-list').animate({
+      scrollTop: $('.event-summary.event-active').offset().top - $('.event-list').offset().top
+    }, 300);
+  }
+
   function init () {
     updateDateField()
     parseFieldsOnLoad()
@@ -364,6 +370,7 @@ $(document).ready(function () {
     setupCalendar()
     initBootstrapWidgets()
     updateHiddenFields()
+    scrollEventList()
   }
 
   function updateEventPrice (e) {
@@ -786,7 +793,6 @@ $(document).ready(function () {
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
-  
   
 
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
