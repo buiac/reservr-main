@@ -358,9 +358,17 @@ $(document).ready(function () {
   }
 
   function scrollEventList () {
-    $('.event-list').animate({
-      scrollTop: $('.event-summary.event-active').offset().top - $('.event-list').offset().top
-    }, 300);
+    var $eventActive = $('.event-summary.event-active');
+    var $eventList = $('.event-list');
+
+    if ($eventActive.length) {
+
+      $('.event-list').animate({
+        scrollTop: $eventActive.offset().top - $eventList.offset().top
+      }, 300);
+
+    }
+    
   }
 
   function init () {
@@ -765,16 +773,16 @@ $(document).ready(function () {
     $(this).addClass('active-item')
   }
 
-  // function goToEvent (e) {
-  //   var $this = $(this)
-  //   var eventHref = $this.find('.event-title').attr('href')
-  //   window.location = eventHref
-  // }
+  function goToEvent (e) {
+    var $this = $(this)
+    var eventHref = $this.find('.event-title').attr('href')
+    window.location = eventHref
+  }
 
-  // function goToReservations (e) {
-  //   e.preventPropagation()
-  //   window.location = $(this).attr('href')
-  // }
+  function goToReservations (e) {
+    e.preventPropagation()
+    window.location = $(this).attr('href')
+  }
 
   function toggleEventContextMenu (e) {
     e.preventDefault()
@@ -807,13 +815,13 @@ $(document).ready(function () {
   $('body').on('change', '[name=notifications]', toggleNotificationEmail)
   $('body').on('click', '.rzv-vnav li a', displayPanels)
 
-  $('body').on('click', '.event-summary', goToEvent)
+  // $('body').on('click', '.event-summary', goToEvent)
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
-  $('body').on('click', '.event-reservations a', goToReservations)
+  // $('body').on('click', '.event-reservations a', goToReservations)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
