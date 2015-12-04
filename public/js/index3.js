@@ -771,6 +771,11 @@ $(document).ready(function () {
     window.location = eventHref
   }
 
+  function goToReservations (e) {
+    e.preventPropagation()
+    window.location = $(this).attr('href')
+  }
+
   function toggleEventContextMenu (e) {
     e.preventDefault()
     e.stopPropagation()
@@ -808,6 +813,7 @@ $(document).ready(function () {
   $('body').on('change', '[name="reminders"]', toggleReminders)
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
+  $('body').on('click', '.event-reservations a', goToReservations)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
