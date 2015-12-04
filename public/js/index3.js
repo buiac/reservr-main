@@ -225,9 +225,6 @@ $(document).ready(function () {
     eventModel[field.name] = field.value
     reloadPage = false
 
-    console.log('simple save data')
-    console.log(eventModel)
-
     syncData()
   }
 
@@ -246,8 +243,11 @@ $(document).ready(function () {
     var $fields = $group.find('[name]')
   
     $fields.each(function (i, field) {
+      
+      $(field).blur(saveData)
       $(field).blur(hideGroup)
       $(field).keypress(saveDataEnter)
+
     })
   })
 
@@ -368,7 +368,7 @@ $(document).ready(function () {
       }, 300);
 
     }
-    
+
   }
 
   function init () {
