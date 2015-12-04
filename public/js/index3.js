@@ -765,16 +765,16 @@ $(document).ready(function () {
     $(this).addClass('active-item')
   }
 
-  function goToEvent (e) {
-    var $this = $(this)
-    var eventHref = $this.find('.event-title').attr('href')
-    window.location = eventHref
-  }
+  // function goToEvent (e) {
+  //   var $this = $(this)
+  //   var eventHref = $this.find('.event-title').attr('href')
+  //   window.location = eventHref
+  // }
 
-  function goToReservations (e) {
-    e.preventPropagation()
-    window.location = $(this).attr('href')
-  }
+  // function goToReservations (e) {
+  //   e.preventPropagation()
+  //   window.location = $(this).attr('href')
+  // }
 
   function toggleEventContextMenu (e) {
     e.preventDefault()
