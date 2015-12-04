@@ -507,6 +507,7 @@ textarea {
 .event-summary {
   margin-bottom: 10px;
   opacity: .6;
+  position: relative;
 }
 
 .event-summary:hover {
@@ -518,6 +519,31 @@ textarea {
   opacity: 1;
   border: 3px solid #02766C;
 }
+
+.event-menu {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.event-menu .event-menu-button {
+  padding: 5px 5px;
+  display: block;
+}
+
+.event-menu .event-menu-button span {
+  display: block;
+  width: 3px;
+  height: 3px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+  background: #999;
+}
+
+.event-menu .event-menu-button:hover span{
+  background: #333;
+}
+
 
 .event-list {
   height: 72%;
@@ -1172,6 +1198,8 @@ textarea {
   margin-bottom: 20px;
   margin-top: 50px;
 }
+
+
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }

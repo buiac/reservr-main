@@ -41,6 +41,14 @@
           
           <% events.forEach(function(event){ %>
             <div class="box-white event-summary <% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">
+
+              <div class="event-menu">
+                <a href="" class="event-menu-button">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </a>
+              </div>
               
               <div class="event-date">
                 
