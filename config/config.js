@@ -4,8 +4,6 @@
 module.exports = (function() {
   'use strict';
 
-  // this is an added comment should be ignored
-
   var fs = require('fs');
 
   // api configs
