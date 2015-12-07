@@ -1091,7 +1091,7 @@ textarea {
 
 .event-image-wrap {
   position: relative;
-  width: 565px;
+  /*width: 565px;*/
 }
 
 .event-image-wrap > .event-image {
