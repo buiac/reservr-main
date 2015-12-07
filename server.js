@@ -38,7 +38,7 @@ module.exports = (function() {
   app.use(passport.session());
 
   // configs
-  var config = require('./config/config.js');
+  var config = require('./data/config.js');
 
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
