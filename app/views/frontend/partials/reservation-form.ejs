@@ -1,5 +1,7 @@
   <div class="event-form">
 
+    
+
       <div class="row">
 
         <div class="col-md-6 <% if ((event.seats - event.invited) === 0) { %> event-reserv--sold-out<% } %>">
@@ -90,6 +92,11 @@
           <div class="event-reserv-fields ">
 
             <form action="" class="form-reserve">
+
+              <div class="alert alert-warning">
+                <p>Email confirmations wont be sent due to technical issues :(</p>
+                <p>But don't worry, your reservation will be OK.</p>
+              </div>
 
               <div class="form-error">
 
