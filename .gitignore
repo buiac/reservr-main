@@ -6,6 +6,10 @@ node_modules/
 data/
 *.db
 
+# config dir
+config/*
+/config
+
 # Editor
 .kateproject
 .kateproject.d
