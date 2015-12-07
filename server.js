@@ -38,7 +38,14 @@ module.exports = (function() {
   app.use(passport.session());
 
   // configs
-  var config = require('./data/config.js');
+  var config;
+
+  if (process.env.OPENSHIFT_APP_NAME) {
+    config = require('../data/config.js');  
+  } else {
+    config = require('./data/config.js');  
+  }
+  
 
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
