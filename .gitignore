@@ -9,6 +9,7 @@ data/
 # config dir
 config/*
 /config
+config/
 
 # Editor
 .kateproject
