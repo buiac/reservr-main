@@ -12,14 +12,7 @@ module.exports = function(config, db) {
   var bCrypt = require('bcrypt-nodejs');
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
-  var transport = nodemailer.createTransport(smtpTransport({
-    host: 'smtp.mandrillapp.com',
-    port: 587,
-    auth: {
-      user: 'contact@reservr.net',
-      pass: 'cQ0Igd-t1LfoYOvFLkB0Xg'
-    }
-  }));
+  var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
   var util = require('../services/util.js')(config, db);
 
   var view = function(req, res, next) {
