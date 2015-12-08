@@ -75,11 +75,15 @@ module.exports = (function() {
   var adminAuth = basicAuth(function(user, pass, callback) {
     var admin = false;
     
-    if(process.env.OPENSHIFT_APP_NAME) {
-      admin = (user === config.superadmin.user && pass === config.superadmin.password);
-    } else {
-      admin = true;
-    }
+    // if(process.env.OPENSHIFT_APP_NAME) {
+    //   admin = (user === config.superadmin.user && pass === config.superadmin.pass);
+    // } else {
+    //   admin = true;
+    // }
+
+
+    admin = (user === config.superadmin.user && pass === config.superadmin.pass);
+    
 
     callback(null, admin);
   });
