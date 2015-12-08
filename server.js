@@ -24,6 +24,7 @@ module.exports = (function() {
   var multer = require('multer');
   var moment = require('moment');
   var marked = require('marked');
+  var basicAuth = require('basic-auth-connect');
 
   var app = express();
   
@@ -70,6 +71,18 @@ module.exports = (function() {
     }
 
   };
+
+  var adminAuth = basicAuth(function(user, pass, callback) {
+    var admin = false;
+    
+    if(process.env.OPENSHIFT_APP_NAME) {
+      admin = (user === config.superadmin.user && pass === config.superadmin.password);
+    } else {
+      admin = true;
+    }
+
+    callback(null, admin);
+  });
 
   // config express
   app.use(bodyParser.json({
@@ -153,6 +166,7 @@ module.exports = (function() {
   var reservations = require('./app/controllers/reservations.js')(config, db);
   var settings = require('./app/controllers/settings.js')(config, db);
   var reminders = require('./app/controllers/reminders.js')(config, db);
+  var superadmin = require('./app/controllers/superadmin.js')(config, db);
 
   // Backend routes
   // events
@@ -226,6 +240,12 @@ module.exports = (function() {
 
   // API routes
   app.get('/api/1/events/:orgId', events.listEvents);
+
+
+  // SuperAdmin routes
+  app.get('/sa/dashboard', adminAuth, superadmin.dashboard);
+  app.get('/sa/delete-user/:userId', adminAuth, superadmin.deleteUser);
+  app.get('/sa/delete-org/:orgId', adminAuth, superadmin.deleteOrg);
 
 
   app.use(function(req, res, next){
