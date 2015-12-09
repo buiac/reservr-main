@@ -610,7 +610,6 @@ module.exports = function(config, db) {
     }
 
     // update the event image
-    
 
     event.invited = 0
     event.waiting = 0
