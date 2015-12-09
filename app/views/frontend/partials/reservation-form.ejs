@@ -174,7 +174,8 @@
         <div class="col-md-6">
           
           <p class="text-muted event-price-text">
-            <span class="seats-invited"><%= event.invited %></span> seats reservd of <span class="seats-total"><%= event.seats %></span> available
+            
+            <span class="seats-left"><%=  event.seats - event.invited %></span> seats left 
             
             <br>
             <% if (event.waiting) { %>

@@ -647,7 +647,7 @@ $(document).ready(function () {
           
 
           // update the number of seats invited
-          $('.seats-invited').html(res.event.invited)
+          $('.seats-left').html(parseInt(res.event.seats, 10) - parseInt(res.event.invited, 10))
 
           if ($('.seats-waiting')) {
             $('.seats-waiting').html(res.event.waiting)            
