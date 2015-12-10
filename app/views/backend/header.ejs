@@ -15,11 +15,11 @@
 </head>
 <body class="rsvr-dashboard">
 
-  <div class="container-fluid"  style="height: 100%">
+  <div class="container-fluid height-full">
 
-    <div class="row"  style="height: 100%">
+    <div class="row height-full">
 
-      <div class="col-md-4" style="height: 100%">
+      <div class="col-md-4 height-full">
 
         <div class="rzv-logo-wrap">
           
@@ -35,7 +35,7 @@
 
         <a href="/dashboard/<%= org._id %>/event" class="btn btn-primary btn-lg btn-add-new-event">Add new event</a>
 
-        <a href="/dashboard" style="color: #fff; display: block; margin-bottom: 10px; text-align: center; padding: 10px;">Event list</a>
+        <a href="/dashboard" class="event-list-link">Event list</a>
         
         <div class="event-list">
           
@@ -93,7 +93,7 @@
               <% } %>
 
               <div class="event-reservations">
-                <p class="text-muted" style="margin-bottom: 0">
+                <p class="text-muted">
 
                     <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>"><%= event.invited %> seats reservd</a>
                   
@@ -109,7 +109,7 @@
           <% }) %>
         </div>
       </div>
-      <div class="col-md-8" style="height: 100%">
+      <div class="col-md-8 height-full">
 
         <ul class="list list-unstyled pull-right header-menu">
           <li><a href="/dashboard/<%= org._id %>/settings">Settings</a></li>

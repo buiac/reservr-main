@@ -1,11 +1,11 @@
 <div class="col-md-6 event-image-wrap">
   
   <% if (event.images.length) { %>
-  <div class="event-image" style="clear:both">
+  <div class="event-image clear">
     <img src="<%= event.images[0].path %>" alt="<%= event.name %>">
   </div>
   <% } else { %>
-  <div class="event-image" style="clear:both">
+  <div class="event-image clear">
     <img src="/images/reservr-placeholder-2.png" alt="<%= event.name %>">
   </div>
   <% } %>

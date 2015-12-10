@@ -1,5 +1,55 @@
-.authenticate {
+.clear {
+  clear: both;
+}
 
+.height-full {
+  height: 100%;
+}
+
+.event-list-link{
+  color: #fff;
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+  padding: 10px;
+}
+
+.event-reservations>p.text-muted {
+  margin-bottom: 0;
+}
+
+.event-date .fa-calendar {
+  margin-right: 5px; 
+  position:relative; 
+  top: -1px; 
+  display: inline-block;
+}
+
+img.mailchimp-logo {
+  display: block;
+  margin-top: 10px;
+  max-width: 100%
+}
+
+.rzv-panel-title {
+  margin-top: 50px;
+}
+
+.rzv-panel > .rzv-panel-title:first-child {
+  margin-top: 0;
+}
+
+.rzv-panel-container .btn-cancel {
+  margin-right: 20px;
+  border-radius: 2px
+}
+
+.event-price-wrap {
+  margin-top: 20px;
+}
+
+.user-reservations-event-date {
+  font-size: 14px;
 }
 
 .authenticate .logo {
@@ -286,6 +336,10 @@ textarea {
 
 .event-details {
   position: relative;
+}
+
+.event-details .btn-publish {
+  margin-left: 10px;
 }
 
 .event-publish--published .event-overlay {

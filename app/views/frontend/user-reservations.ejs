@@ -1,11 +1,9 @@
 <% var theEvent = '' %>
 <%- include header %>
-    
-    
-
+      
       <h2>Reservations</h2>
 
-      <h4><a href="/dashboard/<%= org._id %>/event/<%= event._id %>"><%= event.name %></a>, <span style="font-size:14px"><%= moment(event.date).format() %></span></h4>
+      <h4><a href="/dashboard/<%= org._id %>/event/<%= event._id %>"><%= event.name %></a>, <span class="user-reservations-event-date"><%= moment(event.date).format() %></span></h4>
       
 
       <table class="table-reservations table table-striped">
