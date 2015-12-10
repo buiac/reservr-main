@@ -1377,7 +1377,8 @@ textarea {
   .header-menu,
   .table-reservations thead tr td:last-child,
   .table-reservations tbody tr td:last-child,
-  .rsvr-dashboard .rzv-lightbox h2 {
+  .rsvr-dashboard .rzv-lightbox h2,
+  .reservations-print {
     display: none;
   }
 
