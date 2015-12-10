@@ -52,6 +52,13 @@ img.mailchimp-logo {
   font-size: 14px;
 }
 
+.reservations-print {
+  position: absolute;
+  right: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
 .authenticate .logo {
   width: 100%;
 }
