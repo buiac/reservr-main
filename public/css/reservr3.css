@@ -1091,11 +1091,42 @@ textarea {
 
 .event-image-wrap {
   position: relative;
-  /*width: 565px;*/
 }
 
+
+
 .event-image-wrap > .event-image {
-  width: 535px;
+  max-width: 535px;
+}
+
+.event-page .event-name h1 {
+  margin-top: 20px;
+}
+
+.event-page .event-item {
+  border-bottom: 1px solid #ccc;
+}
+
+.event-page .event-item:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  
+}
+@media (min-width: 992px) {
+  .event-page .event-name h1 {
+    margin-top: 0;
+  }
+  
+  .event-page .event-item {
+    border-bottom: 0;
+  }
+  
+}
+@media (min-width: 1200px) {
+  
 }
 
 .event-temporary-overlay {
@@ -1269,7 +1300,47 @@ textarea {
   margin-top: 50px;
 }
 
+.logo-print {
+  display: none;
+}
 
+@media print {
+  html title,
+  .jivo-iframe-container-bottom {
+    border: 1px solid #000;
+  }
+  .rsvr-dashboard .container-fluid {
+    height: auto !important;
+  }
+  .rsvr-dashboard .container-fluid > .row > .col-md-4,
+  .header-menu,
+  .table-reservations thead tr td:last-child,
+  .table-reservations tbody tr td:last-child,
+  .rsvr-dashboard .rzv-lightbox h2 {
+    display: none;
+  }
+
+  .rsvr-dashboard .rzv-lightbox h4 {
+    text-align: center;
+  }
+
+  .rsvr-dashboard .rzv-lightbox span.event-date {
+    display: block;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  a:after {
+    content: '' !important;
+  }
+
+  .logo-print {
+    display: block;
+    width: 150px;
+    margin: 0 auto 30px;
+  }
+  
+}
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
