@@ -51,13 +51,11 @@ module.exports = function(config, db) {
   };
 
   var sendReminders = function (req, res, next) {
-    // var lte = moment().add(24, 'hours').toDate();
-    // var gte = moment().toDate();
-
+    
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    if (date.getHours === 4) { //date.getHours === 4
+    if (date.getHours() === 4) { //date.getHours === 4
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
@@ -156,6 +154,10 @@ module.exports = function(config, db) {
         status: 'sent'
       })
       
+    } else {
+      res.json({
+        status: 'patience. time will come'
+      })
     }
 
     
