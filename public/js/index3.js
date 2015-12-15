@@ -276,9 +276,7 @@ $(document).ready(function () {
       }
     
       if ($(eventGroup).hasClass('event-seats')) {
-        
-
-        if (value) {
+        if (value && (value !== 'Event seats')) {
           $placeholder.append(' seats')  
         } else {
 
@@ -303,7 +301,7 @@ $(document).ready(function () {
           }
 
           if ($(eventGroup).hasClass('event-seats')) {
-            if (value) {
+            if (value && (value !== 'Event seats')) {
               $placeholder.append(' seats')  
             } else {
               $placeholder.html('Event seats')              

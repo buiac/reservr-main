@@ -6,12 +6,19 @@
   height: 100%;
 }
 
+.event-list-menu {
+  display: block;
+  text-align: center;
+}
 .event-list-link{
   color: #fff;
-  display: block;
   margin-bottom: 10px;
   text-align: center;
   padding: 10px;
+}
+
+.event-list-link:hover {
+  color: #fff;
 }
 
 .event-reservations>p.text-muted {
