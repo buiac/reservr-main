@@ -87,8 +87,7 @@ module.exports = function(config, db) {
 
                 reservations.forEach(function (reservation) {
 
-                  // console.log(arr.indexOf(reservation.email))
-                  if (arr.indexOf(reservation.email) === -1 ) {
+                  if ((arr.indexOf(reservation.email) === -1) && !reservation.waiting) {
                     
                     var params = {
                       eventName: event.name,
