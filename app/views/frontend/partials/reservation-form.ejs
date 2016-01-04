@@ -189,28 +189,18 @@
       <div class="row">
         <div class="col-md-6 col-md-offset-6">
           <div class="event-price-wrap">
-            <% if (event.price && (event.price !== 'Event price')) { %>
+            
+            <% event.prices.forEach(function(price){ %>
+            <span class="event-price ff-montserat">
               
-              <% event.price = event.price.split(',') %>
-              <% event.price.forEach(function(price){ %>
-                <span class="event-price ff-montserat">
-                  <% var priceTitle = price.split(':')[0] %>
-                  
-                  <% priceTitle = priceTitle.substring(0, priceTitle.length - 1); %>
-                  <% priceTitle = priceTitle.substring(1, priceTitle.length); %>
-                  
-                  <% var priceAmount = price.split(':')[1] %>
-                  
-                  <strong><%= priceTitle %>: </strong>
-                  <span><%= priceAmount %></span>
-                  
-                </span>
-              <% }) %>
+              
+                <strong><%= price.name %>: </strong>
+                <span><span style="font-size: 23px"><%= price.amount %></span> <%= price.currency %></span>
+              
 
-            <!-- <span class="event-price ff-montserat">
-              <%= event.price %>
-            </span> -->
-            <% } %>
+            </span>
+            <% }) %>
+            
           </div>
         </div>
       </div>

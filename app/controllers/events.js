@@ -264,7 +264,6 @@ module.exports = function(config, db) {
             _id: req.params.eventId
           }).exec(function (err, theEvent) {
 
-
             if(err) {
               return res.render('backend/event-update', {errors: err});
             }
@@ -340,6 +339,7 @@ module.exports = function(config, db) {
     var location = (req.body.location) ? req.body.location.trim() : '';
     var activeImage = parseInt(req.body.activeImage || 0);
     var mclistid = req.body.mclistid || '';
+    var prices = req.body.prices || '';
 
     var orgId = req.params.orgId;
 
@@ -355,7 +355,8 @@ module.exports = function(config, db) {
       mclistid: mclistid, // mailchimp list id
       orgId: orgId,
       published: true,
-      temp: false
+      temp: false,
+      prices: prices
     };
 
     if (mclistid) {
@@ -613,8 +614,6 @@ module.exports = function(config, db) {
 
     event.invited = 0
     event.waiting = 0
-
-    // check if there's an image
     
     if (!event._id && !event.orgId) {
     

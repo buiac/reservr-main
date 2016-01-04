@@ -153,7 +153,42 @@ $(document).ready(function () {
   function syncData() {
 
     var eventId = $('[name=_id]')[0]
+
+    var prices = []
+
+    var $eventPrices = $('.event-price-group');
+
     
+    $eventPrices.each(function (i, price) {
+      
+      var $price = $(price)
+      
+      var name = $price.find('.event-price-name').val()
+      var amount = $price.find('.event-price-amount').val()
+      var currency = $price.find('.event-price-currency').val()
+
+      var price = {
+        name: name,
+        amount: amount,
+        currency: currency,
+        eventId: eventId.value
+      }
+
+      console.log('\n\n\n\n')
+      console.log('--------')
+      console.log()
+      console.log(price.amount)
+      console.log('--------')
+      console.log('\n\n\n\n')
+
+      if (price.name !== '' && price.amount !== '') {
+        prices.push(price)
+      }
+      
+    })
+
+    eventModel.prices = prices
+
     $.ajax({
       method: 'POST',
       url: config.baseUrl + '/tempEvent',
@@ -166,6 +201,7 @@ $(document).ready(function () {
       eventModel.org = res.org
       eventModel.orgId = res.orgId || res.org._id
       eventModel._id = res.event._id
+      
 
       if (res.event.published) {
         // update the unique event url
@@ -280,12 +316,13 @@ $(document).ready(function () {
           $placeholder.append(' seats')  
         } else {
 
-          $placeholder.html('Event seats')
+          $placeholder.html(' Event seats')
         }
 
         if ($icon) {
           $placeholder.prepend($icon)
         }
+
       }
 
       if (field && field.type !== 'file' && value) {
@@ -296,9 +333,7 @@ $(document).ready(function () {
         } else {
           $placeholder.html(value)
 
-          if ($icon) {
-            $placeholder.prepend($icon)
-          }
+          
 
           if ($(eventGroup).hasClass('event-seats')) {
             if (value && (value !== 'Event seats')) {
@@ -306,6 +341,10 @@ $(document).ready(function () {
             } else {
               $placeholder.html('Event seats')              
             }
+          }
+          
+          if ($icon) {
+            $placeholder.prepend($icon)
           }
         }
       }
@@ -795,6 +834,37 @@ $(document).ready(function () {
     e.stopPropagation()
   }
 
+  function cleanInputValues (el) {
+    $inputs = $(el).find('input[type=text]')
+    $selects = $(el).find('select')
+
+    $inputs.each(function (i, input) {
+      input.value = ''
+    })
+
+    return el;
+  }
+
+  function addPrice (e) {
+    e.preventDefault()
+
+    var $this = $(this);
+    var $price = $this.prev();
+    var $priceWrap = $this.parent();
+
+    var $priceTier = cleanInputValues($price.clone());
+
+    $this.before($priceTier)
+
+  }
+
+  function removePrice (e) {
+    e.preventDefault()
+    console.log('mere')
+
+    $(this).parent().remove()
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -812,6 +882,8 @@ $(document).ready(function () {
   $('body').on('click', '.btn-remove-item', removeItem)
   $('body').on('change', '[name=notifications]', toggleNotificationEmail)
   $('body').on('click', '.rzv-vnav li a', displayPanels)
+  $('body').on('click', '.event-add-price', addPrice)
+  $('body').on('click', '.event-remove-price', removePrice)
 
   // $('body').on('click', '.event-summary', goToEvent)
 

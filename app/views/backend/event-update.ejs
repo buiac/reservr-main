@@ -237,33 +237,6 @@
           </div>
           
         </div>
-        
-        <div class="event-group">
-          
-          <span class="event-placeholder">
-            <i class="fa fa-money"></i>
-
-            Ticket price (<a class="event-free" data-toggle="tooltip" title="Click here if it's a free event">It's free</a>)
-
-          </span>
-
-          <div class="event-input">
-            
-            <i class="fa fa-money"></i>
-
-            <textarea class="form-control" name="price" min="0"><%= theEvent.price || 'Event price' %></textarea>
-
-          </div>
-
-          <div class="event-group-action">
-            
-            <a class="btn btn-sm btn-primary btn-event-save">Save</a>
-
-            <a class="event-group-cancel event-cancel">Cancel</a>
-            
-          </div>
-
-        </div>
 
         <div class="event-group event-seats">
 
@@ -290,6 +263,67 @@
           </div>
           
         </div>
+        
+        <div class="event-price">
+          <label for="">Ticket Prices</label>
+          <% if (theEvent.prices && theEvent.prices.length) { %>
+
+            <% theEvent.prices.forEach(function(price){ %>
+
+              <div class="event-price-group">
+                
+                <div class="form-group">
+                  <input type="text" name="" id="" class="form-control event-price-name" placeholder="Price type (e.g. Regular Price)" value="<%= price.name %>">
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-8">
+                    <input type="text" name="" id="" class="form-control event-price-amount" placeholder="Ticket price" value="<%= price.amount %>">
+                  </div>
+
+                  <div class="col-md-4">
+                    <select name="" id="" class="form-control event-price-currency">
+                      <option value="RON" <% if (price.currency === 'RON'){ %> selected <% } %>>RON</option>
+                      <option value="EUR" <% if (price.currency === 'EUR'){ %> selected <% } %>>EUR</option>
+                      <option value="USD" <% if (price.currency === 'USD'){ %> selected <% } %>>USD</option>
+                    </select>
+                  </div>
+                </div>
+
+                <a href="" class="text-danger event-remove-price btn-sm"><i class="fa fa-trash"></i> Remove this ticket</a>
+              </div>
+
+            <% }) %>
+            
+          <% } else {  %>
+
+          <div class="event-price-group">
+            <div class="form-group">
+              <input type="text" name="" id="" class="form-control event-price-name" placeholder="Price type (e.g. Regular Price)" value="">
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <input type="text" name="" id="" class="form-control event-price-amount" placeholder="Ticket price" value="">
+              </div>
+
+              <div class="col-md-4">
+                <select name="" id="" class="form-control event-price-currency">
+                  <option value="RON" selected>RON</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+            <a href="" class="text-danger event-remove-price btn-sm"><i class="fa fa-trash"></i> Remove this ticket</a>
+          </div>
+
+          <% } %>
+          
+          <a href="" class="btn btn-primary btn-sm event-add-price">Add another ticket</a>  
+
+        </div>
+
+        
         
       </div>
       

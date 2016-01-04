@@ -850,6 +850,15 @@ textarea {
   display: block;
 }
 
+.rsvr-dashboard .event-price {
+  background: #F5F5F5;
+  padding: 15px;  
+}
+
+.event-price-group {
+  margin-bottom: 20px;
+}
+
 .event-form select {
   margin-bottom: 15px;
 }
