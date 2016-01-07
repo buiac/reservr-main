@@ -1128,6 +1128,13 @@ textarea {
   display: none;
 }
 
+body.event-page .event-page .event-toggle-description {
+  display: none;
+}
+body.event-page .event-page .event-description {
+  max-height: none;  
+}
+
 .event-page .event-item {
   padding-bottom: 30px;
   margin-bottom: 60px;
@@ -1381,6 +1388,11 @@ textarea {
   display: none;
 }
 
+.alert-reservations-closed {
+  text-align: center;
+  margin-top: 30px;
+}
+
 @media print {
   html title,
   .jivo-iframe-container-bottom {
@@ -1419,6 +1431,8 @@ textarea {
   }
   
 }
+
+
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }

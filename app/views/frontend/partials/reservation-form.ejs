@@ -1,4 +1,4 @@
-<% if (event.reservationsOpen) { %> 
+<% if (event.reservationsOpen || event.reservationsOpen === undefined ) { %> 
   <div class="event-form">
 
       <div class="row">
@@ -206,7 +206,7 @@
       </div>
   </div>
 <% } else { %>
-  <div class="alert alert-info">
+  <div class="alert alert-info alert-reservations-closed">
     <p class="text-muted center">
       Reservations have been closed
     </p>
