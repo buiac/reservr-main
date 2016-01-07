@@ -94,13 +94,36 @@
             </div>
 
 
-            <div class="col-md-2 col-md-offset-1">
+            <div class="col-md-2 ">
               <label>Reminders</label>
             </div>
 
             <div class="col-md-2">
               <label class="switch-light switch-material" onclick="">
                 <input type="checkbox" <% if (theEvent.reminders) { %> checked="checked" <% } %> name="reminders">
+
+                <strong>
+                  
+                </strong>
+
+                <span>
+                  <span>Off</span>
+                  <span>On</span>
+                  <a></a>
+                </span>
+
+              </label>
+
+            </div>
+
+            <div class="col-md-2">
+              <label>Reservations Open</label>
+            </div>
+
+            <div class="col-md-2">
+              
+              <label class="switch-light switch-material" onclick="">
+                <input type="checkbox" <% if (theEvent.reservationsOpen || theEvent.reservationsOpen === undefined) { %> checked="checked" <% } %> name="reservationsOpen">
 
                 <strong>
                   

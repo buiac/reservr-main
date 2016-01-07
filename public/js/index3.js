@@ -174,13 +174,6 @@ $(document).ready(function () {
         eventId: eventId.value
       }
 
-      console.log('\n\n\n\n')
-      console.log('--------')
-      console.log()
-      console.log(price.amount)
-      console.log('--------')
-      console.log('\n\n\n\n')
-
       if (price.name !== '' && price.amount !== '') {
         prices.push(price)
       }
@@ -297,6 +290,11 @@ $(document).ready(function () {
 
   function parseFieldsOnLoad () {
     var $eventGroups = $('.rzv-lightbox .event-group')
+    var $eventStatusInputs = $('.event-status').find('input')
+
+    $eventStatusInputs.each(function (e, input) {
+      eventModel[input.name] = input.checked
+    })
 
     $eventGroups.each(function (i, eventGroup) {
 
@@ -752,11 +750,30 @@ $(document).ready(function () {
 
   function togglePublish (e) {
     eventModel.published = e.target.checked
+
+    console.log('---toggle publish-----')
+    console.log(eventModel.published)
+    console.log(eventModel.reminders)
+    console.log(eventModel.reservationsOpen)
     syncData()
   }
 
   function toggleReminders (e) {
     eventModel.reminders = e.target.checked
+
+    console.log('---toggle reminders-----')
+    console.log(eventModel.published)
+    console.log(eventModel.reminders)
+    console.log(eventModel.reservationsOpen)
+    syncData()
+  }
+
+  function toggleReservations (e) {
+    eventModel.reservationsOpen = e.target.checked
+    console.log('----toggle reservations----')
+    console.log(eventModel.published)
+    console.log(eventModel.reminders)
+    console.log(eventModel.reservationsOpen)
     syncData()
   }
 
@@ -889,6 +906,7 @@ $(document).ready(function () {
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
+  $('body').on('change', '[name="reservationsOpen"]', toggleReservations)
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
   // $('body').on('click', '.event-reservations a', goToReservations)

@@ -597,6 +597,11 @@ module.exports = function(config, db) {
     // format date
     event.date = new Date(event.date)
 
+    // turn the string into a boolean
+    event.reservationsOpen = (event.reservationsOpen === 'true')
+    event.published = (event.published === 'true')
+    event.reminders = (event.reminders === 'true')
+
     // convert strings to booleans
     if (typeof event.published === 'string') {
       event.published = (event.published === 'true')
