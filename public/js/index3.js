@@ -497,17 +497,17 @@ $(document).ready(function () {
 
       var reader = new FileReader();
 
-      if ((input.files[0].size / 1000) > 100) {
-        // if file is bigger than 100kb
-        swal({
-          title: 'Try a smaller image!',
-          text: 'Image file is too big (' + parseInt(input.files[0].size / 1000, 10) + 'kb). Max. size is 100kb.',
-          type: 'error',
-          confirmButtonText: 'Oke, got it'
-        });
+      // if ((input.files[0].size / 1000) > 100) {
+      //   // if file is bigger than 100kb
+      //   swal({
+      //     title: 'Try a smaller image!',
+      //     text: 'Image file is too big (' + parseInt(input.files[0].size / 1000, 10) + 'kb). Max. size is 100kb.',
+      //     type: 'error',
+      //     confirmButtonText: 'Oke, got it'
+      //   });
 
-        return;
-      }
+      //   return;
+      // }
       
 
       eventModel.images = [{
