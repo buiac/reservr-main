@@ -25,6 +25,7 @@ module.exports = (function() {
   var moment = require('moment');
   var marked = require('marked');
   var basicAuth = require('basic-auth-connect');
+  var easyimg = require('easyimage');
 
   var app = express();
   
@@ -112,8 +113,36 @@ module.exports = (function() {
     rename: function (fieldname, filename) {
       return filename;
     },
-    onFileUploadStart: function (file) {
+    onFileUploadComplete: function (file) {
+
+      easyimg.info(file.path).then(function (imgFile) {
         
+        if (imgFile.width > 570) {
+
+          easyimg.resize({
+            src: file.path,
+            dst: file.path,
+            width: 700,
+            quality: 81
+          }).then(function (file) {
+            
+            console.log('File "' + file.name + '" has been resized')
+          }, function (err) {
+            console.log('Image resize error:')
+            console.log(err)
+          })
+
+        }
+        
+      }, function (err) {
+        console.log('\n\n\n\n')
+        console.log('--------')
+        console.log(err)
+        console.log('--------')
+        console.log('\n\n\n\n')
+      })
+
+      return file
     }
   }));
 
