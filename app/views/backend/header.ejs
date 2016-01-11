@@ -53,6 +53,15 @@
 
                 <ul class="event-menu-dropdown list-unstyled">
                   <li>
+                    
+                    <a href="/dashboard/<%= orgId %>/event/<%= event._id %>">
+                      <span class="icon-wrap">
+                        <i class="fa fa-edit"></i>
+                      </span> 
+                      Edit event
+                    </a>
+                  </li>
+                  <li>
                     <a href="/dashboard/<%= org._id %>/duplicate-event/<%= event._id %>">
                       <span class="icon-wrap">
                         <i class="fa fa-copy"></i>

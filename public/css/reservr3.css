@@ -669,6 +669,8 @@ textarea {
 
 .event-menu .event-menu-dropdown a {
   color: #999;
+  display: block;
+  padding: 5px;
 }
 
 .event-menu .event-menu-dropdown a .icon-wrap {
@@ -678,8 +680,9 @@ textarea {
 }
 
 .event-menu .event-menu-dropdown a:hover {
+  background: #02766C;
+  color: #FFF;
   text-decoration: none;
-  color: #333;
 }
 
 

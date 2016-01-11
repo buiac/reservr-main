@@ -406,6 +406,20 @@ $(document).ready(function () {
 
   }
 
+  function fixListZindex () {
+    var $eventList = $('.event-list');
+
+    if ($eventList.length) {
+      var num = $eventList.find('.event-summary').length
+
+      if (num > 0) {
+        $eventList.find('.event-summary').each(function (i, event) {
+          $(event).css('z-index', num - i)
+        })                  
+      }
+    }
+  }
+
   function init () {
     updateDateField()
     parseFieldsOnLoad()
@@ -414,6 +428,7 @@ $(document).ready(function () {
     initBootstrapWidgets()
     updateHiddenFields()
     scrollEventList()
+    fixListZindex()
   }
 
   function updateEventPrice (e) {
