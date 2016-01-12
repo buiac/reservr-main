@@ -1438,7 +1438,7 @@ body.event-page .event-page .event-description {
 .events-prev {
   color: #fff;
   padding: 10px;
-  display: block;
+  display: inline-block;
 }
 
 .events-prev:hover, .events-prev:active, .events-prev:focus {

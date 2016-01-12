@@ -212,8 +212,6 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/duplicate-event/:eventId', isAuthenticated, events.duplicateEvent);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
-  app.get('/dashboard/:orgId/prevEvents/:multiple', isAuthenticated, events.prevEvents);
-
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
