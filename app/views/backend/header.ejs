@@ -34,13 +34,16 @@
 
         <a href="/dashboard/<%= org._id %>/event" class="btn btn-primary btn-lg btn-add-new-event">Add new event</a>
 
-        <div class="event-list-menu">
+        <!-- <div class="event-list-menu">
           <a href="/dashboard" class="event-list-link">Event list</a>
-        </div>
+        </div> -->
         
         <div class="event-list">
 
-          <a href="/prevEvent" class="events-prev">Previous events</a>
+          <div class="event-list-menu">
+            <a href="/dashboard">Event list</a>
+            <a href="/dashboard/<%= org._id %>/archive/0">Events archive</a>
+          </div>
           
           <% events.forEach(function(event){ %>
             <div class="box-white event-summary <% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">

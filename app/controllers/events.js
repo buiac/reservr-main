@@ -808,6 +808,49 @@ module.exports = function(config, db) {
     })
   };
 
+  var archiveView = function (req, res, next) {
+
+    db.orgs.findOne({
+      _id: req.params.orgId
+    }, function (err, org) {
+
+
+      data.getOrgEvents({
+        orgId: org._id,
+        fromDate: new Date()
+      }).then(function (events) {
+
+        var page = parseInt(req.params.page * 10)
+
+        db.events.find({
+          orgId: org._id
+        }, function (err, allEvents) {
+          
+          db.events.find({
+            orgId: org._id
+          }).sort({
+            date: -1
+          }).skip(page).limit(10).exec(function (err, archiveEvents) {
+
+            res.render('backend/archive', {
+              events: events,
+              org: org,
+              orgId: org._id,
+              archiveEvents: archiveEvents,
+              pages: Math.ceil(allEvents.length / 10),
+              page: req.params.page
+            });
+
+          })
+
+        })
+        
+      })
+      
+    })
+
+  }
+
   return {
     listEventsView: listEventsView,
     listEvents: listEvents,
@@ -821,7 +864,8 @@ module.exports = function(config, db) {
     deleteEvent: deleteEvent,
     updateTempEvent: updateTempEvent,
     tempFrontEventView: tempFrontEventView,
-    duplicateEvent: duplicateEvent
+    duplicateEvent: duplicateEvent,
+    archiveView: archiveView
   };
 
 };

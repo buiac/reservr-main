@@ -212,6 +212,9 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/duplicate-event/:eventId', isAuthenticated, events.duplicateEvent);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
+  // archive
+  app.get('/dashboard/:orgId/archive/:page', isAuthenticated, events.archiveView);
+
   // settings
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);

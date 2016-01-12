@@ -8,13 +8,13 @@
 
 .event-list-menu {
   display: block;
-  text-align: center;
 }
-.event-list-link{
-  color: #fff;
-  margin-bottom: 10px;
-  text-align: center;
-  padding: 10px;
+
+.event-list-menu a {
+  color: #FFF;
+  display: inline-block;
+  padding: 5px 5px 5px 5px;
+  margin: 0 20px 10px 0;
 }
 
 .event-list-link:hover {
@@ -651,8 +651,8 @@ textarea {
   display: none;
   position: absolute;
   width: 120px;
-  right: 0;
-  top: 25px;
+  right: 16px;
+  top: 0;
   font-size: 12px;
   padding: 5px;
   background: #FFF;
