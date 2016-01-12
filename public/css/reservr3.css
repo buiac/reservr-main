@@ -1435,7 +1435,15 @@ body.event-page .event-page .event-description {
   
 }
 
+.events-prev {
+  color: #fff;
+  padding: 10px;
+  display: block;
+}
 
+.events-prev:hover, .events-prev:active, .events-prev:focus {
+  color: #FFF;
+}
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }

@@ -897,6 +897,26 @@ $(document).ready(function () {
     $(this).parent().remove()
   }
 
+  function getPrevEvents (e) {
+    e.preventDefault()
+
+    var url = this.href
+    
+    console.log('\n\n\n\n')
+    console.log('--------')
+    console.log(url)
+    console.log('--------')
+    console.log('\n\n\n\n')
+    // $.ajax({
+    //   method: 'Get',
+    //   url: url,
+    // }).done(function (results) {
+      
+    // })
+
+
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -924,7 +944,7 @@ $(document).ready(function () {
   $('body').on('change', '[name="reservationsOpen"]', toggleReservations)
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
-  // $('body').on('click', '.event-reservations a', goToReservations)
+  $('body').on('click', '.events-prev', getPrevEvents)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 

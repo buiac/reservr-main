@@ -39,6 +39,8 @@
         </div>
         
         <div class="event-list">
+
+          <a href="/prevEvent" class="events-prev">Previous events</a>
           
           <% events.forEach(function(event){ %>
             <div class="box-white event-summary <% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">
