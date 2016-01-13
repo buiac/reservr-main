@@ -154,6 +154,7 @@ $(document).ready(function () {
 
     var eventId = $('[name=_id]')[0]
 
+    // add Prices to the event model
     var prices = []
 
     var $eventPrices = $('.event-price-group');
@@ -182,6 +183,15 @@ $(document).ready(function () {
 
     eventModel.prices = prices
 
+
+    // add Mailchimp account to the event model
+    var $mailchip = $('.event-mailchimp')
+    
+    if($mailchip.length) {
+      eventModel.mailchimp = $mailchip.find('select').val()
+    }
+
+    // send the data to the server
     $.ajax({
       method: 'POST',
       url: config.baseUrl + '/tempEvent',
@@ -674,7 +684,9 @@ $(document).ready(function () {
     var invited = parseInt($this.find('.reserve-invited').val(), 10);
     var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
     var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
+    var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = totalSeats - invited;
+
 
     if (seats <= seatsLeft || seatsLeft === 0 ) {
 
@@ -687,8 +699,8 @@ $(document).ready(function () {
           name: name,
           email: email,
           seats: seats,
-          timestamp: timestamp
-          // mclistid: mclistid
+          timestamp: timestamp,
+          mclistid: mclistid
         },
         success: function(res) {
 
@@ -897,7 +909,6 @@ $(document).ready(function () {
     $(this).parent().remove()
   }
 
-  
 
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);

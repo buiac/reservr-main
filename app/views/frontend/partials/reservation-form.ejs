@@ -153,9 +153,10 @@
 
               <input type="hidden" name="" class="reserve-total-seats" value="<%= event.seats %>"
               >
+              
 
-              <!-- <input type="hidden" name="" class="reserve-newsletter" value="<%= org._id %>"
-              > -->
+
+              <input type="hidden" name="" class="reserve-newsletter" value="<%= event.mailchimp || '' %>">
 
               <div class="form-group">
                 <button type="submit" class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Reserv seats</button>

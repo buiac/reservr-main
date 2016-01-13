@@ -419,7 +419,7 @@ module.exports = function(config, db) {
     });
   };
 
-  var viewReservation = function (req, res, next) {
+  var viewReservations = function (req, res, next) {
 
     db.reservations.find({
       eventId: req.params.eventId
@@ -788,13 +788,23 @@ module.exports = function(config, db) {
     // body...
   };
 
+  var viewReservation = function (req, res, next) {
+    // body...
+  }
+
+  var updateDashboardReservation = function (req, res, next) {
+    // body...
+  }
+
   return {
     updateReservation: updateReservation,
-    viewReservation: viewReservation,
+    viewReservations: viewReservations,
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
     userReservationsDeleteView: userReservationsDeleteView,
-    updateReservationTmp: updateReservationTmp
+    updateReservationTmp: updateReservationTmp,
+    viewReservation: viewReservation,
+    updateDashboardReservation: updateDashboardReservation
   };
 
 };

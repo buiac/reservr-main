@@ -221,9 +221,12 @@ module.exports = (function() {
   app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   
   // reservations  
-  app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservation);
+  app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservations);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);
 
+  // reservation update
+  app.get('/dashboard/:orgId/reservation/:reservationId', isAuthenticated, reservations.viewReservation);
+  app.post('/dashboard/:orgId/reservation/:reservationId', isAuthenticated, reservations.updateDashboardReservation);
   
   /* Front-end routes
   */
