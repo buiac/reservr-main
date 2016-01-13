@@ -291,6 +291,11 @@ module.exports = function(config, db) {
     db.reservations.findOne({
       _id: req.params.reservationId
     }, function (err, rez) {
+
+      if (!rez) {
+        res.redirect('/');
+        return;
+      }
       
       db.reservations.remove({
         _id: req.params.reservationId
@@ -757,6 +762,11 @@ module.exports = function(config, db) {
       _id: req.params.reservationId
     }, function (err, reservation) {
       
+      if (!reservation) {
+        res.redirect('/')
+        return;
+      }
+
       db.events.findOne({
         _id: reservation.eventId
       }, function (err, event) {
