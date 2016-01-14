@@ -751,6 +751,18 @@ textarea {
   padding-bottom: 0;
 }
 
+.event-details .event-menu .event-menu-drawer {
+  background: #EAEAEA;
+  padding: 10px;
+  font-size: 12px;
+  margin-top: 15px;
+  display: none;
+}
+
+.event-details .event-menu li.event-menu-drawer--open .event-menu-drawer {
+  display: block;
+}
+
 /* Event list in the left sidebar
 */
 

@@ -114,6 +114,7 @@ module.exports = function(config, db) {
           };
 
           transport.sendMail(userEmailConfig, function (err, info) {
+            console.log('notifyUser')
             console.log(err);
             console.log(info);
           });
@@ -128,6 +129,7 @@ module.exports = function(config, db) {
           };
 
           transport.sendMail(userEmailConfig, function (err, info) {
+            console.log('notifyUser')
             console.log(err);
             console.log(info);
           });
@@ -220,11 +222,13 @@ module.exports = function(config, db) {
 
         if (reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
+            console.log('sendConfirmationEmails 1')
             console.log(err);
             console.log(info);
           });
         } else {
           transport.sendMail(userEmailConfig, function (err, info) {
+            console.log('sendConfirmationEmails 2')
             console.log(err);
             console.log(info);
           });
@@ -232,6 +236,7 @@ module.exports = function(config, db) {
 
         if (org.notifications) {
           transport.sendMail(orgEmailConfig, function (err, info) {
+            console.log('sendConfirmationEmails 3')
             console.log(err);
             console.log(info);
           });  
@@ -542,6 +547,11 @@ module.exports = function(config, db) {
     var eventId = req.params.eventId;
     var orgId = req.params.orgId;
     var mclistid = req.body.mclistid;
+    var mcoptin = null;
+
+    if (req.body.mcoptin !== 'null') {
+      mcoptin = (req.body.mcoptin === 'true')
+    }
 
     var errors = req.validationErrors();
 
@@ -558,6 +568,7 @@ module.exports = function(config, db) {
       eventId: eventId,
       orgId: orgId,
       mclistid: mclistid,
+      mcoptin: mcoptin,
       waiting: false
     };
 
@@ -612,7 +623,8 @@ module.exports = function(config, db) {
                   return;
                 }
 
-                if (newReservation.mclistid) {
+                  
+                if (newReservation.mclistid && (newReservation.mcoptin === true || newReservation.mcoptin === null)) {
                   addUserToMailingList(newReservation);
                 }
                 

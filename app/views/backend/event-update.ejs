@@ -132,6 +132,63 @@
 
           </li>
 
+          <% if(org.mailchimp && org.mailchimp.length) { %>
+
+          <li class="cf <% if (theEvent.toggleMailchimp) { %> event-menu-drawer--open <% } %>">
+
+            <label class="switch-light switch-material" onclick="" class="cf">
+
+              <input type="checkbox" name="toggleMailchimp" <% if (theEvent.toggleMailchimp) { %> checked="true" <% } %>>
+
+              <strong class="pull-left">
+                MailChimp
+              </strong>
+
+              <span class="pull-right">
+                <span>Off</span>
+                <span>On</span>
+                <a></a>
+              </span>
+
+            </label>
+
+            <div class="event-menu-drawer">
+
+              <div class="form-group">
+                <label for="">Select list</label>
+                <select name="mailchimp" id="" class="form-control input-sm">
+                  
+                  <% org.mailchimp.forEach(function(mailchimp){ %>
+
+                    <option value="<%= mailchimp.account %>"> <%= mailchimp.name %> </option>
+
+                  <% }) %>
+
+                </select>
+              </div>
+
+              <label class="switch-light switch-material" onclick="" class="cf">
+
+              <input type="checkbox" name="toggleMailchimpOptin" <% if (theEvent.toggleMailchimpOptin) { %> checked="true" <% } %>>
+
+              <strong class="pull-left">
+                Show opt-in
+              </strong>
+
+              <span class="pull-right">
+                <span>Off</span>
+                <span>On</span>
+                <a></a>
+              </span>
+
+            </label>
+
+            </div>
+
+          </li>
+
+          <% } %>
+
           <% if (theEvent._id) { %> 
           
             <li>

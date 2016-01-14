@@ -300,7 +300,9 @@ $(document).ready(function () {
 
   function parseFieldsOnLoad () {
     var $eventGroups = $('.rzv-lightbox .event-group')
-    var $eventStatusInputs = $('.event-status').find('input')
+    var $eventStatusInputs = $('.event-details .event-menu').find('input')
+
+    console.log($eventStatusInputs)
 
     $eventStatusInputs.each(function (e, input) {
       eventModel[input.name] = input.checked
@@ -685,7 +687,14 @@ $(document).ready(function () {
     var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
     var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
     var mclistid = $this.find('.reserve-newsletter').val();
+    var mcoptin = 'null';
     var seatsLeft = totalSeats - invited;
+
+    if ($this.find('.reserve-newsletter-optin').length) {
+
+      mcoptin = $this.find('.reserve-newsletter-optin')[0].checked
+
+    }
 
 
     if (seats <= seatsLeft || seatsLeft === 0 ) {
@@ -700,7 +709,8 @@ $(document).ready(function () {
           email: email,
           seats: seats,
           timestamp: timestamp,
-          mclistid: mclistid
+          mclistid: mclistid,
+          mcoptin: mcoptin
         },
         success: function(res) {
 
@@ -778,17 +788,11 @@ $(document).ready(function () {
   function togglePublish (e) {
     eventModel.published = e.target.checked
     
-    eventModel.reminders = $('[name="reminders"]')[0].checked
-    eventModel.reservationsOpen =  $('[name="reservationsOpen"]')[0].checked
-
     syncData()
   }
 
   function toggleReminders (e) {
     eventModel.reminders = e.target.checked
-
-    eventModel.published = $('[type="checkbox"][name="published"]')[0].checked
-    eventModel.reservationsOpen =  $('[name="reservationsOpen"]')[0].checked
 
     syncData()
   }
@@ -796,10 +800,25 @@ $(document).ready(function () {
   function toggleReservations (e) {
     eventModel.reservationsOpen = e.target.checked
 
-    eventModel.published = $('[type="checkbox"][name="published"]')[0].checked
-    eventModel.reminders = $('[name="reminders"]')[0].checked
+    syncData()
+  }
+
+  function toggleMailchimp (e) {
+    
+    $(this).parents('li').toggleClass('event-menu-drawer--open')
+
+    eventModel.toggleMailchimp = e.target.checked
 
     syncData()
+    
+  }
+
+  function toggleMailchimpOptin (e) {
+    
+    eventModel.toggleMailchimpOptin = e.target.checked
+
+    syncData()
+    
   }
 
   function removeItem (e) {
@@ -999,13 +1018,13 @@ $(document).ready(function () {
   $('body').on('click', '.event-remove-price', removePrice)
   $('body').on('click', '.alert-warning .close', hideWarning)
   $('body').on('click', '.btn-cancel-fields', hideUpdateFields)
-  
-
-  // $('body').on('click', '.event-summary', goToEvent)
 
   $('body').on('change', '[name="published"]', togglePublish)
   $('body').on('change', '[name="reminders"]', toggleReminders)
   $('body').on('change', '[name="reservationsOpen"]', toggleReservations)
+  $('body').on('change', '[name="toggleMailchimp"]', toggleMailchimp)
+  $('body').on('change', '[name="toggleMailchimpOptin"]', toggleMailchimpOptin)
+  
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
   $('body').on('click', '.field-update-seats .btn-save', updateSeats)

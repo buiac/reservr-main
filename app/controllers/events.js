@@ -601,6 +601,8 @@ module.exports = function(config, db) {
     event.reservationsOpen = (event.reservationsOpen === 'true')
     event.published = (event.published === 'true')
     event.reminders = (event.reminders === 'true')
+    event.toggleMailchimp = (event.toggleMailchimp === 'true')
+    event.toggleMailchimpOptin = (event.toggleMailchimpOptin === 'true')
 
     // convert strings to booleans
     if (typeof event.published === 'string') {
