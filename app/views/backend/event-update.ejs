@@ -331,26 +331,6 @@
           </div>
           
         </div>
-  
-        <% if(org.mailchimp && org.mailchimp.length) { %>
-        
-          <div class="event-mailchimp">
-            
-            <label for="">MailChimp</label>
-            
-            <select name="mailchimp" id="" class="form-control">
-              
-              <% org.mailchimp.forEach(function(mailchimp){ %>
-
-                <option value="<%= mailchimp.account %>"> <%= mailchimp.name %> </option>
-
-              <% }) %>
-
-            </select>
-
-          </div>
-
-        <% } %>
         
         <div class="event-price">
           <label for="">Ticket Prices</label>
