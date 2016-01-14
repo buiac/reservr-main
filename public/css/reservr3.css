@@ -1,3 +1,15 @@
+
+/* Toggle switch overwrite
+*/
+
+.switch-material.switch-light input:checked ~ span {
+  background: rgba(2, 118 ,108, .5);
+}
+
+.switch-material.switch-light input:checked ~ span a {
+  background: #02766C;
+}
+
 .clear {
   clear: both;
 }
@@ -685,6 +697,56 @@ textarea {
   text-decoration: none;
 }
 
+
+/* Event Update event-menu
+*/
+
+.event-details .event-menu {
+  z-index: 100;
+}
+.event-details .event-menu .event-menu-button {
+  padding: 15px;
+  display: block;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+.event-details .event-menu--open .event-menu-button {
+  border: 1px solid #ccc;
+}
+
+
+.event-details .event-menu .event-menu-button:hover {
+  border: 1px solid #ccc;
+}
+
+.event-details .event-menu .event-menu-button span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background: #999;
+}
+
+.event-details .event-menu .event-menu-dropdown {
+  right: 45px;
+}
+
+.event-details .event-menu-dropdown {
+  width: 250px;
+  padding: 20px;
+}
+
+.event-details .event-menu .event-menu-dropdown li {
+  font-size: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+  color: #6F6A6A;
+}
+
+/* Event list in the left sidebar
+*/
 
 .event-list {
   height: 72%;
@@ -1451,10 +1513,6 @@ body.event-page .event-page .event-description {
 .sweet-alert h2 {
   font-size: 20px;
   line-height: 22px;
-}
-
-.field-update {
-
 }
 
 .field-update input{

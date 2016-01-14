@@ -61,103 +61,81 @@
     </div>
 
     <div class="col-md-6 event-details">
-      
-      <div class="cf event-status event-status--<%= theEvent.published ? 'published' : 'not-published' %>">
 
-        <div class="clear">
+      <div class="event-menu">
+                      
+        <a href="" class="event-menu-button ">
+          <span></span>
+          <span></span>
+          <span></span>
+        </a>
+
+        <ul class="event-menu-dropdown list-unstyled">
           
-          <div class="row">
+          <li class="cf">
             
-            <div class="col-md-2">
-              <label>Published</label>
-            </div>
+            <label class="switch-light switch-material" onclick="" class="cf">
 
-            <div class="col-md-2">
-              
-              <label class="switch-light switch-material" onclick="">
-                <input type="checkbox" <% if (theEvent.published) { %> checked="checked" <% } %> name="published">
+              <input type="checkbox" <% if (theEvent.published) { %> checked="checked" <% } %> name="published">
 
-                <strong>
-                  
-                </strong>
+              <strong class="pull-left">
+                Published    
+              </strong>
 
-                <span>
-                  <span>Off</span>
-                  <span>On</span>
-                  <a></a>
-                </span>
+              <span class="pull-right">
+                <span>Off</span>
+                <span>On</span>
+                <a></a>
+              </span>
 
-              </label>
+            </label>
 
-            </div>
+          </li>
 
+          <li class="cf">
 
-            <div class="col-md-2 ">
-              <label>Reminders</label>
-            </div>
+            <label class="switch-light switch-material" onclick="" class="cf">
 
-            <div class="col-md-2">
-              <label class="switch-light switch-material" onclick="">
-                <input type="checkbox" <% if (theEvent.reminders) { %> checked="checked" <% } %> name="reminders">
+              <input type="checkbox" <% if (theEvent.reminders) { %> checked="checked" <% } %> name="reminders">
 
-                <strong>
-                  
-                </strong>
+              <strong class="pull-left">
+                Reminders
+              </strong>
 
-                <span>
-                  <span>Off</span>
-                  <span>On</span>
-                  <a></a>
-                </span>
+              <span class="pull-right">
+                <span>Off</span>
+                <span>On</span>
+                <a></a>
+              </span>
 
-              </label>
+            </label>
 
-            </div>
+          </li>
 
-            <div class="col-md-2">
-              <label>Reservations Open</label>
-            </div>
+          <li class="cf">
 
-            <div class="col-md-2">
-              
-              <label class="switch-light switch-material" onclick="">
-                <input type="checkbox" <% if (theEvent.reservationsOpen || theEvent.reservationsOpen === undefined) { %> checked="checked" <% } %> name="reservationsOpen">
+            <label class="switch-light switch-material" onclick="" class="cf">
 
-                <strong>
-                  
-                </strong>
+              <input type="checkbox" <% if (theEvent.reservationsOpen || theEvent.reservationsOpen === undefined) { %> checked="checked" <% } %> name="reservationsOpen">
 
-                <span>
-                  <span>Off</span>
-                  <span>On</span>
-                  <a></a>
-                </span>
+              <strong class="pull-left">
+                Reservations Open
+              </strong>
 
-              </label>
+              <span class="pull-right">
+                <span>Off</span>
+                <span>On</span>
+                <a></a>
+              </span>
 
-            </div>
+            </label>
 
-            
+          </li>
 
-          </div>
-
-          <div class="row">
-
-            <div class="col-md-7">
-              <% if (theEvent._id) { %> 
-              
-                <a class="external-link pull-left" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>"> http://reservr.net/u/<%= org.name %>/event/<%= theEvent._id %></a>
-                
-              <% } %>
-            </div>
-            
-            
-
-          </div>
-
-        </div>
-
+        </ul>
       </div>
+      
+      
 
       <div class="form-group event-name event-group">
 
@@ -175,6 +153,14 @@
         </div>
 
       </div>
+
+      <% if (theEvent._id) { %> 
+      
+        <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>">
+          Preview event
+        </a>
+        
+      <% } %>
 
 
       <div class="form-group event-description event-group">

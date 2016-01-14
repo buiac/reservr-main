@@ -777,30 +777,28 @@ $(document).ready(function () {
 
   function togglePublish (e) {
     eventModel.published = e.target.checked
+    
+    eventModel.reminders = $('[name="reminders"]')[0].checked
+    eventModel.reservationsOpen =  $('[name="reservationsOpen"]')[0].checked
 
-    console.log('---toggle publish-----')
-    console.log(eventModel.published)
-    console.log(eventModel.reminders)
-    console.log(eventModel.reservationsOpen)
     syncData()
   }
 
   function toggleReminders (e) {
     eventModel.reminders = e.target.checked
 
-    console.log('---toggle reminders-----')
-    console.log(eventModel.published)
-    console.log(eventModel.reminders)
-    console.log(eventModel.reservationsOpen)
+    eventModel.published = $('[type="checkbox"][name="published"]')[0].checked
+    eventModel.reservationsOpen =  $('[name="reservationsOpen"]')[0].checked
+
     syncData()
   }
 
   function toggleReservations (e) {
     eventModel.reservationsOpen = e.target.checked
-    console.log('----toggle reservations----')
-    console.log(eventModel.published)
-    console.log(eventModel.reminders)
-    console.log(eventModel.reservationsOpen)
+
+    eventModel.published = $('[type="checkbox"][name="published"]')[0].checked
+    eventModel.reminders = $('[name="reminders"]')[0].checked
+
     syncData()
   }
 
@@ -904,7 +902,6 @@ $(document).ready(function () {
 
   function removePrice (e) {
     e.preventDefault()
-    console.log('mere')
 
     $(this).parent().remove()
   }
