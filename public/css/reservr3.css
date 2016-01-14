@@ -1453,6 +1453,34 @@ body.event-page .event-page .event-description {
   line-height: 22px;
 }
 
+.field-update {
+
+}
+
+.field-update input{
+  width: 20%;
+  display: inline-block;
+  min-width: 38px;
+}
+
+.alert-warning-seats,
+.alert-success-seats {
+  display: none;
+  margin: 30px 0 10px;
+}
+
+.field-update .field-update-fields {
+  display: none;
+}
+
+.field-update.field-update--show .field-update-fields{
+  display: block;
+}
+
+.field-update.field-update--show .field-update-placeholder {
+  display: none;
+}
+
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}

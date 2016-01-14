@@ -69,6 +69,45 @@ module.exports = function(config, db) {
     return deferred.promise;
   };
 
+  var getAvailableSeats = function (params) {
+    var deferred = q.defer();
+
+    
+    // get the event so we know how many seats are available
+    db.events.findOne({
+      _id: params.eventId
+    }, function (err, event) {
+      if (err) {
+        deferred.reject(err)
+      }
+
+      db.reservations.find({
+        eventId: params.eventId
+      }, function (err, reservations) {
+        
+        if (err) {
+          deferred.reject(err)
+        }
+
+        var reservationsNumber = 0;
+
+        reservations.forEach(function (reservation) {
+          reservationsNumber = reservationsNumber + reservation.seats
+        })
+
+        
+        deferred.resolve(event.seats - reservationsNumber)
+
+      })
+
+      
+
+    })
+
+
+    return deferred.promise;    
+  }
+
   var getEventReservations = function (params) {
     var deferred = q.defer();
 
@@ -130,6 +169,7 @@ module.exports = function(config, db) {
     getOrgEvents: getOrgEvents,
     getEventReservations: getEventReservations,
     getOrgByName: getOrgByName,
-    getOrgById: getOrgById
+    getOrgById: getOrgById,
+    getAvailableSeats: getAvailableSeats
   };
 }

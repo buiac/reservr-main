@@ -224,10 +224,7 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservations);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);
 
-  // reservation update
-  app.get('/dashboard/:orgId/reservation/:reservationId', isAuthenticated, reservations.viewReservation);
-  app.post('/dashboard/:orgId/reservation/:reservationId', isAuthenticated, reservations.updateDashboardReservation);
-  
+
   /* Front-end routes
   */
 
@@ -251,7 +248,10 @@ module.exports = (function() {
   app.get('/r/:reservationId', reservations.userReservationsView);
   app.get('/u/delete-reservation/:reservationId', isAuthenticated, reservations.deleteReservation);
   app.get('/r/delete-reservation/:reservationId', reservations.deleteReservation);
-  app.get('/r/deleted-reservation', reservations.userReservationsDeleteView);  
+  app.get('/r/deleted-reservation', reservations.userReservationsDeleteView); 
+
+  app.post('/r/update/:reservationId', reservations.updateReservationJSON)
+
 
   /* Reminders
   */

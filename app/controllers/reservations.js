@@ -788,13 +788,72 @@ module.exports = function(config, db) {
     // body...
   };
 
-  var viewReservation = function (req, res, next) {
-    // body...
-  }
+  var updateReservationJSON = function (req, res, next) {
 
-  var updateDashboardReservation = function (req, res, next) {
-    // body...
-  }
+    var requestedSeats = parseInt(req.body.seats)
+
+    if (typeof requestedSeats !== 'number' || isNaN(requestedSeats)) {
+      res.status(400).json({
+        message: 'You must enter a number of seats.'
+      });
+      return;
+    }
+
+    if (requestedSeats < 1) {
+      res.status(400).json({
+        message: 'You must enter a number of seats equal or larger than 1.'
+      });
+      return;
+    }
+
+    db.reservations.findOne({
+      _id: req.params.reservationId
+    }, function (err, reservation) {
+
+      var currentSeats = reservation.seats;
+
+      data.getAvailableSeats({
+        eventId: reservation.eventId
+      }).then(function (availableSeats) {
+
+
+        // update the number of seats only if the requested seats is less than the current seats
+        // or if the number of requested seats is less or equal to the number of available seats
+        if ((requestedSeats - currentSeats) > 0 && availableSeats <= 0) {
+          res.status(400).json({
+            message: 'We are sorry but there are no more available seats.'
+          });
+          return;
+        }
+
+        if ((requestedSeats - currentSeats) > availableSeats) {
+          res.status(400).json({
+            message: 'We are sorry but there are only ' + availableSeats + ' available seats.'
+          });
+          return;
+        }
+
+        db.reservations.update({
+          _id: reservation._id
+        }, {
+          $set: {
+            seats: requestedSeats
+          }
+        }, function (err, num) {
+          
+          res.json({
+            message: 'Your seats have been successfully updated.'
+          });
+
+        })
+
+
+      })
+
+    })
+
+    
+  };
 
   return {
     updateReservation: updateReservation,
@@ -803,8 +862,7 @@ module.exports = function(config, db) {
     userReservationsView: userReservationsView,
     userReservationsDeleteView: userReservationsDeleteView,
     updateReservationTmp: updateReservationTmp,
-    viewReservation: viewReservation,
-    updateDashboardReservation: updateDashboardReservation
+    updateReservationJSON: updateReservationJSON
   };
 
 };

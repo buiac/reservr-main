@@ -909,6 +909,71 @@ $(document).ready(function () {
     $(this).parent().remove()
   }
 
+  function updateSeats (e) {
+    e.preventDefault()
+
+    var seats = $(this).prev().val()
+    var reservationId = $(this).data('reservationid')
+    var $btn = $(this)
+    var $alertSuccess = $('.alert-success-seats')
+    var $alertWarning = $('.alert-warning-seats')
+
+    // add loading state
+    $btn.addClass('btn-state-loading');
+
+    $alertSuccess.hide()
+    $alertWarning.hide()
+
+    $.ajax({
+      method: 'POST',
+      url: config.baseUrl + '/r/update/' + reservationId,
+      data: {
+        seats: seats
+      }
+    }).done(function (res) {
+      
+      $btn.removeClass('btn-state-loading')
+
+      // show success message
+      $alertSuccess.find('p').html(res.message)
+      $alertSuccess.show()
+
+      // hide fields
+      $btn.parents('.field-update').removeClass('field-update--show')
+      $btn.parents('.field-update').find('span.seats').html(seats)
+
+
+      setTimeout(function() {
+        $alertSuccess.hide()
+      }, 3000);
+
+    }).fail(function (err) {
+
+      $btn.removeClass('btn-state-loading')
+      
+      // show error message
+      $alertWarning.find('p').html(err.responseJSON.message)
+      $alertWarning.show()
+
+      setTimeout(function() {
+        $alertWarning.hide()
+      }, 3000);
+
+    })
+
+  }
+
+  function hideWarning (e) {
+    e.preventDefault()
+
+    $(this).parent().hide()
+  }
+
+  function showUpdateFields (e) {
+    e.preventDefault()
+
+    $(this).parents('.field-update').addClass('field-update--show')
+  }
 
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
@@ -929,6 +994,7 @@ $(document).ready(function () {
   $('body').on('click', '.rzv-vnav li a', displayPanels)
   $('body').on('click', '.event-add-price', addPrice)
   $('body').on('click', '.event-remove-price', removePrice)
+  $('body').on('click', '.alert-warning .close', hideWarning)
 
   // $('body').on('click', '.event-summary', goToEvent)
 
@@ -937,8 +1003,12 @@ $(document).ready(function () {
   $('body').on('change', '[name="reservationsOpen"]', toggleReservations)
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
+  $('body').on('click', '.field-update-seats .btn-save', updateSeats)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
+
+  $('body').on('click', '.field-update-placeholder .btn', showUpdateFields)
+  
 
   
 
