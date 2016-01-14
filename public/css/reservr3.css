@@ -745,6 +745,12 @@ textarea {
   color: #6F6A6A;
 }
 
+.event-details .event-menu .event-menu-dropdown li:last-child {
+  border-bottom: 0 none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 /* Event list in the left sidebar
 */
 

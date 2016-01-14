@@ -132,6 +132,16 @@
 
           </li>
 
+          <% if (theEvent._id) { %> 
+          
+            <li>
+              <a class="btn btn-default" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>">
+                Preview event
+              </a>
+            </li>
+
+          <% } %>
+
         </ul>
       </div>
       
@@ -154,13 +164,7 @@
 
       </div>
 
-      <% if (theEvent._id) { %> 
       
-        <a class="external-link" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>">
-          Preview event
-        </a>
-        
-      <% } %>
 
 
       <div class="form-group event-description event-group">
