@@ -784,10 +784,6 @@ module.exports = function(config, db) {
     });
   };
 
-  var userReservationsDeleteView = function (req, res, next) {
-    // body...
-  };
-
   var updateReservationJSON = function (req, res, next) {
 
     var requestedSeats = parseInt(req.body.seats)
@@ -812,6 +808,32 @@ module.exports = function(config, db) {
 
       var currentSeats = reservation.seats;
 
+      if (reservation.waiting) {
+
+        if (requestedSeats > 8) {
+          res.status(400).json({
+            message: 'We are sorry but you cannot reserv more than 8 seats.'
+          });
+          return;
+        }
+
+        db.reservations.update({
+          _id: reservation._id
+        }, {
+          $set: {
+            seats: requestedSeats
+          }
+        }, function (err, num) {
+          
+          res.json({
+            message: 'Your seats have been successfully updated.'
+          });
+
+          return;
+
+        })
+      }
+
       data.getAvailableSeats({
         eventId: reservation.eventId
       }).then(function (availableSeats) {
@@ -833,6 +855,15 @@ module.exports = function(config, db) {
           return;
         }
 
+
+        if (requestedSeats > 8) {
+          res.status(400).json({
+            message: 'We are sorry but you cannot reserv more than 8 seats.'
+          });
+          return;
+        }
+
+
         db.reservations.update({
           _id: reservation._id
         }, {
@@ -844,6 +875,7 @@ module.exports = function(config, db) {
           res.json({
             message: 'Your seats have been successfully updated.'
           });
+          return;
 
         })
 
@@ -860,7 +892,6 @@ module.exports = function(config, db) {
     viewReservations: viewReservations,
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
-    userReservationsDeleteView: userReservationsDeleteView,
     updateReservationTmp: updateReservationTmp,
     updateReservationJSON: updateReservationJSON
   };

@@ -248,7 +248,6 @@ module.exports = (function() {
   app.get('/r/:reservationId', reservations.userReservationsView);
   app.get('/u/delete-reservation/:reservationId', isAuthenticated, reservations.deleteReservation);
   app.get('/r/delete-reservation/:reservationId', reservations.deleteReservation);
-  app.get('/r/deleted-reservation', reservations.userReservationsDeleteView); 
 
   app.post('/r/update/:reservationId', reservations.updateReservationJSON)
 

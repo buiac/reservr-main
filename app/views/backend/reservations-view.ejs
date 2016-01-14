@@ -69,6 +69,7 @@
                     <input type="text" class="form-control input-sm" value="<%= reservation.seats %>">
                     
                     <a href="" class="btn btn-primary btn-sm btn-save" data-reservationid="<%= reservation._id %>">Save</a>
+                    <a href="" class="btn btn-default btn-sm btn-cancel-fields">Cancel</a>
 
                   </div>
                 
@@ -83,6 +84,7 @@
                   </div>
 
                 </div>
+
                 <% s = s + parseInt(reservation.seats) %>
               </td>
               <td>
@@ -160,7 +162,28 @@
                 <%= reservation.email %>
               </td>
               <td>
-                <%= reservation.seats %>
+                <div class="field-update field-update-seats">
+                                  
+                  <div class="field-update-fields">
+                    
+                    <input type="text" class="form-control input-sm" value="<%= reservation.seats %>">
+                    
+                    <a href="" class="btn btn-primary btn-sm btn-save" data-reservationid="<%= reservation._id %>">Save</a>
+                    <a href="" class="btn btn-default btn-sm btn-cancel-fields">Cancel</a>
+
+                  </div>
+                
+                  <div class="field-update-placeholder">
+                    
+                    <span class="seats">
+                      <%= reservation.seats %>
+                    </span>
+
+                    <a href="" class="btn btn-default btn-xs">Edit</a>
+
+                  </div>
+
+                </div>
               </td>
               <td>
                 <a href="/u/delete-reservation/<%= reservation._id %>" class="btn btn-danger btn-xs btn-remove-item" data-message="Are you sure you want to delete this reservation?">
@@ -175,6 +198,9 @@
         <tfoot>
           <td>
             <strong>Total waiting seats :</strong>
+          </td>
+          <td>
+            
           </td>
           <td>
             

@@ -1,12 +1,67 @@
 <% var theEvent = '' %>
 <%- include header %>
+      <div class="alert alert-warning alert-warning-seats">
+        <a href="" class="close">&times;</a>
+        <p></p>
+      </div>
+
+      <div class="alert alert-success alert-success-seats">
+        <a href="" class="close">&times;</a>
+        <p></p>
+      </div>
       
-      <h4><a href="/dashboard/<%= org._id %>/event/<%= event._id %>"><%= event.name %></a></h4>
-      <p><span class="user-reservations-event-date"><%= moment(event.date).format('LLLL') %></span></p>
-      <p class="text-muted"><%= reservation.name %>, <%= reservation.seats %> seats.</p>
-      <a href="/r/delete-reservation/<%= reservation._id %>" class="btn btn-danger btn-remove-item" data-message="Are you sure?">
-        <i class="fa fa-times-circle"></i>
-        Delete reservation
-      </a>
+      <div class="row">
+        <div class="col-md-3">
+          
+          <h4 style="margin:0"><a href="/u/<%= org.name %>/event/<%= event._id %>" target="_blank"><%= event.name %></a></h4>
+
+          <p><span class="user-reservations-event-date"><%= moment(event.date).format('LLLL') %></span></p>    
+
+        </div>
+
+        <div class="col-md-3">
+          <%= reservation.name %>
+        </div>
+
+        <div class="col-md-3">
+          <div class="field-update field-update-seats">
+                                  
+            <div class="field-update-fields">
+              
+              <input type="text" class="form-control input-sm" value="<%= reservation.seats %>">
+              
+              <a href="" class="btn btn-primary btn-sm btn-save" data-reservationid="<%= reservation._id %>">Save</a>
+              <a href="" class="btn btn-default btn-sm btn-cancel-fields">Cancel</a>
+
+            </div>
+          
+            <div class="field-update-placeholder">
+              
+              <span class="seats">
+                <%= reservation.seats %> 
+              </span>
+
+              seats
+
+              <a href="" class="btn btn-default btn-xs">Edit</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-md-3">
+          <a href="/r/delete-reservation/<%= reservation._id %>" class="btn btn-danger btn-remove-item btn-sm" data-message="Are you sure?">
+            <i class="fa fa-times-circle"></i>
+            Delete reservation
+          </a>
+        </div>
+      </div>
+
+      
+
+      
+      
 
 <%- include footer %>

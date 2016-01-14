@@ -975,6 +975,12 @@ $(document).ready(function () {
     $(this).parents('.field-update').addClass('field-update--show')
   }
 
+  function hideUpdateFields (e) {
+    e.preventDefault()
+
+    $(this).parents('.field-update').removeClass('field-update--show')
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
@@ -995,6 +1001,8 @@ $(document).ready(function () {
   $('body').on('click', '.event-add-price', addPrice)
   $('body').on('click', '.event-remove-price', removePrice)
   $('body').on('click', '.alert-warning .close', hideWarning)
+  $('body').on('click', '.btn-cancel-fields', hideUpdateFields)
+  
 
   // $('body').on('click', '.event-summary', goToEvent)
 
