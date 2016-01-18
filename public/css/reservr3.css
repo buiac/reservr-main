@@ -1492,7 +1492,8 @@ body.event-page .event-page .event-description {
   .table-reservations thead tr td:last-child,
   .table-reservations tbody tr td:last-child,
   .rsvr-dashboard .rzv-lightbox h2,
-  .reservations-print {
+  .reservations-print,
+  .field-update-placeholder .btn {
     display: none;
   }
 

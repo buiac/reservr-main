@@ -460,6 +460,10 @@ $(document).ready(function () {
     updateHiddenFields()
     scrollEventList()
     fixListZindex()
+
+    console.log($('.table-reservations').tablesorter)
+
+    $('.table-reservations').tablesorter()
   }
 
   function updateEventPrice (e) {
