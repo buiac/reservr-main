@@ -242,19 +242,31 @@ $(document).ready(function () {
     }
 
     if (value && field.type === 'textarea') {
+      
       $placeholder.html(marked($(field).val()))
+
     } else {
-      $placeholder.html($(field).val())
+
+      if (field.name === 'date') {
+        setTimeout(function () {
+          $placeholder.html(moment($(field).val()).format('LLLL'))
+          
+          if ($icon) {
+            $placeholder.prepend($icon)
+          }
+        }, 100)
+      }
+      
     }
 
     if ($parent.hasClass('event-seats')) {
       $placeholder.html($placeholder.html() + ' seats')
     }
 
-
     if ($icon) {
       $placeholder.prepend($icon)
     }
+    
     
 
     if ($parent.hasClass(toggleClass)) {
@@ -302,8 +314,6 @@ $(document).ready(function () {
     var $eventGroups = $('.rzv-lightbox .event-group')
     var $eventStatusInputs = $('.event-details .event-menu').find('input')
 
-    console.log($eventStatusInputs)
-
     $eventStatusInputs.each(function (e, input) {
       eventModel[input.name] = input.checked
     })
@@ -335,13 +345,22 @@ $(document).ready(function () {
 
       }
 
+
+
       if (field && field.type !== 'file' && value) {
+
+
 
         
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
         } else {
+
           $placeholder.html(value)
+
+          if (field.name === 'date') {
+            $placeholder.html(moment(value).format('LLLL'))            
+          }
 
           
 
