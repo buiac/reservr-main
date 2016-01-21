@@ -1408,6 +1408,9 @@ body.event-page .event-page .event-description {
   color: #847F7F;
 }
 
+.event-image {
+  margin-bottom: 20px;
+}
 
 @media (min-width: 768px) {
   .event-page {
@@ -1470,6 +1473,10 @@ body.event-page .event-page .event-description {
     border: none;
     font-family: 'Helvetica Neue', sans-serif;
     font-weight: bold;
+  }
+
+  .event-image {
+    margin-bottom: 0;
   }
 }
 @media (min-width: 992px) {
