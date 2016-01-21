@@ -305,6 +305,10 @@ module.exports = (function() {
     res.type('txt').send('Not found');
   });
 
+  if (config.env === 'local') {
+    config.ipAddress = ''
+  }
+
   // start express server
   app.listen(config.port, config.ipAddress, function() {
     console.log(

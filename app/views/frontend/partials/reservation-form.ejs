@@ -1,6 +1,17 @@
 <% if (event.reservationsOpen || event.reservationsOpen === undefined ) { %> 
   <div class="event-form">
 
+      <p class="text-muted event-price-text show-on-mobile">
+            
+        <span class="seats-left"><%=  event.seats - event.invited %></span> seats left 
+        
+        <br>
+        <% if (event.waiting) { %>
+        <span>
+          <span class="seats-waiting"><%= event.waiting %></span> on waiting list</span>
+        <% } %>
+      </p>
+
       <div class="row">
 
         <div class="col-md-6 <% if ((event.seats - event.invited) === 0) { %> event-reserv--sold-out<% } %>">
@@ -180,7 +191,7 @@
 
         <div class="col-md-6">
           
-          <p class="text-muted event-price-text">
+          <p class="text-muted event-price-text hide-on-mobile">
             
             <span class="seats-left"><%=  event.seats - event.invited %></span> seats left 
             
@@ -199,10 +210,14 @@
             <% if (event.prices && event.prices.length) { %>
               
               <% event.prices.forEach(function(price){ %>
-              <span class="event-price ff-montserat">
+
+              
+
+              <span class="event-price ff-montserat cf">
                 
-                
-                  <strong><%= price.name %>: </strong>
+                  <i class="fa fa-money"></i>
+                    
+                  <strong><%= price.name %> </strong>
                   <span><span style="font-size: 23px"><%= price.amount %></span> <%= price.currency %></span>
                 
 

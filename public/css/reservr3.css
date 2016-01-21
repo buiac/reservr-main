@@ -828,6 +828,10 @@ textarea {
   font-family: 'Cabin', sans-serif;
 }
 
+.ff-oswald {
+  font-family: 'Oswald', sans-serif;
+}
+
 .ff-fira {
   font-family: 'Fira Sans', sans-serif;
 }
@@ -1282,8 +1286,191 @@ body.event-page .event-page .event-description {
   margin-bottom: 0;
 }
 
-@media (min-width: 768px) {
+
+
+.event-page {
+  padding: 0;
+}
+
+.event-page .rzv-event {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.event-page-org-logo,
+.event-image-wrap {
+  display: none;
+}
+
+.navbar-toggle {
+  display: none;
+}
+
+.navbar-toggle .icon-bar {
+  background: #FFF;
+}
+
+/*.event-page-header {
+  background: #FFF;
+}
+
+.event-page-header a.logo,
+.event-page-header .header-menu {
+  display: none;
+}*/
+
+.event-page-header a.logo {
+  margin-left: 20px;
+}
+
+.event-page-header .header-menu {
+  margin-top: 11px;
+  margin-right: 20px;
+}
+
+.event-page .event-name h1 {
+  font-size: 22px;
+  margin-top: 0;
+}
+
+.show-on-mobile {
+  display: block;
+}
+
+.hide-on-mobile {
+  display: none;
+}
+
+.event-meta .meta-row {
+  border-top: 1px solid #ccc;
+  padding: 7px 0 4px 0;
+}
+
+.event-meta .meta-row:last-child {
+  border-bottom: 1px solid #ccc;
+}
+
+.event-price-text {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.event-price-text .seats-left {
+  display: block;
+  border: 1px solid;
+  width: 100px;
+  margin: 0 auto;
+  border-radius: 100px;
+  height: 100px;
+  font-size: 46px;
+  line-height: 212%;
+  font-weight: normal;
+  margin: 0 auto 10px;
   
+  color: #02766C;
+  font-family: 'Oswald', sans-serif;
+}
+
+.event-price-wrap {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.event-price-wrap .event-price {
+  text-transform: uppercase;
+  clear: both;
+  border-top: 1px solid #ccc;
+  padding: 5px 10px;
+}
+
+.event-price-wrap .event-price > strong {
+  float: left;
+  margin-top: 10px;
+}
+
+.event-price-wrap .event-price > span {
+  float: right;
+
+  font-size: 9px;
+}
+
+.event-price-wrap .event-price > span > span {
+  color: #02766C;
+  font-family: 'Oswald', sans-serif;
+  display: block;
+}
+
+.event-price-wrap .event-price .fa-money {
+  float: left;
+  font-size: 20px;
+  margin: 10px 30px 0 0;
+  color: #847F7F;
+}
+
+
+@media (min-width: 768px) {
+  .event-page {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .event-page .rzv-event {
+    border-radius: 3px;
+    box-shadow: rgba(0,0,0, .4) 0 0 4px;
+  }
+
+  .event-page-org-logo,
+  .event-image-wrap {
+    display: block;
+  }
+
+  .event-page-header a.logo {
+    margin-left: 0;
+  }
+
+  .event-page-header .header-menu {
+    margin-top: 7px;
+    margin-right: 0;
+  }
+
+  .event-page-header {
+    background: transparent;
+  }
+
+  .event-page .event-name h1 {
+    font-size: 30px;
+    margin-top: 20px;
+  }
+
+  .show-on-mobile {
+    display: none;
+  }
+
+  .hide-on-mobile {
+    display: block;
+  }
+
+  .event-meta .meta-row {
+    border-top: 0;
+    padding: 0;
+  }
+
+  .event-meta .meta-row:last-child {
+    border-bottom: 0;
+  }
+
+  .event-price-text {
+    text-align: left;
+  }
+
+  .event-price-text .seats-left {
+    font-size: 14px;
+    display: inline;
+    border: none;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-weight: bold;
+  }
 }
 @media (min-width: 992px) {
   .event-page .event-name h1 {
