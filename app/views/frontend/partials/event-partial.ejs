@@ -50,8 +50,21 @@
     <%- include reservation-form %>
   </div>
   
+  <div class="show-on-mobile">
+    <% if (event.images.length) { %>
+    <div class="event-image clear">
+      <img src="<%= event.images[0].path %>" alt="<%= event.name %>">
+    </div>
+    <% } else { %>
+    <div class="event-image clear">
+      <img src="/images/reservr-placeholder-2.png" alt="<%= event.name %>">
+    </div>
+    <% } %>
+  </div>
 
   <div class="event-description ff-nobile">
+
+    
 
     <%- marked(event.description) %>
 
