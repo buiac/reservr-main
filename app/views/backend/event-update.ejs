@@ -334,7 +334,7 @@
         
         <div class="event-price">
           <label for="">Ticket Prices</label>
-          <% if (theEvent.prices && theEvent.prices.length) { %>
+          <% if (typeof theEvent.prices !== 'string' && theEvent.prices && theEvent.prices.length) { %>
 
             <% theEvent.prices.forEach(function(price){ %>
 
