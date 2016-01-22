@@ -259,7 +259,7 @@ $(document).ready(function () {
       
     }
 
-    if ($parent.hasClass('event-seats')) {
+    if ($parent.hasClass('event-seats') && $placeholder.html().indexOf < 0) {
       $placeholder.html($placeholder.html() + ' seats')
     }
 
