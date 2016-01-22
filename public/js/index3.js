@@ -451,6 +451,12 @@ $(document).ready(function () {
     }
   }
 
+  function initTableSorter () {
+    if ($('.table-reservations').length) {
+      $('.table-reservations').tablesorter()     
+    }
+  }
+
   function init () {
     updateDateField()
     parseFieldsOnLoad()
@@ -460,10 +466,8 @@ $(document).ready(function () {
     updateHiddenFields()
     scrollEventList()
     fixListZindex()
-
-    console.log($('.table-reservations').tablesorter)
-
-    $('.table-reservations').tablesorter()
+    initTableSorter()
+    
   }
 
   function updateEventPrice (e) {
