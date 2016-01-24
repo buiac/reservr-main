@@ -247,19 +247,32 @@
           
           <div class="col-md-6">
             
-            <input placeholder="Date" type="text" name="date" class="form-control" value="<% if (theEvent.date) { %> <%= moment(theEvent.date).format('YYYY-MM-DD') %> <% } %>">
+            <input placeholder="Date" type="text" name="date" class="form-control" value="<% if (theEvent.date) { %><%= moment(theEvent.date).format('YYYY-MM-DD') %><% } else { %><%= moment().format('YYYY-MM-DD') %><% } %>">
 
           </div>
 
           <div class="col-md-6">
             
-            <input placeholder="Time" type="text" name="time" class="form-control" value="<% if (theEvent.date) {%> <%= moment(theEvent.date).format('HH:mm') %> <% } %>">
+            <input placeholder="Time" type="text" name="time" class="form-control" value="<% if (theEvent.date) {%><%= moment(theEvent.date).format('HH:mm') %><% } else { %><%= moment().format('HH:mm') %><% } %>">
 
           </div>
 
         </div>
 
       </div>
+
+      <div class="event-form-group">
+        <label for="">Where will this event take place?</label>
+        <input type="text" class="form-control" name="location" value="<%= theEvent.location || org.location || 'Event location' %>">
+      </div>
+
+
+      <div class="event-form-group">
+        <label for="">How many seats will this event have?</label>
+        <input type="text" class="form-control" name="seats" value="<%= parseInt(theEvent.seats, 10) || '' %>">
+      </div>
+
+      
 
         
 
@@ -300,7 +313,9 @@
 
         </div> -->
 
-        <div class="event-group">
+
+
+        <!-- <div class="event-group">
 
           <span class="event-placeholder">
 
@@ -312,7 +327,7 @@
             
             <i class="fa fa-map-o"></i>
 
-            <input type="text" class="form-control" name="location" value="<%= theEvent.location || org.location || 'Event location' %>">
+            
 
           </div>
 
@@ -324,9 +339,9 @@
             
           </div>
           
-        </div>
+        </div> -->
 
-        <div class="event-group event-seats">
+        <!-- <div class="event-group event-seats">
 
           <span class="event-placeholder">
 
@@ -350,9 +365,9 @@
             
           </div>
           
-        </div>
+        </div> -->
         
-        <div class="event-price">
+        <div class="event-price cf">
           <label for="">Ticket Prices</label>
           <% if (typeof theEvent.prices !== 'string' && theEvent.prices && theEvent.prices.length) { %>
 
@@ -407,7 +422,7 @@
 
           <% } %>
           
-          <a href="" class="btn btn-primary btn-sm event-add-price">Add another ticket</a>  
+          <a href="" class="btn btn-default btn-sm event-add-price pull-right"><i class="fa fa-plus-circle"></i> Add another ticket</a>  
 
         </div>
       

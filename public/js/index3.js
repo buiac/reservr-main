@@ -197,7 +197,12 @@ $(document).ready(function () {
     eventModel.date = date + ' ' + time
 
     // add the location
-    
+    var location = $('[name="location"]').val()
+    eventModel.location = location
+
+    // add the seats
+    var seats = $('[name="seats"]').val()
+    eventModel.location = seats
 
     // send the data to the server
     $.ajax({
