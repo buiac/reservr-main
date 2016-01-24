@@ -191,6 +191,14 @@ $(document).ready(function () {
       eventModel.mailchimp = $mailchip.find('select').val()
     }
 
+    // add the date
+    var date = $('[name="date"]').val()
+    var time = $('[name="time"]').val()
+    eventModel.date = date + ' ' + time
+
+    // add the location
+    
+
     // send the data to the server
     $.ajax({
       method: 'POST',
@@ -386,10 +394,13 @@ $(document).ready(function () {
   }
 
   function setupCalendar () {
-    var dateElement = $('.event-date input')[0]
-    if (dateElement) {
-      calendar = rome(dateElement)  
-    }
+
+    var dateElement = $('[name="date"]')[0]
+    var timeElement = $('[name="time"]')[0]
+
+    var date = rome(dateElement, { time: false })
+    var time = rome(timeElement, { date: false })
+
   }
 
   function initBootstrapWidgets (argument) {

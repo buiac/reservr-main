@@ -938,7 +938,8 @@ textarea {
 }
 
 .rsvr-dashboard .event-price,
-.rsvr-dashboard .event-mailchimp {
+.rsvr-dashboard .event-mailchimp,
+.event-form-group {
   background: #F5F5F5;
   padding: 15px;
   margin-bottom: 10px;
