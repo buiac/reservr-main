@@ -403,8 +403,15 @@ $(document).ready(function () {
     var dateElement = $('[name="date"]')[0]
     var timeElement = $('[name="time"]')[0]
 
-    var date = rome(dateElement, { time: false })
-    var time = rome(timeElement, { date: false })
+    if (dateElement ) {
+      var date = rome(dateElement, { time: false })
+    }
+
+    if (timeElement) {
+      var time = rome(timeElement, { date: false })
+    }
+    
+    
 
   }
 
