@@ -623,7 +623,13 @@ module.exports = function(config, db) {
                   return;
                 }
 
-                  
+                console.log('\n\n\n\n')
+                console.log('--------')
+                console.log(newReservation.mclistid)
+                console.log('--------')
+                console.log(newReservation.mcoptin)
+                console.log('--------')
+                console.log('\n\n\n\n')
                 if (newReservation.mclistid && (newReservation.mcoptin === true || newReservation.mcoptin === null)) {
                   addUserToMailingList(newReservation);
                 }
