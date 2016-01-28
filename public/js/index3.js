@@ -202,7 +202,7 @@ $(document).ready(function () {
 
     // add the seats
     var seats = $('[name="seats"]').val()
-    eventModel.location = seats
+    eventModel.seats = seats
 
     // send the data to the server
     $.ajax({
