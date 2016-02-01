@@ -95,6 +95,7 @@ img.mailchimp-logo {
 
 .authenticate .box-white {
   padding: 20px;
+  margin-bottom: 60px;
 }
 
 .authenticate .box-white h1 {
@@ -108,6 +109,14 @@ img.mailchimp-logo {
   float: none;
   margin: 0 auto;
 }
+
+.authenticate .box-white a.redirect {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #02443E;
+}
+
 
 .btn-primary {
   background: #02766C;

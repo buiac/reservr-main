@@ -2,7 +2,7 @@
           
 <h1>Log in</h1>
 
-<form action="/signin" method="POST">
+<form action="/signin" method="POST" class="account-form">
 
   <% if (info.length) { %>
     <div class="alert alert-danger">
@@ -27,6 +27,8 @@
   </div>
 
   <button type="submit" class="btn btn-primary btn-lg">Go to Dashboard</button>
+
+  <a href="/signup" class="redirect">Don't have an account? Sign Up Here</a>
 
 </form>
 
