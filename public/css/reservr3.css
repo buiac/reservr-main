@@ -1762,6 +1762,31 @@ body.event-page .event-page .event-description {
   display: none;
 }
 
+.circle-wrap {
+  width: 170px; 
+  text-align: center;
+  float: left;
+  margin-top: 40px;
+}
+
+.circle-wrap .circle {
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  border: 3px solid #02766C;
+  border-radius: 70px;
+  line-height: 670%;
+  margin-bottom: 10px;
+}
+
+.circle-wrap .circle strong{
+  font-size: 34px;
+  font-family: 'Oswald', sans-serif;
+  color: #02766C;
+  font-weight: normal;
+}
+
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}

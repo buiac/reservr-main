@@ -1,9 +1,55 @@
 <% var theEvent = '' %>
 <%- include header %>
   
-  <div class="rzv-lightbox">
+  <div class="rzv-lightbox cf">
     <h2>This is your dashboard</h2>
-    <p>We're working on adding all kind of cool stuff here...</p>
+
+    <% var m = 0 %>
+    <% var n = 0 %>
+    <% var o = 0 %>
+
+    <% events.forEach(function(event){ %>
+      
+      <% m = m + parseInt(event.invited, 10) %>
+      <% n = n + parseInt(event.seats, 10) %>
+      
+
+    <% }) %>
+    
+    <div class="cf">
+      <div class="circle-wrap"></div>
+      <div class="circle-wrap">
+        <div class="circle">
+          <strong><%= parseInt(m / (1/100 * n))  %>%</strong>
+        </div>
+        <p>of total seats reservd</p>
+      </div>
+    </div>
+
+    <div class="circle-wrap">
+      <div class="circle">
+        <strong><%= events.length %></strong>
+      </div>
+      <p>upcoming events</p>
+    </div>
+    
+    <div class="circle-wrap">
+      <div class="circle">
+        <strong><%= n %></strong>
+      </div>
+      <p>total available seats</p>
+    </div>
+    
+
+    <div class="circle-wrap">
+      <div class="circle">
+        <strong><%= m %></strong>
+      </div>
+      <p>reserved seats</p>
+    </div>
+
+    
+
   </div>
   
 <%- include footer %>
