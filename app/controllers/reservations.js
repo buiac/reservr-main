@@ -13,7 +13,7 @@ module.exports = function(config, db) {
   var smtpTransport = require('nodemailer-smtp-transport');
   var moment = require('moment');
   var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
-  var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
+  var mc = new mcapi.Mailchimp('28bf4a691276d8ff3b86301a34c0ebc3-us12');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
   var marked = require('marked');
@@ -623,13 +623,6 @@ module.exports = function(config, db) {
                   return;
                 }
 
-                console.log('\n\n\n\n')
-                console.log('--------')
-                console.log(newReservation.mclistid)
-                console.log('--------')
-                console.log(newReservation.mcoptin)
-                console.log('--------')
-                console.log('\n\n\n\n')
                 if (newReservation.mclistid && (newReservation.mcoptin === true || newReservation.mcoptin === null)) {
                   addUserToMailingList(newReservation);
                 }

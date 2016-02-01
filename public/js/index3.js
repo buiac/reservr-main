@@ -183,14 +183,6 @@ $(document).ready(function () {
 
     eventModel.prices = prices
 
-
-    // add Mailchimp account to the event model
-    var $mailchip = $('.event-mailchimp')
-    
-    if($mailchip.length) {
-      eventModel.mailchimp = $mailchip.find('select').val()
-    }
-
     // add the date
     var date = $('[name="date"]').val()
     var time = $('[name="time"]').val()
@@ -858,6 +850,12 @@ $(document).ready(function () {
     $(this).parents('li').toggleClass('event-menu-drawer--open')
 
     eventModel.toggleMailchimp = e.target.checked
+
+    if (eventModel.toggleMailchimp) {
+      eventModel.mailchimp = $(this).parents('li').find('select[name="mailchimp"]').val()
+    } else {
+      eventModel.mailchimp = ''
+    }
 
     syncData()
     
