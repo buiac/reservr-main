@@ -247,7 +247,7 @@
           
           <div class="col-md-6">
             
-            <input placeholder="Date" type="text" name="date" class="form-control" value="<% if (theEvent.date) { %><%= moment(theEvent.date).format('YYYY-MM-DD') %><% } else { %><%= moment().format('YYYY-MM-DD') %><% } %>">
+            <input placeholder="Date" type="text" name="date" class="form-control" value="<% if (theEvent.date) { %><%= moment(theEvent.date).format('YYYY-MM-DD') %><% } else { %><%= moment().add(2, 'days').format('YYYY-MM-DD') %><% } %>">
 
           </div>
 

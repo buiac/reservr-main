@@ -17,8 +17,6 @@ $(document).ready(function () {
     ],
     date: defaultEventDate,
     seats: 120,
-    price: '12$ / pers',
-    location: 'London, 106 Lower Marsh, Waterloo, SE1 7AB',
     orgId: '',
     temp: true,
     published: false
@@ -37,15 +35,11 @@ $(document).ready(function () {
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
 
-
   if (window.location.hostname.indexOf('localhost') !== -1) {
     config.baseUrl = 'http://localhost:8080'
   }
 
-
-
   function validateImageExtension(oInput) {
-    
 
     var sFileName = oInput.value;
     if (sFileName.length > 0) {
