@@ -206,27 +206,22 @@
       </div>
       <div class="row">
         <div class="col-md-6 col-md-offset-6">
-          <div class="event-price-wrap">
-            <% if (event.prices && event.prices.length) { %>
-              
-              <% event.prices.forEach(function(price){ %>
-
-              
-
-              <span class="event-price ff-montserat cf">
+          <% if (event.prices && event.prices.length) { %>
+            <div class="event-price-wrap">
                 
+              <% event.prices.forEach(function(price){ %>
+                <span class="event-price ff-montserat cf">
+                  
                   <i class="fa fa-money"></i>
                     
                   <strong><%= price.name %> </strong>
                   <span><span style="font-size: 23px"><%= price.amount %></span> <%= price.currency %></span>
-                
 
-              </span>
+                </span>
               <% }) %>
-
-            <% } %>
-            
-          </div>
+              
+            </div>
+          <% } %>
         </div>
       </div>
   </div>
