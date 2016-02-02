@@ -2,8 +2,9 @@
 <%- include header %>
   
   <div class="rzv-lightbox cf">
-    <h2>This is your dashboard</h2>
-
+    <h2>Dashboard</h2>
+    
+    <% if (events.length) { %>
     <% var m = 0 %>
     <% var n = 0 %>
     <% var o = 0 %>
@@ -22,7 +23,7 @@
         <div class="circle">
           <strong><%= parseInt(m / (1/100 * n))  %>%</strong>
         </div>
-        <p>of total seats reservd</p>
+        <p>of total seats have been reservd</p>
       </div>
     </div>
 
@@ -47,6 +48,8 @@
       </div>
       <p>reserved seats</p>
     </div>
+
+    <% } %>
 
     
 
