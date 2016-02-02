@@ -79,6 +79,18 @@ module.exports = function(config, db) {
     var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
     var notifications = false;
+
+    // format the org name
+    orgName = orgName.replace(/\s/g, '-');
+    orgName = orgName.replace(/\//g, '');
+    orgName = orgName.replace(/\'/g, '');
+
+    console.log('\n\n\n\n')
+    console.log('--------')
+    console.log(orgName)
+    console.log('--------')
+    console.log('\n\n\n\n')
+
     
     // templates 
     var userSubject = req.body.userSubject;
