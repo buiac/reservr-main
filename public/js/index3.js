@@ -464,6 +464,10 @@ $(document).ready(function () {
     if ($('.table-reservations').length) {
       $('.table-reservations').tablesorter()     
     }
+
+    if ($('.sa-table').length) {
+      $('.sa-table').tablesorter()      
+    }
   }
 
   function init () {

@@ -54,6 +54,19 @@ module.exports = function(config, db) {
     db.orgs.find({}, function (err, orgs) {
       
       db.users.find({}, function (err, users) {
+
+        orgs.forEach(function (org) {
+          users.forEach(function (user) {
+            
+            
+            if (org.userId === user._id) {
+              user.orgName = org.name;
+              org.username = user.username;
+            }
+            
+            
+          })
+        })
         
         res.render('superadmin/dashboard.ejs', {
           orgs: orgs,
