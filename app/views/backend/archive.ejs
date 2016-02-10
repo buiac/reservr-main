@@ -10,7 +10,8 @@
           
           <tr style="position:relative; z-index: <%= archiveEvents.length - index %>"> 
             <td>
-              <%= event.name %>
+              <p><%= event.name %></p>
+              <a href="/dashboard/<%= org._id %>/reservations/<%= event._id %>">reservations</a>
             </td>
 
             <td>

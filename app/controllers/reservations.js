@@ -433,14 +433,15 @@ module.exports = function(config, db) {
     })
     .exec( function (err, reservations) {
 
+
+
       if (err) {
         res.status(400).json(err);
         return;
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId,
-        fromDate: new Date()
+        orgId: req.params.orgId
       }).then(function (events) {
 
         db.orgs.findOne({
