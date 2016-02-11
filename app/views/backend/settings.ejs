@@ -244,7 +244,13 @@
                         <div class="form-group">
                           
                           <label for=""  style="margin-top: 20px;">Mailchimp API Key</label>
-                          <input type="text" name="mcapikey" value="<%= mcapikey.key || '' %>" class="form-control" style="margin-top:0;">
+                          <% if (mcapikey) { %>
+                            
+                            <input type="text" name="mcapikey" value="<%= mcapikey.key %>" class="form-control" style="margin-top:0;">
+
+                          <% } else { %>
+                            <input type="text" name="mcapikey" value="" class="form-control" style="margin-top:0;">
+                          <% } %>
 
                         </div>
 
