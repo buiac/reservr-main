@@ -157,39 +157,7 @@ module.exports = function(config, db) {
         logo = org.logo
       }
 
-      // update api key
-      db.mcapikeys.findOne({
-        orgId: org._id
-      }, function (err, key) {
-        
-        if (!key) {
-          db.mcapikeys.insert({
-            key: mcapikey,
-            orgId: org._id
-          }, function (err, key) {
-            console.log('\n\n\n\n')
-            console.log('--------')
-            console.log('key added')
-            console.log('--------')
-            console.log('\n\n\n\n')
-          })
-        } else {
-          db.mcapikeys.update({
-            orgId: org._id
-          }, {
-            $set: {
-              key: mcapikey
-            }
-          }, function (err, num) {
-            console.log('\n\n\n\n')
-            console.log('--------')
-            console.log('key updated: ' + num)
-            console.log('--------')
-            console.log('\n\n\n\n')
-          })
-        }
-
-      })
+      
 
 
       db.orgs.update({
@@ -274,13 +242,62 @@ module.exports = function(config, db) {
                 }
               }, function (err, events) {
 
-                res.render('backend/settings', {
-                  events: events,
-                  errors: errors,
-                  orgId: req.params.orgId,
-                  org: org,
-                  user: user
+                // update api key
+                db.mcapikeys.findOne({
+                  orgId: org._id
+                }, function (err, key) {
+                  
+                  if (!key) {
+                    db.mcapikeys.insert({
+                      key: mcapikey,
+                      orgId: org._id
+                    }, function (err, key) {
+                      console.log('\n\n\n\n')
+                      console.log('--------')
+                      console.log('key added')
+                      console.log('--------')
+                      console.log('\n\n\n\n')
+
+                      res.render('backend/settings', {
+                        events: events,
+                        errors: errors,
+                        orgId: req.params.orgId,
+                        org: org,
+                        user: user,
+                        mcapikey: key
+                      });
+                    })
+                  } else {
+                    db.mcapikeys.update({
+                      orgId: org._id
+                    }, {
+                      $set: {
+                        key: mcapikey
+                      }
+                    }, function (err, num) {
+                      console.log('\n\n\n\n')
+                      console.log('--------')
+                      console.log('key updated: ' + num)
+                      console.log('--------')
+                      console.log('\n\n\n\n')
+                      res.render('backend/settings', {
+                        events: events,
+                        errors: errors,
+                        orgId: req.params.orgId,
+                        org: org,
+                        user: user,
+                        mcapikey: {
+                          key: mcapikey || ''
+                        }
+                      });
+                    })
+                  }
+
+
+
                 });
+
+                
               });
             })
           });
