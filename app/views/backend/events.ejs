@@ -13,9 +13,10 @@
       
       <% m = m + parseInt(event.invited, 10) %>
       <% n = n + parseInt(event.seats, 10) %>
-      
 
     <% }) %>
+
+    <% if (m && n) { %>
     
     <div class="cf">
       <div class="circle-wrap"></div>
@@ -49,6 +50,7 @@
       <p>reserved seats</p>
     </div>
 
+    <% } %>
     <% } %>
 
     

@@ -52,9 +52,9 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (false) { // req.hostname === 'localhost'
+    if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
-        username: 'spatiureactor@gmail.com'
+        username: 'sebi.kovacs+131@gmail.com'
       }, function (err, user) {
 
         req.user = user;
@@ -189,6 +189,11 @@ module.exports = (function() {
 
   db.reservations = new Datastore({
     filename: config.dataDir + config.dbDir + '/reservations.db',
+    autoload: true
+  });
+
+  db.mcapikeys = new Datastore({
+    filename: config.dataDir + config.dbDir + '/mcapikeys.db',
     autoload: true
   });
 

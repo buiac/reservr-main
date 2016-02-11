@@ -28,13 +28,20 @@ module.exports = function(config, db) {
           _id: req.params.orgId
         }, function (err, org) {
 
-          res.render('backend/settings', {
-            errors: [],
-            orgId: req.params.orgId,
-            org: org,
-            events: events,
-            user: user
-          });
+          db.mcapikeys.findOne({
+            orgId: org._id
+          }, function (err, key) {
+
+            res.render('backend/settings', {
+              errors: [],
+              orgId: req.params.orgId,
+              org: org,
+              events: events,
+              user: user,
+              mcapikey: key
+            });
+
+          })
 
         });
 
@@ -79,6 +86,8 @@ module.exports = function(config, db) {
     var locale = req.body.locale;
     var confirmationEmail = req.body.confirmationEmail || '';
     var notifications = false;
+    var mcapikey = req.body.mcapikey;
+
 
     // format the org name
     orgName = orgName.replace(/\s/g, '-');
@@ -147,6 +156,41 @@ module.exports = function(config, db) {
       } else if (org.logo) {
         logo = org.logo
       }
+
+      // update api key
+      db.mcapikeys.findOne({
+        orgId: org._id
+      }, function (err, key) {
+        
+        if (!key) {
+          db.mcapikeys.insert({
+            key: mcapikey,
+            orgId: org._id
+          }, function (err, key) {
+            console.log('\n\n\n\n')
+            console.log('--------')
+            console.log('key added')
+            console.log('--------')
+            console.log('\n\n\n\n')
+          })
+        } else {
+          db.mcapikeys.update({
+            orgId: org._id
+          }, {
+            $set: {
+              key: mcapikey
+            }
+          }, function (err, num) {
+            console.log('\n\n\n\n')
+            console.log('--------')
+            console.log('key updated: ' + num)
+            console.log('--------')
+            console.log('\n\n\n\n')
+          })
+        }
+
+      })
+
 
       db.orgs.update({
         _id: orgId

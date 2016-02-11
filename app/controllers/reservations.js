@@ -222,13 +222,13 @@ module.exports = function(config, db) {
 
         if (reservation.waiting) {
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
-            console.log('sendConfirmationEmails 1')
+            
             console.log(err);
             console.log(info);
           });
         } else {
           transport.sendMail(userEmailConfig, function (err, info) {
-            console.log('sendConfirmationEmails 2')
+            
             console.log(err);
             console.log(info);
           });
@@ -236,7 +236,7 @@ module.exports = function(config, db) {
 
         if (org.notifications) {
           transport.sendMail(orgEmailConfig, function (err, info) {
-            console.log('sendConfirmationEmails 3')
+            
             console.log(err);
             console.log(info);
           });  
@@ -618,6 +618,12 @@ module.exports = function(config, db) {
             if (!prevRes) {
 
               db.reservations.insert(reservation, function (err, newReservation) {
+
+                console.log('\n\n\n\n')
+                console.log('--------')
+                console.log(err, newReservation)
+                console.log('--------')
+                console.log('\n\n\n\n')
 
                 if (err) {
                   res.status(400).json(err);
