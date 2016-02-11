@@ -34,92 +34,116 @@ module.exports = function(config, db) {
       var findOrCreateUser = function(){
         
         db.users.findOne({'username': username}, function (err, user) {
+
+
+          req.checkBody('orgName', 'Event name should not be empty').notEmpty();
+
+          var errors = req.validationErrors();
+          var orgName = req.body.orgName.trim();
         
-         if (err){
+          if (err){
           
-           return done(err);
-         }
-
-         if (user) {
-          
-           return done(null, false, 
-             req.flash('message', 'User Already Exists'));
-
-         } else {
-           
-          //if there is no user with that email
-          // create the user
-          var newUser = {
-            timecreated: new Date()
-          };
-
-          var org = {}
-
-          // set the user's local credentials
-          newUser.username = username;
-          newUser.password = util.createHash(password);
-
-          // validate user email
-          newUser.validEmail = util.validateEmail(newUser.username);
-          
-          // set calendar default name
-          org.name = 'guest-' + new Date().getTime();
-
-          org.defaultTemplate = {
-            userSubject: 'Reservation Confirmation',
-            userSubjectWaiting: 'You\'ve been included on the waiting list',
-            userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-            userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-            orgSubject: 'A new reservation for "{eventName}"',
-            orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
-            userUpdateSubject: 'Reservation Update',
-            userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-            userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-            remindSubject: 'Reminder for event {eventName}',
-            remindBody: 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!',
+            return done(err);
           }
 
-          org.userSubject = 'Reservation Confirmation',
-          org.userSubjectWaiting = 'You\'ve been included on the waiting list',
-          org.userBody = 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-          org.userBodyWaiting = 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
-          org.orgSubject = 'A new reservation for "{eventName}"',
-          org.orgBody = 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+          if (errors) {
+            req.flash('errors', errors);
+          }
 
-          org.userUpdateSubject = 'Reservation Update'
-          org.userUpdateBody = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
-          org.userUpdateBodyPartial = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
-
-          org.remindSubject = 'Reminder for event {eventName}';
-          org.remindBody = 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!';
-
-           // save the user
-          db.users.insert(newUser, function (err, newDoc) {
+          if (user) {
             
-            if (err) {
-              return done(err);
-            } else {
+            return done(null, false, 
+              req.flash('message', 'User Already Exists'));
 
-              // insert the calendar
-              org.userId = newDoc._id;
-              db.orgs.insert(org, function (err, newOrg) {
+          } else {
+
+            // clean up org name
+            orgName = orgName.replace(/\s/g, '-');
+            orgName = orgName.replace(/\//g, '');
+            orgName = orgName.replace(/\'/g, '');
+
+            db.orgs.findOne({name: orgName }, function (err, org) {
+
+              if (org) {
                 
-                // var newEvent = {
-                //   orgId: newOrg._id,
-                //   userId: newDoc._id
-                // };
+                return done(null, false, 
+                  req.flash('message', 'This organization name has already been taken'));
+              }
 
-                return done(null, newDoc, req);  
+              //if there is no user with that email
+              // create the user
+              var newUser = {
+                timecreated: new Date()
+              };
 
-                // db.events.insert(newEvent, function (err, newEv) {
-                  
-                // });
+              var org = {}
 
+              // set the user's local credentials
+              newUser.username = username;
+              newUser.password = util.createHash(password);
+
+              // validate user email
+              newUser.validEmail = util.validateEmail(newUser.username);
+              
+              // update org name
+              org.name = orgName;
+
+              org.defaultTemplate = {
+                userSubject: 'Reservation Confirmation',
+                userSubjectWaiting: 'You\'ve been included on the waiting list',
+                userBody: 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+                userBodyWaiting: 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+                orgSubject: 'A new reservation for "{eventName}"',
+                orgBody: 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.',
+                userUpdateSubject: 'Reservation Update',
+                userUpdateBody: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+                userUpdateBodyPartial: 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+                remindSubject: 'Reminder for event {eventName}',
+                remindBody: 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!',
+              }
+
+              org.userSubject = 'Reservation Confirmation',
+              org.userSubjectWaiting = 'You\'ve been included on the waiting list',
+              org.userBody = 'Hey,\n\n You\'ve made a reservation for {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n You can always cancel by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+              org.userBodyWaiting = 'Hello, You\'ve been included on the waiting list with {seats} seats for "{eventName}" which will take place on {eventDate}. \n\n If anything changes we will contact you. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.',
+              org.orgSubject = 'A new reservation for "{eventName}"',
+              org.orgBody = 'Hello, \n\n A new reservation of {seats} seats has been made for "{eventName}" which will take place on {eventDate} by {userName}, {userEmail}. \n\n Have a great day.'
+
+              org.userUpdateSubject = 'Reservation Update'
+              org.userUpdateBody = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+              org.userUpdateBodyPartial = 'Hello, \n\n {seats} seats have just become available for "{eventName}" taking place on {eventDate} so we\'ve automatically added you to the invited list. \n\n We know you wanted more seats so we are working on it. If anything changes we will let you know. \n\n You can always cancel your reservation by clicking this link: {deleteReservationLink} \n\n Have a great day.'
+
+              org.remindSubject = 'Reminder for event {eventName}';
+              org.remindBody = 'Hello, \n\n This is a reminder that you have reservd seats for the "{eventName}" event, that will take place {eventDate} at {eventLocation}. Please try to get to the event 15 minutes earlier. \n\n In case you cannot make it to the event please delete your reservation by clicking this link: {deleteReservationLink}. \n\n Have a great day!';
+
+               // save the user
+              db.users.insert(newUser, function (err, newDoc) {
+                
+                if (err) {
+                  return done(err);
+                } else {
+
+                  // insert the calendar
+                  org.userId = newDoc._id;
+                  db.orgs.insert(org, function (err, newOrg) {
+                    
+                    // var newEvent = {
+                    //   orgId: newOrg._id,
+                    //   userId: newDoc._id
+                    // };
+
+                    return done(null, newDoc, req);  
+
+                    // db.events.insert(newEvent, function (err, newEv) {
+                      
+                    // });
+
+                  });
+                }
               });
-            }
-          });
+            })
 
-         }
+           }
         });
       } // findorcreateuser
 

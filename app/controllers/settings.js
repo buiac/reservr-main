@@ -72,7 +72,7 @@ module.exports = function(config, db) {
     }
 
     var mailchimp = [];
-    var orgName = req.body.orgName;
+    var orgName = req.body.orgName.trim();
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
@@ -84,12 +84,6 @@ module.exports = function(config, db) {
     orgName = orgName.replace(/\s/g, '-');
     orgName = orgName.replace(/\//g, '');
     orgName = orgName.replace(/\'/g, '');
-
-    console.log('\n\n\n\n')
-    console.log('--------')
-    console.log(orgName)
-    console.log('--------')
-    console.log('\n\n\n\n')
 
     
     // templates 
