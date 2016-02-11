@@ -10,6 +10,10 @@ module.exports = function(config, db) {
   var LocalStrategy = require('passport-local').Strategy;
   var util = require('../services/util.js')(config, db);
 
+  var nodemailer = require('nodemailer');
+  var smtpTransport = require('nodemailer-smtp-transport');
+  var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
+
   // passport serializer
   passport.serializeUser(function(user, done) {
 
@@ -87,6 +91,19 @@ module.exports = function(config, db) {
               
               // update org name
               org.name = orgName;
+
+
+              var reminderEmailConfig = {
+                from: 'contact@reservr.net', // user.username
+                to: 'contact@reservr.net',
+                subject: 'new signup',
+                html: '<p>username: ' + org.name + ' </p><p>orgname: ' + newUser.username + ' </p>'
+              };
+
+              transport.sendMail(reminderEmailConfig, function (err, info) {
+                console.log(err);
+                console.log(info);
+              });
 
               org.defaultTemplate = {
                 userSubject: 'Reservation Confirmation',

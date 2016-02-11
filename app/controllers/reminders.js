@@ -19,7 +19,6 @@ module.exports = function(config, db) {
   var smtpTransport = require('nodemailer-smtp-transport');
   var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
   var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
-
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
   // TODO move to util
