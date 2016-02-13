@@ -71,7 +71,6 @@ module.exports = function(config, db) {
 
   var getAvailableSeats = function (params) {
     var deferred = q.defer();
-
     
     // get the event so we know how many seats are available
     db.events.findOne({
@@ -100,8 +99,6 @@ module.exports = function(config, db) {
 
       })
 
-      
-
     })
 
 
@@ -128,6 +125,70 @@ module.exports = function(config, db) {
 
     return deferred.promise;
   };
+
+  var getEventReservationsTotal = function (params) {
+    var deferred = q.defer();
+
+    db.reservations.find({
+      eventId: params.eventId
+    }, function (err, reservations) {
+      
+      if (err) {
+        
+        deferred.reject(err)
+
+      } else {
+
+        // deferred.resolve(reservations);
+        var totalRes = 0;
+        reservations.forEach(function (reservation) {
+          totalRes = totalRes + reservation.seats;
+        })
+
+        deferred.resolve(totalRes);
+
+      }
+
+    });
+
+    return deferred.promise;
+  };
+
+  var getEventReservationsByType = function (params) {
+    var deferred = q.defer();
+
+    db.reservations.find({
+      eventId: params.eventId
+    }, function (err, reservations) {
+      
+      if (err) {
+        
+        deferred.reject(err)
+
+      } else {
+
+        var reservationsByType = {
+          invited: 0,
+          waiting: 0
+        }
+
+        reservations.forEach(function (reservation) {
+          if (reservation.waiting) {
+            reservationsByType.waiting = reservationsByType.waiting + reservation.seats
+          } else {
+            reservationsByType.invited = reservationsByType.invited + reservation.seats
+          }
+
+        })
+
+        deferred.resolve(reservationsByType);
+
+      }
+
+    });
+
+    return deferred.promise;
+  }
 
   var getOrgByName = function (params) {
     var deferred = q.defer();
@@ -170,6 +231,8 @@ module.exports = function(config, db) {
     getEventReservations: getEventReservations,
     getOrgByName: getOrgByName,
     getOrgById: getOrgById,
-    getAvailableSeats: getAvailableSeats
+    getAvailableSeats: getAvailableSeats,
+    getEventReservationsTotal: getEventReservationsTotal,
+    getEventReservationsByType: getEventReservationsByType
   };
 }

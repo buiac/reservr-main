@@ -982,6 +982,7 @@ textarea {
 
 .event-reserv-fields {
   display: none;
+  position: relative;
 }
 
 .event-form--show-fields .event-reserv-fields {

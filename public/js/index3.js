@@ -742,7 +742,8 @@ $(document).ready(function () {
       $eventform.removeClass('event-form--success event-form--error');
       $eventform.addClass('event-form--loading');
       
-      $.ajax('/u/' +orgId + '/reservations/' + eventId, {
+      $.ajax({
+        url: '/u/' +orgId + '/reservations/' + eventId,
         type: 'POST',
         data: {
           name: name,
@@ -751,8 +752,8 @@ $(document).ready(function () {
           timestamp: timestamp,
           mclistid: mclistid,
           mcoptin: mcoptin
-        },
-        success: function(res) {
+        }
+      }).done(function(res) {
 
           $eventform.removeClass('event-form--loading');
           $eventform.addClass('event-form--success');
@@ -776,28 +777,47 @@ $(document).ready(function () {
 
           }
 
-        },
-        error: function(err) {
-          
-          // $eventform.removeClass('event-form--loading');
-          // $eventform.addClass('event-form--error');
-          
-          // // allow me to try again 
-          // setTimeout(function() {
-            
-          //   $eventform.removeClass('event-form--loading event-form--error');
-            
-          // }, 5000);
-          
-        },
-        complete: function() {
-          
-          // setTimeout(function() {
-          //   $eventform.removeClass('event-form--error event-form--loading event-form--success');
-          // })
-        }
+        }).fail(function (err) {
+          var error = JSON.parse(err.responseText)
 
-      });
+          $eventform.addClass('event-form--error');
+          $eventform.removeClass('event-form--loading');
+
+          $defaultErrorMessage = $('.form-error .reservation-message').html()
+          $tempErrorMessage = $('<p></p>').html(error.message)
+
+          $('.form-error .reservation-message').html($tempErrorMessage)
+
+          // allow me to try again 
+          setTimeout(function() {
+            
+            $eventform.removeClass('event-form--error event-form--success event-form--loading');
+            $('.form-error .reservation-message').html($defaultErrorMessage);
+            
+          }, 10000);
+
+        })
+        // error: function(err) {
+          
+        //   // $eventform.removeClass('event-form--loading');
+        //   // $eventform.addClass('event-form--error');
+          
+        //   // // allow me to try again 
+        //   // setTimeout(function() {
+            
+        //   //   $eventform.removeClass('event-form--loading event-form--error');
+            
+        //   // }, 5000);
+          
+        // },
+        // complete: function() {
+          
+        //   // setTimeout(function() {
+        //   //   $eventform.removeClass('event-form--error event-form--loading event-form--success');
+        //   // })
+        // }
+
+      // });
 
     } else {
 

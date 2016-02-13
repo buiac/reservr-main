@@ -433,15 +433,14 @@ module.exports = function(config, db) {
     })
     .exec( function (err, reservations) {
 
-
-
       if (err) {
         res.status(400).json(err);
         return;
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
 
         db.orgs.findOne({
@@ -537,241 +536,183 @@ module.exports = function(config, db) {
   }
 
   var updateReservation = function (req, res, next) {
-    req.checkBody('name', 'Va rugam sa completati numele.').notEmpty();
-    req.checkBody('email', 'Va rugam sa completati email-ul.').notEmpty();
-    req.checkBody('seats', 'Va rugam sa completati numarul de locuri.').notEmpty();
+    
+    var email = req.body.email
+    var seats = parseInt(req.body.seats)
 
-    var name = req.body.name.trim();
-    var email = req.body.email.trim();
-    var seats = req.body.seats;
-    var timestamp = req.body.timestamp;
-    var eventId = req.params.eventId;
-    var orgId = req.params.orgId;
-    var mclistid = req.body.mclistid;
-    var mcoptin = null;
+    var eventId = req.params.eventId
+    var orgId = req.params.orgId
 
-    if (req.body.mcoptin !== 'null') {
-      mcoptin = (req.body.mcoptin === 'true')
-    }
 
-    var errors = req.validationErrors();
+    // get number of seats this event has
+    db.events.findOne({
+      _id: eventId
+    }, function (err, event) {
+      
+      var totalSeats = event.seats
 
-    if (errors) {
-      res.status(400).json(errors);
-      return;
-    }
-
-    var reservation = {
-      name: name,
-      email: email,
-      seats: parseInt(seats),
-      timestamp: new Date(timestamp),
-      eventId: eventId,
-      orgId: orgId,
-      mclistid: mclistid,
-      mcoptin: mcoptin,
-      waiting: false
-    };
-
-    data.getEventReservations({
-      eventId: eventId
-    }).then(function (reservations) {
-
-      data.getOrgById({
-        id: orgId
-      }).then(function (org) {
+      // get the total reservations
+      data.getEventReservationsTotal({
+        eventId: eventId
+      }).then(function (totalReservations) {
         
-        db.users.findOne({
-          _id: org.userId
-        }, function (err, user) {
-          
-          var reservedSeats = 0;
+        // does this person have a reservation already?
+        db.reservations.findOne({
+          email: email,
+          eventId: eventId
+        }, function (err, prevReservation) {
 
-          // prevent user from making multiple reservations
-          var prevRes = false;
+          // send an error message if user has a previous reservation, is not waiting
+          // and he wants to update to a greater number of seats
 
-          // determine the number of reservations that have already been made
-          reservations.forEach(function (item) {
-            
-            if (!item.waiting) {
-              reservedSeats = reservedSeats + parseInt(item.seats, 10);
-            }
+          var seatsLeft = totalSeats - totalReservations;
 
-            if (item.email === reservation.email && reservation.email !== user.username) {
-              prevRes = true;
-            }
-          });
+          var newReservation = {
+            name: req.body.name,
+            email: email,
+            seats: seats,
+            timestamp: req.body.timestamp,
+            eventId: eventId,
+            orgId: orgId,
+            waiting: false
+            // newsletterListId: req.body.newsletterListId,
+            // newsletterOptIn: req.body.newsletterOptIn
+          }
 
-          db.events.findOne({_id: eventId}, function (err, event) {
-            if (err) {
-              res.status(400).json(err);
-              return;
-            }
+          if (prevReservation) {
 
-            var totalSeats = event.seats;
-           
-            // if there are no more seats left put the user on the waiting list
-            if (seats > (totalSeats - reservedSeats)) {
-              reservation.waiting = true;
-            }
-            
-            if (!prevRes) {
+            // has a previous reservation and is not on the waiting list
+            if (!prevReservation.waiting) {
 
-              db.reservations.insert(reservation, function (err, newReservation) {
-
-                console.log('\n\n\n\n')
-                console.log('--------')
-                console.log(err, newReservation)
-                console.log('--------')
-                console.log('\n\n\n\n')
-
-                if (err) {
-                  res.status(400).json(err);
-                  return;
-                }
-
-                if (newReservation.mclistid && (newReservation.mcoptin === true || newReservation.mcoptin === null)) {
-                  addUserToMailingList(newReservation);
-                }
-                
-                // update number of reservations on event object
-                db.events.update(
-                  {_id: eventId}, 
-                  {$set: { reservedSeats: parseInt(reservedSeats, 10) + parseInt(seats, 10)}},
-                  function (err, num) {
-                    if (err) {
-                      res.status(400).json(err);
-                      return;
-                    }
-
-                    db.events.findOne({_id: eventId}, function (err, event) {
-                      if (err) {
-                        res.status(400).json(err);
-                        return;
-                      }
-
-                      sendConfirmationEmails(newReservation, event);
-
-                      // update invited and waiting parameters
-                      event.invited = 0;
-                      event.waiting = 0;
-
-                      if (newReservation.waiting) {
-                        event.waiting = event.waiting + newReservation.seats
-                      } else {
-                        event.invited = event.invited + newReservation.seats
-                      }
-
-                      reservations.forEach(function (reservation) {
-                        
-                        if (reservation.eventId === event._id) {
-
-                          if (reservation.waiting) {
-
-                            event.waiting = event.waiting + reservation.seats;
-
-                          } else {
-
-                            event.invited = event.invited + reservation.seats
-
-                          }
-                        }
-
-                      });
-
-                      res.json({
-                        message: 'Create successful.',
-                        reservation: newReservation,
-                        event: event
-                      });
-
-                    });
+              // is he downgrading?
+              if (newReservation.seats < prevReservation.seats) {
+                db.reservations.update({
+                  email: email,
+                  eventId: eventId
+                }, {
+                  $set:{
+                    seats: seats
                   }
-                );
-              });
+                }, function (err, num) {
 
-            } else {
+                  data.getEventReservationsByType({
+                    eventId: event._id
+                  }).then(function (reservationsByType) {
 
-              // more seats or less seats?
-              db.reservations.findOne({
-                eventId: eventId,
-                email: reservation.email
-              }, function (err, reserv) {
+                    // update the event with invited and waiting seats
+                    event.invited = reservationsByType.invited
+                    event.waiting = reservationsByType.waiting
 
-                  // if user has made a previous reservations with the same number of seats
-                  if (reserv.seats === reservation.seats) {
                     res.json({
-                      message: 'A reservation with your email address was made before so we just updated the number of seats.',
-                      resCode: 1,
-                      reservation: reserv,
+                      message: 'Update successful.',
+                      reservation: newReservation,
                       event: event
-                    });
-                    return;
+                    })
+
+                  })
+                
+                  
+                  
+                })
+                return;
+              }
+
+              // are there enough seats left?
+              if(seatsLeft > 0 && seats <= seatsLeft) {
+
+                db.reservations.update({
+                  email: email,
+                  eventId: eventId
+                }, {
+                  $set:{
+                    seats: seats
                   }
+                }, function (err, num) {
 
-                  db.reservations.update(
-                    {email: reservation.email, eventId: eventId},
-                    {$set: {seats: reservation.seats}},
-                    function (err, num) {
-                      // update the previous number of seats with the new ones
-                      if (err) {
-                        res.status(400).json(err);
-                        return;
-                      }
+                  data.getEventReservationsByType({
+                    eventId: event._id
+                  }).then(function (reservationsByType) {
 
-                      db.events.findOne({_id: eventId}, function (err, ev) {
-                        if (err) {
-                          res.status(400).json(err);
-                          return;
-                        }
+                    // update the event with invited and waiting seats
+                    event.invited = reservationsByType.invited
+                    event.waiting = reservationsByType.waiting
+              
+                    res.json({
+                      message: 'Update successful.',
+                      reservation: newReservation,
+                      event: event
+                    })
+                    
+                  })
+                  
+                })
+                return;
 
-                        sendConfirmationEmails(reservation, ev);
+              }
 
-                        // update invited and waiting parameters
-                        ev.invited = 0;
-                        ev.waiting = 0;
-
-                        data.getEventReservations({
-                          eventId: ev._id
-                        }).then(function (reservations) {
-
-                          reservations.forEach(function (reservation) {
-                            
-                            if (reservation.eventId === ev._id) {
-
-                              if (reservation.waiting) {
-
-                                ev.waiting = ev.waiting + reservation.seats;
-
-                              } else {
-
-                                ev.invited = ev.invited + reservation.seats
-
-                              }
-                            }
-
-                          });
-
-                          res.json({
-                            message: 'A reservation with your email address was made before so we just updated the number of seats.',
-                            resCode: 1,
-                            reservation: reserv,
-                            event: ev
-                          });
-
-                        });
-
-                      });
-                    }
-                  );
+              // not waiting but wants more seats than available
+              res.status(400).json({
+                message: 'You already have a reservation for ' + prevReservation.seats + ' seats. Since there are no more seats left you can only downgrade. \n\n Use a different email address if you want to get on the Waiting list',
+                resCode: 1,
+                reservation: newReservation,
+                event: event
               });
-            }
-          });
+              return;
 
-        });
-      });
-    }
-    );
+            }
+
+            // reservation is waiting
+            db.reservations.update({
+              email: email,
+              eventId: eventId
+            }, {
+              $set:{
+                seats: seats
+              }
+            }, function (err, num) {
+              
+              res.json({
+                message: 'Update successful.',
+                reservation: newReservation,
+                event: event
+              })
+              
+
+            })
+            return;
+          }
+
+          // are there any seats left?
+          if (seatsLeft <= 0) {
+            newReservation.waiting = true;
+          }
+
+          db.reservations.insert(newReservation, function (err, reservation) {
+
+            // send a confirmation email
+            sendConfirmationEmails(reservation, event);
+
+            // get the type of the reservations
+
+            data.getEventReservationsByType({
+              eventId: event._id
+            }).then(function (reservationsByType) {
+              
+              // update the event with invited and waiting seats
+              event.invited = reservationsByType.invited
+              event.waiting = reservationsByType.waiting
+
+              res.json({
+                message: 'Create successful.',
+                reservation: newReservation,
+                event: event
+              })
+              return;
+            })
+          })
+        })
+      })
+    })
   };
 
   var userReservationsView = function (req, res, next) {

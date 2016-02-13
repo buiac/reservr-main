@@ -153,6 +153,12 @@ module.exports = function(config, db) {
 
           });
 
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(event)
+          console.log('--------')
+          console.log('\n\n\n\n')
+
           res.render('frontend/event', {
             event: event,
             org: org
