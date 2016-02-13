@@ -247,48 +247,112 @@ module.exports = function(config, db) {
     });
   };
 
-  var distributeWaitingList = function (event) {
-    db.reservations.find({
-      eventId: event._id
-    }, function (err, reservations) {
+  var distributeWaitingList = function (orgId, eventId, rez) {
+    
+    
+    db.orgs.findOne({
+      _id: rez.orgId
+    }, function (err, org) {
 
-      var seatsTaken = 0;
-      var waiting = []
-      
-      // how many seats are left
-      reservations.forEach(function (reservation) {
+      db.events.findOne({
+        _id: rez.eventId
+      }, function (err, event) {
 
-        if (reservation.waiting) {
-          waiting.push(reservation)
-        } else {
-          seatsTaken = seatsTaken + reservation.seats
-        }
+        db.reservations.find({
+          eventId: event._id
+        }).sort({
+          timestamp: 1
+        }).exec(function (err, reservations) {
 
+          // to be executed only if the deleted reservation is 
+          // from the invited list thus making a seats available
+          if (!rez.waiting) {
+            
+            // the number of seats that remain free after the rezervation is deleted
+            var seats = rez.seats;
+
+            // loop throgh the waiting reservations until you 
+            // remain out of seats
+            reservations.some(function (reserv) {
+              
+              if (reserv.waiting && seats >= reserv.seats) {
+
+                // number of free seats is greater than the number of needed
+                // by next on the waiting list
+
+                // update the number of seats so we can continue the countdown
+                seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
+
+                db.reservations.update({
+                  _id: reserv._id
+                }, {
+                  $set: {
+                    waiting: false
+                  }
+                }, function (err, num) {
+                  
+                  if (!err) {
+                    notifyUser(reserv, event, false)
+                  }
+                });
+
+                // we return false so the loop continues ... well, looping
+                return false;
+
+              } else if (reserv.waiting && seats !== 0 && seats < reserv.seats) {
+                
+                // number of seats available is less than the number of needed
+                // by next on the waiting list
+
+                // create a new reservation object model by cloning the
+                // the next Waiting reservation
+                var clonedReserv = JSON.parse(JSON.stringify(reserv));
+
+                // delete it's ID so we can later insert it
+                delete clonedReserv._id;
+
+                // put the reservation on the Invited list
+                clonedReserv.waiting = false;
+
+                // add the available seats to the cloned model
+                clonedReserv.seats = seats;
+                
+                // insert the model into the database
+                db.reservations.insert(clonedReserv);
+
+                // update the waiting reservation's seat number 
+                // by subtracting the seats that have been redistributed
+                db.reservations.update({
+                  _id: reserv._id
+                }, {
+                  $set: {
+                    seats: reserv.seats - seats
+                  }
+                }, function (err, num) {
+                  
+                  // add the number of seats that have been attributed to
+                  // the waiting user so it can be used in the 
+                  // email message that is sent to notify her
+                  reserv.seatsAvaialable = seats;
+
+                  // send the message setting the partial parameter to 'true'
+                  // this will change the template of the message
+                  notifyUser(reserv, event, true)
+
+                });
+
+                return true;
+
+              }
+
+            });
+
+          }
+
+          
+        });
       });
-      
-      var seatsLeft = parseInt(event.seats, 10) - parseInt(seatsTaken, 10);
-      var i = 0;
-
-      while (seatsLeft > 0) {
-        
-        var nextReservation = waiting[i];
-
-        if (seatsLeft >= nextReservation.seats) {
-
-          // update the reservations seats 
-          db.reservations.update({
-            _id: nextReservation._id
-          }, {
-            $set: {
-              waiting: false
-            }
-          });
-
-          seatsLeft = seatsLeft - nextReservation.seats
-          i = i + 1;
-        }
-      }
-    })
+    });
   };
 
   var deleteReservation = function (req, res, next) {
@@ -305,121 +369,33 @@ module.exports = function(config, db) {
       db.reservations.remove({
         _id: req.params.reservationId
       }, function (err, num) {
-        
+
+        distributeWaitingList(rez.orgId, rez.eventId, rez)
+
         db.orgs.findOne({
           _id: rez.orgId
         }, function (err, org) {
-
+          
           db.events.findOne({
             _id: rez.eventId
           }, function (err, event) {
-
-            db.reservations.find({
-              eventId: event._id
-            }).sort({
-              timestamp: 1
-            }).exec(function (err, reservations) {
-
-              // to be executed only if the deleted reservation is 
-              // from the invited list thus making a seats available
-              if (!rez.waiting) {
-                
-                // the number of seats that remain free after the rezervation is deleted
-                var seats = rez.seats;
-
-                // loop throgh the waiting reservations until you 
-                // remain out of seats
-                reservations.some(function (reserv) {
-                  
-                  if (reserv.waiting && seats >= reserv.seats) {
-
-                    // number of free seats is greater than the number of needed
-                    // by next on the waiting list
-
-                    // update the number of seats so we can continue the countdown
-                    seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
-
-                    db.reservations.update({
-                      _id: reserv._id
-                    }, {
-                      $set: {
-                        waiting: false
-                      }
-                    }, function (err, num) {
-                      
-                      if (!err) {
-                        notifyUser(reserv, event, false)
-                      }
-                    });
-
-                    // we return false so the loop continues ... well, looping
-                    return false;
-
-                  } else if (reserv.waiting && seats !== 0 && seats < reserv.seats) {
-                    
-                    // number of seats available is less than the number of needed
-                    // by next on the waiting list
-
-                    // create a new reservation object model by cloning the
-                    // the next Waiting reservation
-                    var clonedReserv = JSON.parse(JSON.stringify(reserv));
-
-                    // delete it's ID so we can later insert it
-                    delete clonedReserv._id;
-
-                    // put the reservation on the Invited list
-                    clonedReserv.waiting = false;
-
-                    // add the available seats to the cloned model
-                    clonedReserv.seats = seats;
-                    
-                    // insert the model into the database
-                    db.reservations.insert(clonedReserv);
-
-                    // update the waiting reservation's seat number 
-                    // by subtracting the seats that have been redistributed
-                    db.reservations.update({
-                      _id: reserv._id
-                    }, {
-                      $set: {
-                        seats: reserv.seats - seats
-                      }
-                    }, function (err, num) {
-                      
-                      // add the number of seats that have been attributed to
-                      // the waiting user so it can be used in the 
-                      // email message that is sent to notify her
-                      reserv.seatsAvaialable = seats;
-
-                      // send the message setting the partial parameter to 'true'
-                      // this will change the template of the message
-                      notifyUser(reserv, event, true)
-
-                    });
-
-                    return true;
-
-                  }
-
-                });
-
-              }
-
-              if (req.user) {
-                
-                res.redirect('/dashboard/' + org._id + '/reservations/' + event._id);
+            
+            if (req.user) {
               
-              } else {
+              res.redirect('/dashboard/' + org._id + '/reservations/' + event._id);
+            
+            } else {
 
-                res.render('frontend/user-reservation-deleted',{
-                  org: org,
-                  event: event
-                });
-              
-              }
-            });
-          });
-        });
+              res.render('frontend/user-reservation-deleted',{
+                org: org,
+                event: event
+              });
+            
+            }
+            
+          })
+        })
+
       });
     });
   };
@@ -642,7 +618,7 @@ module.exports = function(config, db) {
                       reservation: newReservation,
                       event: event
                     })
-                    
+
                   })
                   
                 })
