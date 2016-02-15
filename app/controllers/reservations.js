@@ -85,7 +85,8 @@ module.exports = function(config, db) {
           seats: reservation.seats,
           eventName: event.name,
           eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-          seatsAvaialable: reservation.seatsAvaialable || ''
+          seatsAvaialable: reservation.seatsAvaialable || '',
+          deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
         };
 
         var template = {
