@@ -72,6 +72,7 @@ module.exports = function(config, db) {
   var notifyUser = function (reservation, event, partial) {
     // send waiting user a notification that a seat is available
 
+
     db.orgs.findOne({
       _id: event.orgId
     }, function (err, org) {
@@ -104,38 +105,22 @@ module.exports = function(config, db) {
           template.bodyPartial = template.bodyPartial.replace('{' + item + '}', params[item]);
         });
 
+        var userEmailConfig = {
+          from: 'contact@reservr.net', // user.username
+          to: reservation.email,
+          subject: template.subject,
+          html: template.body
+        };
+
         if (partial) {
-          
-          var userEmailConfig = {
-            from: 'contact@reservr.net', // user.username
-            to: reservation.email,
-            subject: template.subject,
-            html: template.bodyPartial
-          };
+          userEmailConfig.html = template.bodyPartial;
+        } 
 
-          transport.sendMail(userEmailConfig, function (err, info) {
-            console.log('notifyUser')
-            console.log(err);
-            console.log(info);
-          });
-
-        } else {
-
-          var userEmailConfig = {
-            from: 'contact@reservr.net', // user.username
-            to: reservation.email,
-            subject: template.subject,
-            html: template.body
-          };
-
-          transport.sendMail(userEmailConfig, function (err, info) {
-            console.log('notifyUser')
-            console.log(err);
-            console.log(info);
-          });
-
-        }
-
+        transport.sendMail(userEmailConfig, function (err, info) {
+          console.log('notifyUser')
+          console.log(err);
+          console.log(info);
+        });
       });
     });
   };
@@ -247,107 +232,100 @@ module.exports = function(config, db) {
     });
   };
 
-  var distributeWaitingList = function (orgId, eventId, rez) {
-    
+  var distributeWaitingList = function (orgId, eventId, seats) {
     
     db.orgs.findOne({
-      _id: rez.orgId
+      _id: orgId
     }, function (err, org) {
 
       db.events.findOne({
-        _id: rez.eventId
+        _id: eventId
       }, function (err, event) {
 
         db.reservations.find({
-          eventId: event._id
+          eventId: event._id,
+          waiting: true
         }).sort({
           timestamp: 1
         }).exec(function (err, reservations) {
 
-          // to be executed only if the deleted reservation is 
-          // from the invited list thus making a seats available
-          if (!rez.waiting) {
+          // loop throgh the waiting reservations until you 
+          // remain out of seats
+          reservations.some(function (reserv) {
             
-            // the number of seats that remain free after the rezervation is deleted
-            var seats = rez.seats;
+            if (seats >= reserv.seats) {
 
-            // loop throgh the waiting reservations until you 
-            // remain out of seats
-            reservations.some(function (reserv) {
+              // number of free seats is greater than the number of needed
+              // by next on the waiting list
+
+              // update the number of seats so we can continue the countdown
+              seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
+
+              db.reservations.update({
+                _id: reserv._id
+              }, {
+                $set: {
+                  waiting: false
+                }
+              }, function (err, num) {
+                
+                if (!err) {
+                  notifyUser(reserv, event, false)
+                }
+              });
+
+              // we return false so the loop continues until all free seats are distributed
+              return false;
+
+            } else if ((seats !== 0) && (seats < reserv.seats)) {
               
-              if (reserv.waiting && seats >= reserv.seats) {
+              // number of seats available is less than the number of needed
+              // by next on the waiting list
 
-                // number of free seats is greater than the number of needed
-                // by next on the waiting list
+              // create a new reservation object model by cloning the
+              // the next Waiting reservation
+              var clonedReserv = JSON.parse(JSON.stringify(reserv));
 
-                // update the number of seats so we can continue the countdown
-                seats = parseInt(seats, 10) - parseInt(reserv.seats, 10);
+              // delete it's ID so we can later insert it
+              delete clonedReserv._id;
 
-                db.reservations.update({
-                  _id: reserv._id
-                }, {
-                  $set: {
-                    waiting: false
-                  }
-                }, function (err, num) {
-                  
-                  if (!err) {
-                    notifyUser(reserv, event, false)
-                  }
-                });
+              // put the reservation on the Invited list
+              clonedReserv.waiting = false;
 
-                // we return false so the loop continues ... well, looping
-                return false;
+              // add the available seats to the cloned model
+              clonedReserv.seats = seats;
+              
+              // insert the model into the database
+              db.reservations.insert(clonedReserv);
 
-              } else if (reserv.waiting && seats !== 0 && seats < reserv.seats) {
+              // update the waiting reservation's seat number 
+              // by subtracting the seats that have been redistributed
+              db.reservations.update({
+                _id: reserv._id
+              }, {
+                $set: {
+                  seats: reserv.seats - seats
+                }
+              }, function (err, num) {
                 
-                // number of seats available is less than the number of needed
-                // by next on the waiting list
+                // add the number of seats that have been attributed to
+                // the waiting user so it can be used in the 
+                // email message that is sent to notify her
+                reserv.seatsAvaialable = seats;
 
-                // create a new reservation object model by cloning the
-                // the next Waiting reservation
-                var clonedReserv = JSON.parse(JSON.stringify(reserv));
+                // send the message setting the partial parameter to 'true'
+                // this will change the template of the message
+                notifyUser(reserv, event, true)
 
-                // delete it's ID so we can later insert it
-                delete clonedReserv._id;
+              });
 
-                // put the reservation on the Invited list
-                clonedReserv.waiting = false;
+              return true;
 
-                // add the available seats to the cloned model
-                clonedReserv.seats = seats;
-                
-                // insert the model into the database
-                db.reservations.insert(clonedReserv);
+            }
 
-                // update the waiting reservation's seat number 
-                // by subtracting the seats that have been redistributed
-                db.reservations.update({
-                  _id: reserv._id
-                }, {
-                  $set: {
-                    seats: reserv.seats - seats
-                  }
-                }, function (err, num) {
-                  
-                  // add the number of seats that have been attributed to
-                  // the waiting user so it can be used in the 
-                  // email message that is sent to notify her
-                  reserv.seatsAvaialable = seats;
+          });
 
-                  // send the message setting the partial parameter to 'true'
-                  // this will change the template of the message
-                  notifyUser(reserv, event, true)
-
-                });
-
-                return true;
-
-              }
-
-            });
-
-          }
+          
 
           
         });
@@ -370,7 +348,10 @@ module.exports = function(config, db) {
         _id: req.params.reservationId
       }, function (err, num) {
 
-        distributeWaitingList(rez.orgId, rez.eventId, rez)
+        if (!rez.waiting) {
+          distributeWaitingList(rez.orgId, rez.eventId, rez.seats)  
+        }
+        
 
         db.orgs.findOne({
           _id: rez.orgId
@@ -392,7 +373,7 @@ module.exports = function(config, db) {
               });
             
             }
-            
+
           })
         })
 
@@ -533,10 +514,25 @@ module.exports = function(config, db) {
       }).then(function (totalReservations) {
         
         // does this person have a reservation already?
-        db.reservations.findOne({
+        db.reservations.find({
           email: email,
           eventId: eventId
-        }, function (err, prevReservation) {
+        }, function (err, prevReservations) {
+          
+          var prevReservation;
+
+          if (prevReservations.length > 1) {
+            prevReservations.forEach(function (prevRez) {
+              if (!prevRez.waiting) {
+                prevReservation = prevRez
+              }
+            })
+          } else {
+
+            prevReservation = prevReservations[0]
+
+          }
+
 
           // send an error message if user has a previous reservation, is not waiting
           // and he wants to update to a greater number of seats
@@ -559,10 +555,12 @@ module.exports = function(config, db) {
 
             // has a previous reservation and is not on the waiting list
             if (!prevReservation.waiting) {
-
-              // is he downgrading?
+              
+              // is the user downgrading?
               if (newReservation.seats < prevReservation.seats) {
+
                 db.reservations.update({
+                  _id: prevReservation._id,
                   email: email,
                   eventId: eventId
                 }, {
@@ -578,6 +576,10 @@ module.exports = function(config, db) {
                     // update the event with invited and waiting seats
                     event.invited = reservationsByType.invited
                     event.waiting = reservationsByType.waiting
+
+                    // distribute waiting list
+                    var seats = prevReservation.seats - newReservation.seats;
+                    distributeWaitingList(orgId, event._id, seats)
 
                     res.json({
                       message: 'Update successful.',
@@ -598,7 +600,8 @@ module.exports = function(config, db) {
 
                 db.reservations.update({
                   email: email,
-                  eventId: eventId
+                  eventId: eventId,
+                  _id: prevReservation._id
                 }, {
                   $set:{
                     seats: seats
@@ -640,7 +643,8 @@ module.exports = function(config, db) {
             // reservation is waiting
             db.reservations.update({
               email: email,
-              eventId: eventId
+              eventId: eventId,
+              _id: prevReservation._id
             }, {
               $set:{
                 seats: seats
