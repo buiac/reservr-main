@@ -81,7 +81,8 @@ module.exports = function(config, db) {
       }
 
       db.reservations.find({
-        eventId: params.eventId
+        eventId: params.eventId,
+        waiting: false
       }, function (err, reservations) {
         
         if (err) {

@@ -232,6 +232,10 @@ module.exports = function(config, db) {
     });
   };
 
+  var mergeReservations = function (eventId) {
+
+  }
+
   var distributeWaitingList = function (orgId, eventId, seats) {
     
     db.orgs.findOne({
@@ -272,6 +276,9 @@ module.exports = function(config, db) {
                 if (!err) {
                   notifyUser(reserv, event, false)
                 }
+
+                mergeReservations(event._id)
+
               });
 
               // we return false so the loop continues until all free seats are distributed
@@ -292,11 +299,31 @@ module.exports = function(config, db) {
               // put the reservation on the Invited list
               clonedReserv.waiting = false;
 
-              // add the available seats to the cloned model
-              clonedReserv.seats = seats;
-              
-              // insert the model into the database
-              db.reservations.insert(clonedReserv);
+              db.reservations.findOne({
+                email: clonedReserv.email,
+                eventId: eventId,
+                waiting: false
+              }, function (err, reservation) {
+                
+                if (reservation) {
+                  db.reservations.update({
+                    _id: reservation._id    
+                  },{
+                    $set: {
+                      seats: reservation.seats + seats
+                    }
+                  })
+
+                } else {
+
+                  // // add the available seats to the cloned model
+                  clonedReserv.seats = seats;
+                  
+                  // // insert the model into the database
+                  db.reservations.insert(clonedReserv);
+
+                }
+              })
 
               // update the waiting reservation's seat number 
               // by subtracting the seats that have been redistributed
@@ -317,16 +344,15 @@ module.exports = function(config, db) {
                 // this will change the template of the message
                 notifyUser(reserv, event, true)
 
+                mergeReservations(event._id)
+
               });
 
               return true;
 
             }
 
-          });
-
-          
-
+          });        
           
         });
       });
@@ -810,6 +836,15 @@ module.exports = function(config, db) {
             seats: requestedSeats
           }
         }, function (err, num) {
+
+          if (currentSeats > requestedSeats) {
+            console.log('\n\n\n\n')
+            console.log('----currentSeats - requestedSeats----')
+            console.log(currentSeats - requestedSeats)
+            console.log('--------')
+            console.log('\n\n\n\n')
+            distributeWaitingList(reservation.orgId, reservation.eventId, currentSeats - requestedSeats)
+          }
           
           res.json({
             message: 'Your seats have been successfully updated.'
