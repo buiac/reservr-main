@@ -85,7 +85,7 @@ module.exports = function(config, db) {
           seats: reservation.seats,
           eventName: event.name,
           eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-          seatsAvaialable: reservation.seatsAvaialable || '',
+          seatsAvailable: reservation.seatsAvailable || '',
           deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
         };
 
@@ -339,7 +339,7 @@ module.exports = function(config, db) {
                 // add the number of seats that have been attributed to
                 // the waiting user so it can be used in the 
                 // email message that is sent to notify her
-                reserv.seatsAvaialable = seats;
+                reserv.seatsAvailable = seats;
 
                 // send the message setting the partial parameter to 'true'
                 // this will change the template of the message
