@@ -679,8 +679,25 @@ button.close:hover {
 /* ========================= Header ========================= */
 
 #header {
-	background:#212425 url('../images/base-header.jpg') no-repeat fixed top center;
+	background:#212425 url('/images/homepage-banner2.jpg') no-repeat fixed top center;
 	background-size:cover;
+}
+
+#header .contact-list {
+	list-style-type: none;
+	margin-top: -30px;
+}
+
+#header .contact-list li {
+	margin-right: 20px;
+}
+
+#header .contact-list li i.fa {
+	margin-right: 5px;
+}
+
+#header .contact-list li:last-child {
+	margin-right: 0;
 }
 
 /* Navigation Menu */
@@ -697,8 +714,7 @@ button.close:hover {
 		color:#FFF;
 		padding:0px;
 	}
-	#header .navbar > .container .navbar-brand, #header .navbar > .container-fluid .navbar-brand, #navigation_affix .navbar > .container .navbar-brand, #navigation_affix .navbar > .container-fluid .navbar-brand { margin:0px; }
-		#header .navbar-brand img, #navigation_affix .navbar-brand img { height:40px; }
+	
 #header .nav, #navigation_affix .nav {
 	overflow:hidden;
 	float:right;
@@ -1032,6 +1048,15 @@ button.close:hover {
 	padding-left:90px;
 	margin-bottom:40px;
 }
+
+.affa_feature_icon .icon {
+	position: absolute;
+	top: 0;
+	left: 6px;
+	font-size: 50px;
+	color: #ff6969;
+}
+
 	.affa_feature_icon img {
 		position:absolute;
 		top:6px;
@@ -1091,16 +1116,22 @@ button.close:hover {
 	.affa_testimonial .affa_testimonial_name {
 		position:relative;
 		min-height:80px;
-		padding:14px 0px 0px 115px;
+		text-align: center;
 		margin-top:12px;
 	}
+
+	.affa_testimonial .affa_testimonial_name .img-wrap {
+		position: relative;
+		display: block;
+		width: 120px;
+		height: 120px;
+		overflow: hidden;
+		border-radius: 50%;
+		margin: 30px auto 0;
+	}
+
 		.affa_testimonial .affa_testimonial_name img {
-			position:absolute;
-			top:0px;
-			left:20px;
-			width:80px;
-			height:80px;
-			border-radius:50%;
+			max-width: 100%;
 		}
 		.affa_testimonial .affa_testimonial_name h4 {
 			font-size:18px;

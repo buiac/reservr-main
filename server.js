@@ -205,6 +205,8 @@ module.exports = (function() {
   var settings = require('./app/controllers/settings.js')(config, db);
   var reminders = require('./app/controllers/reminders.js')(config, db);
   var superadmin = require('./app/controllers/superadmin.js')(config, db);
+  var analytics = require('./app/controllers/analytics.js')(config, db);
+  var subscribe = require('./app/controllers/subscribe.js')(config, db);
 
   // Backend routes
   // events
@@ -255,6 +257,12 @@ module.exports = (function() {
   app.get('/r/delete-reservation/:reservationId', reservations.deleteReservation);
 
   app.post('/r/update/:reservationId', reservations.updateReservationJSON)
+
+  // get analytics data
+  app.get('/a/counter', analytics.counter);
+
+  // subscribe
+  app.post('/s/subscribe', subscribe.newsletter);
 
 
   /* Reminders
@@ -323,8 +331,6 @@ module.exports = (function() {
       config.port
     );
   });
-
-
 
   return app;
 

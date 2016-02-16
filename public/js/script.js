@@ -12,16 +12,19 @@
 			Promium.SmoothScroll();
 			Promium.FitVids();
 			Promium.PlaceHolder();
-			Promium.CounterUp();
+			Promium.GetCounterData();
+			
 			Promium.Form();
 		},
+
+
 		
 		// Navigation menu affix
 		AffixMenu: function() {
 			var navMenu	= '<nav id="navigation_affix">';
 			navMenu		+= '<div class="container">';
 			navMenu		+= '<div class="navbar-brand">';
-			navMenu		+= '<a href="index.html"><img src="images/logo_affix.png" alt="Logo" /></a>';
+			navMenu		+= '<a href="index.html"><img src="images/Reservr_logo_B.png" alt="Logo" /></a>';
 			navMenu		+= '</div>';
 			navMenu		+= '<ul class="nav navbar-nav">';
 			navMenu		+= $('#navigation .nav.navbar-nav').html();
@@ -102,6 +105,26 @@
 		PlaceHolder: function() {
 			$('input, textarea').placeholder();
 		},
+
+		GetCounterData: function () {
+			
+			$.ajax({
+				type: 'GET',
+				url: '/a/counter',
+			}).done(function(res) {
+				
+				
+
+				$('.rsv-reservations h4').html(res.reservations)
+				$('.rsv-events h4').html(res.events)
+				$('.rsv-orgs h4').html(res.orgs)
+
+				Promium.CounterUp();
+				
+			});
+
+			
+		},
 		
 		// Number counter ticker animation
 		CounterUp: function() {
@@ -149,21 +172,21 @@
 					$submit.attr('disabled', 'disabled');
 					$.ajax({
 						type: 'POST',
-						url: 'process-subscribe.php',
-						data: submitData + '&action=add',
-						dataType: 'html',
-						success: function(msg) {
-							if (parseInt(msg, 0) !== 0) {
-								var msg_split = msg.split('|');
+						url: '/s/subscribe',
+						data: {
+							email: $email.val()
+						},
+						success: function(res) {
+							
 								
-								if (msg_split[0] === 'success') {
-									$submit.removeAttr('disabled');
-									$email.removeAttr('disabled').val(msg_split[1]).addClass('success');
-								} else {
-									$submit.removeAttr('disabled');
-									$email.removeAttr('disabled').val(msg_split[1]).addClass('error');
-								}
+							if (res.status === 'success') {
+								$submit.removeAttr('disabled');
+								$email.removeAttr('disabled').val(res.msg).addClass('success');
+							} else {
+								$submit.removeAttr('disabled');
+								$email.removeAttr('disabled').val(res.msg).addClass('error');
 							}
+							
 						}
 					});
 				}
