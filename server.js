@@ -112,37 +112,6 @@ module.exports = (function() {
     dest: config.dataDir + config.publicDir + '/media',
     rename: function (fieldname, filename) {
       return filename;
-    },
-    onFileUploadComplete: function (file) {
-
-      easyimg.info(file.path).then(function (imgFile) {
-        
-        if (imgFile.width > 570) {
-
-          easyimg.resize({
-            src: file.path,
-            dst: file.path,
-            width: 700,
-            quality: 81
-          }).then(function (file) {
-            
-            console.log('File "' + file.name + '" has been resized')
-          }, function (err) {
-            console.log('Image resize error:')
-            console.log(err)
-          })
-
-        }
-        
-      }, function (err) {
-        console.log('\n\n\n\n')
-        console.log('--------')
-        console.log(err)
-        console.log('--------')
-        console.log('\n\n\n\n')
-      })
-
-      return file
     }
   }));
 
@@ -210,6 +179,9 @@ module.exports = (function() {
 
   // Backend routes
   // events
+  app.get('/', function (req, res, next) {
+    res.send('hello world');
+  });
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
