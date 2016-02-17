@@ -1190,6 +1190,12 @@ button.close:hover {
 		}
 		#footer .socials a:hover { background-color:#404040; }
 
+.navbar-brand {
+	display: block;
+}
+.navbar-brand-retina {
+	display: none;
+}
 
 
 /* ========================= Media Queries ========================= */
@@ -1248,6 +1254,8 @@ button.close:hover {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
+
+	
 	
 	.col-text40, .col-text60, .col-text80, .col-text100, .col-text120 { padding-top:0px; }
 	
@@ -1327,6 +1335,17 @@ button.close:hover {
 }
 
 @media (max-width: 767px) {
+
+	.navbar-brand {
+		display: none;
+	}
+	.navbar-brand-retina {
+		display: block;
+	}
+
+	#header {
+		background: #212425 url('/images/base-header-small.jpg') repeat top center;
+	}
 
 	.contact-list { display: none;}
 	
@@ -1440,6 +1459,8 @@ button.close:hover {
 		padding-left:25px;
 	}
 	
+
+	
 	#navigation_mobile ul {
 		padding-left:15px;
 		padding-right:15px;
@@ -1449,6 +1470,9 @@ button.close:hover {
 		font-size:18px;
 		line-height:26px;
 	}
+
+
+
 	#header .header-content .header-heading-title h1 {
 		font-size:28px;
 		line-height:36px;
