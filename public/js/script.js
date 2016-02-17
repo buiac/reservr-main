@@ -24,7 +24,17 @@
 			var navMenu	= '<nav id="navigation_affix">';
 			navMenu		+= '<div class="container">';
 			navMenu		+= '<div class="navbar-brand">';
-			navMenu		+= '<a href="index.html"><img src="images/Reservr_logo_B.png" alt="Logo" /></a>';
+			
+
+			if (window.location.href.indexOf('/ro/') > 0) {
+				
+				navMenu		+= '<a href="index.html"><img src="../images/Reservr_logo_B.png" alt="Logo" /></a>';
+
+			} else {
+
+				navMenu		+= '<a href="index.html"><img src="images/Reservr_logo_B.png" alt="Logo" /></a>';
+
+			}
 			navMenu		+= '</div>';
 			navMenu		+= '<ul class="nav navbar-nav">';
 			navMenu		+= $('#navigation .nav.navbar-nav').html();
