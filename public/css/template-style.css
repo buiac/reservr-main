@@ -1327,6 +1327,8 @@ button.close:hover {
 }
 
 @media (max-width: 767px) {
+
+	.contact-list { display: none;}
 	
 	.no-padding-top-sm { padding-top:0px !important;	}
 	.no-padding-bottom-sm  { padding-bottom:0px !important; }
@@ -1429,7 +1431,10 @@ button.close:hover {
 }
 
 @media (max-width: 480px) {
-	
+	.affa_feature_icon .icon {
+		display: none;
+	}
+
 	.tbl-pricing .tbl-prc-col .tbl-prc-list {
 		padding-right:25px;
 		padding-left:25px;
@@ -1475,8 +1480,7 @@ button.close:hover {
 		position:static;
 		top:auto;
 		left:auto;
-		width:100px;
-		height:100px;
+		
 		margin-bottom:10px;
 	}
 	
