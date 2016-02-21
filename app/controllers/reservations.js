@@ -423,8 +423,7 @@ module.exports = function(config, db) {
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId,
-        fromDate: new Date()
+        orgId: req.params.orgId
       }).then(function (events) {
 
         db.orgs.findOne({
@@ -433,7 +432,7 @@ module.exports = function(config, db) {
 
           var event = events.filter(function (ev) {
             return ev._id === req.params.eventId
-          })
+          });
 
           res.render('backend/reservations-view',{
             org: org,
