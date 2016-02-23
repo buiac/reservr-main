@@ -141,14 +141,12 @@
               </div>
               <div class="form-group">
 
-                <input type="text" name="" class="form-control input-lg reserve-name" id="" placeholder="Name" required value="">
+                <input type="text" name="" class="form-control input-lg reserve-name" id="" placeholder="Name" required value="<% if (env === 'local') { %>sebi.kovacs<% } %>">
 
               </div>
 
               <div class="form-group">
-
-                <input type="email" name="" class="form-control input-lg reserve-email" id="" placeholder="Email" required value="">
-
+                  <input type="email" name="" class="form-control input-lg reserve-email" id="" placeholder="Email" required value="<% if (env === 'local') { %>sebi.kovacs+<%= new Date().getTime() %>@gmail.com<% } %>">
               </div>
 
               <input type="hidden" name="" class="reserve-id" value="<%= event._id %>">

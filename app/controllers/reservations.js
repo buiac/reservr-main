@@ -12,24 +12,28 @@ module.exports = function(config, db) {
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   var moment = require('moment');
-  var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
-  var mc = new mcapi.Mailchimp(config.mailchimp.apikey);
+  
+  
   var q = require('q');
   var data = require('../services/data.js')(config, db);
   var marked = require('marked');
 
-  var addUserToMailingList = function (reservation) {
+  var addUserToMailingList = function (opts) {
+
+    var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
+    var mc = new mcapi.Mailchimp(opts.apikey, true);
+    
     var params = {
       update_existing: true,
       double_optin: false,
       send_welcome: false,
-      id: reservation.mclistid,
+      id: opts.listId,
       email: {
-        email: reservation.email
+        email: opts.email
       },
       merge_vars: {
-        FNAME: reservation.name.split(' ')[0] || '',
-        LNAME:  reservation.name.split(' ')[1] || '' 
+        FNAME: opts.name.split(' ')[0] || '',
+        LNAME: opts.name.split(' ')[1] || '' 
       }
     };
 
@@ -37,18 +41,19 @@ module.exports = function(config, db) {
       console.log('\n\n\n\n')
       console.log('--------')
       console.log('mailchimp success')
+      console.log(data);
       console.log('--------')
       console.log('\n\n\n\n')
-      console.log(data);
+      
 
     }, function(err) {
 
       console.log('\n\n\n\n')
       console.log('--------')
       console.log('mailchimp error')
+      console.log(err);
       console.log('--------')
       console.log('\n\n\n\n')
-      console.log(err);
 
     });
   };
@@ -423,7 +428,8 @@ module.exports = function(config, db) {
       }
 
       data.getOrgEvents({
-        orgId: req.params.orgId
+        orgId: req.params.orgId,
+        fromDate: new Date()
       }).then(function (events) {
 
         db.orgs.findOne({
@@ -520,9 +526,9 @@ module.exports = function(config, db) {
 
   var updateReservation = function (req, res, next) {
     
-    var email = req.body.email
-    var seats = parseInt(req.body.seats)
-
+    var email = req.body.email;
+    var seats = parseInt(req.body.seats);
+    var mclistid = req.body.mclistid
     var eventId = req.params.eventId
     var orgId = req.params.orgId
 
@@ -539,7 +545,7 @@ module.exports = function(config, db) {
         eventId: eventId
       }).then(function (totalReservations) {
         
-        // does this person have a reservation already?
+        // does this person have a  reservation already?
         db.reservations.find({
           email: email,
           eventId: eventId
@@ -573,8 +579,6 @@ module.exports = function(config, db) {
             eventId: eventId,
             orgId: orgId,
             waiting: false
-            // newsletterListId: req.body.newsletterListId,
-            // newsletterOptIn: req.body.newsletterOptIn
           }
 
           if (prevReservation) {
@@ -594,6 +598,21 @@ module.exports = function(config, db) {
                     seats: seats
                   }
                 }, function (err, num) {
+
+                  db.mcapikeys.findOne({
+                    orgId: orgId
+                  }, function (err, key) {
+
+                    addUserToMailingList({
+                      email:email, 
+                      name: req.body.name,
+                      listId: mclistid,
+                      apikey: key.key
+                    })
+
+                  })
+
+                  
 
                   data.getEventReservationsByType({
                     eventId: event._id
@@ -633,6 +652,19 @@ module.exports = function(config, db) {
                     seats: seats
                   }
                 }, function (err, num) {
+
+                  db.mcapikeys.findOne({
+                    orgId: orgId
+                  }, function (err, key) {
+
+                    addUserToMailingList({
+                      email:email, 
+                      name: req.body.name,
+                      listId: mclistid,
+                      apikey: key.key
+                    })
+                    
+                  })
 
                   data.getEventReservationsByType({
                     eventId: event._id
@@ -676,6 +708,19 @@ module.exports = function(config, db) {
                 seats: seats
               }
             }, function (err, num) {
+
+              db.mcapikeys.findOne({
+                orgId: orgId
+              }, function (err, key) {
+
+                addUserToMailingList({
+                  email:email, 
+                  name: req.body.name,
+                  listId: mclistid,
+                  apikey: key.key
+                })
+                
+              })
               
               res.json({
                 message: 'Update successful.',
@@ -698,7 +743,18 @@ module.exports = function(config, db) {
             // send a confirmation email
             sendConfirmationEmails(reservation, event);
 
-            // get the type of the reservations
+            db.mcapikeys.findOne({
+              orgId: orgId
+            }, function (err, key) {
+
+              addUserToMailingList({
+                email:email, 
+                name: req.body.name,
+                listId: mclistid,
+                apikey: key.key
+              })
+              
+            })
 
             data.getEventReservationsByType({
               eventId: event._id

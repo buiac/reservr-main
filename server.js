@@ -52,7 +52,7 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (req.hostname === 'localhost') { // req.hostname === 'localhost'
+    if (false) { // req.hostname === 'localhost'
       db.users.findOne({
         username: 'spatiureactor@gmail.com'
       }, function (err, user) {
@@ -102,6 +102,7 @@ module.exports = (function() {
   // globals in templates
   app.use(function(req, res, next){
     res.locals.moment = moment;
+    res.locals.env = config.env;
     res.locals.marked = marked;
     res.locals.JSON = JSON;
     next();
