@@ -12,17 +12,19 @@ module.exports = function(config, db) {
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   var moment = require('moment');
-  
-  
+  var mcapi = require('../../node_modules/mailchimp-api-wherewolf/mailchimp');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
   var marked = require('marked');
 
+  var mc = {}
+
   var addUserToMailingList = function (opts) {
 
-    var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
-    var mc = new mcapi.Mailchimp(opts.apikey, true);
-    
+    if (!mc[opts.listId]) {
+      mc[opts.listId] = new mcapi.Mailchimp(opts.apikey, true);  
+    }
+
     var params = {
       update_existing: true,
       double_optin: false,
@@ -33,27 +35,26 @@ module.exports = function(config, db) {
       },
       merge_vars: {
         FNAME: opts.name.split(' ')[0] || '',
-        LNAME: opts.name.split(' ')[1] || '' 
+        LNAME: opts.name.split(' ')[1] || ''
       }
     };
 
-    mc.lists.subscribe(params, function(data) {
-      console.log('\n\n\n\n')
+    mc[opts.listId].lists.subscribe(params, function(data) {
+      
       console.log('--------')
       console.log('mailchimp success')
       console.log(data);
       console.log('--------')
-      console.log('\n\n\n\n')
       
 
     }, function(err) {
 
-      console.log('\n\n\n\n')
+      
       console.log('--------')
       console.log('mailchimp error')
       console.log(err);
       console.log('--------')
-      console.log('\n\n\n\n')
+      
 
     });
   };

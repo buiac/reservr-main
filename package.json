@@ -21,7 +21,7 @@
     "express-validator": "^2.7.0",
     "easyimage":"^2.1.0",
     "jshint": "^2.5.10",
-    "mailchimp-api": "^2.0.7",
+    "mailchimp-api-wherewolf": "^1.0.0",
     "marked": "^0.3.5",
     "moment": "2.8.x",
     "multer": "^0.1.8",
