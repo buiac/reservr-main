@@ -604,12 +604,15 @@ module.exports = function(config, db) {
                     orgId: orgId
                   }, function (err, key) {
 
-                    addUserToMailingList({
-                      email:email, 
-                      name: req.body.name,
-                      listId: mclistid,
-                      apikey: key.key
-                    })
+                    if (key) {
+                      addUserToMailingList({
+                        email:email, 
+                        name: req.body.name,
+                        listId: mclistid,
+                        apikey: key.key
+                      })
+                    }
+                    
 
                   })
 
@@ -658,12 +661,14 @@ module.exports = function(config, db) {
                     orgId: orgId
                   }, function (err, key) {
 
-                    addUserToMailingList({
-                      email:email, 
-                      name: req.body.name,
-                      listId: mclistid,
-                      apikey: key.key
-                    })
+                    if (key) {
+                      addUserToMailingList({
+                        email:email, 
+                        name: req.body.name,
+                        listId: mclistid,
+                        apikey: key.key
+                      })
+                    }
                     
                   })
 
@@ -714,13 +719,15 @@ module.exports = function(config, db) {
                 orgId: orgId
               }, function (err, key) {
 
-                addUserToMailingList({
-                  email:email, 
-                  name: req.body.name,
-                  listId: mclistid,
-                  apikey: key.key
-                })
-                
+                if (key) {
+                  addUserToMailingList({
+                    email:email, 
+                    name: req.body.name,
+                    listId: mclistid,
+                    apikey: key.key
+                  })
+                }
+
               })
               
               res.json({
@@ -748,12 +755,14 @@ module.exports = function(config, db) {
               orgId: orgId
             }, function (err, key) {
 
-              addUserToMailingList({
-                email:email, 
-                name: req.body.name,
-                listId: mclistid,
-                apikey: key.key
-              })
+              if (key) {
+                addUserToMailingList({
+                  email:email, 
+                  name: req.body.name,
+                  listId: mclistid,
+                  apikey: key.key
+                })
+              }
               
             })
 
