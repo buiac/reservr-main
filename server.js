@@ -32,7 +32,7 @@ module.exports = (function() {
   app.use(expressSession({
     secret: 'mySecretKey',
     saveUninitialized: true,
-    resave: true       
+    resave: true 
   }));
 
   app.use(flash());
@@ -52,7 +52,7 @@ module.exports = (function() {
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
     
-    if (false) { // req.hostname === 'localhost'
+    if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
         username: 'spatiureactor@gmail.com'
       }, function (err, user) {
