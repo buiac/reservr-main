@@ -433,23 +433,34 @@ module.exports = function(config, db) {
         fromDate: new Date()
       }).then(function (events) {
 
+        
+
         db.orgs.findOne({
           _id: req.params.orgId
         }, function (err, org) {
 
-          var event = events.filter(function (ev) {
-            return ev._id === req.params.eventId
-          });
 
-          res.render('backend/reservations-view',{
-            org: org,
-            orgId: req.params.orgId,
-            user: req.user,
-            reservations: reservations,
-            eventId: req.params.eventId,
-            events: events,
-            event: event[0]
-          });
+          db.events.findOne({
+            _id: req.params.eventId
+          }, function (err, event) {
+
+            res.render('backend/reservations-view',{
+              org: org,
+              orgId: req.params.orgId,
+              user: req.user,
+              reservations: reservations,
+              eventId: req.params.eventId,
+              events: events,
+              event: event
+            });
+
+            
+          })
+
+          
+
+
+          
 
         });
       });
