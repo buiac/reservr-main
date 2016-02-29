@@ -475,6 +475,7 @@ module.exports = function(config, db) {
 
       } else {
         theEvent.reservedSeats = 0;
+        theEvent.timecreated = new Date();
 
         db.events.insert(theEvent, function (err, newEvent) {
 
@@ -597,6 +598,16 @@ module.exports = function(config, db) {
     // format date
     event.date = new Date(event.date)
 
+    // add a timestamp
+    if (!event.timecreated) {
+      event.timecreated = new Date()
+
+      if (config.env !== 'local') {
+        event.timecreated = moment(event.timecreated).add(7, 'hours').toDate()
+      }
+    }
+    
+    
     // turn the string into a boolean
     event.reservationsOpen = (event.reservationsOpen === 'true')
     event.published = (event.published === 'true')
@@ -621,7 +632,7 @@ module.exports = function(config, db) {
 
     event.invited = 0
     event.waiting = 0
-    
+
     if (!event._id && !event.orgId) {
     
       // this is a new event so we need to create a user and an org
@@ -670,6 +681,7 @@ module.exports = function(config, db) {
           
           // update event org id
           event.orgId = org._id
+          event.timecreated = new Date()
 
           db.events.insert(event, function (err, newEvent) {
 
