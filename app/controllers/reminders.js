@@ -13,40 +13,12 @@ module.exports = function(config, db) {
   var smtpTransport = require('nodemailer-smtp-transport');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
-  // TODO move to util
-  var uniqueTest = function (arr) {
-    var n, y, x, i, r;
-    var arrResult = {},
-      unique = [];
-    for (i = 0, n = arr.length; i < n; i++) {
-      var item = arr[i];
-      arrResult[item.title + " - " + item.artist] = item;
-    }
-    i = 0;
-    for (var item in arrResult) {
-      unique[i++] = arrResult[item];
-    }
-    return unique;
-  }
-
-  // TODO move to util
-  var getWordsBetweenCurlies = function (str) {
-    var results = []
-    var re = /{([^}]+)}/g
-    var text = re.exec(str)
-    while (text) {
-      results.push(text[1])
-      text = re.exec(str)
-    }
-    return results
-  };
-
   var sendReminders = function (req, res, next) {
     
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    if (date.getHours() === 4) { //date.getHours() === 4
+    if (true) { //date.getHours() === 4
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
@@ -95,8 +67,8 @@ module.exports = function(config, db) {
                       body: org.remindBody
                     };
 
-                    var bodyPlaceholders = getWordsBetweenCurlies(template.body)
-                    var subjectPlaceholders = getWordsBetweenCurlies(template.body)
+                    var bodyPlaceholders = util.getWordsBetweenCurlies(template.body)
+                    var subjectPlaceholders = util.getWordsBetweenCurlies(template.body)
 
                     bodyPlaceholders.forEach(function (item) {
                       template.body = template.body.replace('{' + item + '}', params[item]);
@@ -133,15 +105,10 @@ module.exports = function(config, db) {
                   sent: true
                 }
               })
-
             });
-
           })
-
         })
       })
-
-      
 
       res.json({
         status: 'sent'
@@ -152,29 +119,6 @@ module.exports = function(config, db) {
         status: 'patience. time will come'
       })
     }
-
-    
-    
-    // db.events.find({
-    //   start: {
-    //     $lte: lte,
-    //     $gte: gte
-    //   },
-    //   sent: {
-    //     $ne: true
-    //   }
-    // }).sort(
-    // {
-    //   start: -1
-    // }
-    // ).exec(function (err, alerts) {
-
-    // console.log('\n\n\n\n')
-    // console.log('--------')
-    // console.log(lte)
-    // console.log(gte)
-    // console.log('--------')
-    // console.log('\n\n\n\n')
   }
 
   return {

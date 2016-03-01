@@ -26,10 +26,26 @@ module.exports = function(config, db) {
     return results
   };
 
+  var uniqueTest = function (arr) {
+    var n, y, x, i, r;
+    var arrResult = {},
+      unique = [];
+    for (i = 0, n = arr.length; i < n; i++) {
+      var item = arr[i];
+      arrResult[item.title + " - " + item.artist] = item;
+    }
+    i = 0;
+    for (var item in arrResult) {
+      unique[i++] = arrResult[item];
+    }
+    return unique;
+  }
+
   return {
     createHash: createHash,
     validateEmail: validateEmail,
     isValidPassword: isValidPassword,
-    getWordsBetweenCurlies: getWordsBetweenCurlies
+    getWordsBetweenCurlies: getWordsBetweenCurlies,
+    uniqueTest: uniqueTest
   };
 }
