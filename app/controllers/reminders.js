@@ -18,7 +18,7 @@ module.exports = function(config, db) {
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    if (true) { //date.getHours() === 4
+    if (date.getHours() === 4) {
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
