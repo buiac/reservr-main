@@ -15,9 +15,21 @@ module.exports = function(config, db) {
     return bCrypt.compareSync(password, user.password);
   };
 
+  var getWordsBetweenCurlies = function (str) {
+    var results = []
+    var re = /{([^}]+)}/g
+    var text = re.exec(str)
+    while (text) {
+      results.push(text[1])
+      text = re.exec(str)
+    }
+    return results
+  };
+
   return {
     createHash: createHash,
     validateEmail: validateEmail,
-    isValidPassword: isValidPassword
+    isValidPassword: isValidPassword,
+    getWordsBetweenCurlies: getWordsBetweenCurlies
   };
 }

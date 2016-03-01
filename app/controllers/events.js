@@ -4,13 +4,7 @@
 module.exports = function(config, db) {
   'use strict';
 
-  var express = require('express');
-  var request = require('superagent');
-  var async = require('async');
-  var fs = require('fs');
-  var passport = require('passport');
   var moment = require('moment');
-  var bCrypt = require('bcrypt-nodejs');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
   var util = require('../services/util.js')(config, db);

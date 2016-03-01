@@ -4,12 +4,6 @@
 module.exports = function(config, db) {
   'use strict';
 
-  var express = require('express');
-  var request = require('superagent');
-  var async = require('async');
-  var fs = require('fs');
-  var passport = require('passport');
-  var data = require('../services/data.js')(config, db);
   var util = require('../services/util.js')(config, db);
   var marked = require('marked');
   var moment = require('moment');
@@ -17,8 +11,6 @@ module.exports = function(config, db) {
 
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
-  var mcapi = require('../../node_modules/mailchimp-api/mailchimp');
-  var mc = new mcapi.Mailchimp('7c3195803dbe692180ed207d6406fec3-us8');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
   // TODO move to util
@@ -54,7 +46,7 @@ module.exports = function(config, db) {
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
-    if (date.getHours() === 4) { //date.getHours === 4
+    if (date.getHours() === 4) { //date.getHours() === 4
       var lte = moment().add(1, 'day').endOf('day').toDate()
       var gte = moment().add(1, 'day').startOf('day').toDate()
 
@@ -66,6 +58,9 @@ module.exports = function(config, db) {
             date: {
               $lte: lte,
               $gte: gte
+            },
+            waiting: {
+              $ne: true
             },
             sent: {
               $ne: true
@@ -86,7 +81,7 @@ module.exports = function(config, db) {
 
                 reservations.forEach(function (reservation) {
 
-                  if ((arr.indexOf(reservation.email) === -1) && !reservation.waiting) {
+                  if ((arr.indexOf(reservation.email) === -1)) {
                     
                     var params = {
                       eventName: event.name,
