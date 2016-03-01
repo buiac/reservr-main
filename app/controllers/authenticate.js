@@ -12,7 +12,8 @@ module.exports = function(config, db) {
     done(null, user._id);
 
   });
-   
+  
+  // passport deserializer
   passport.deserializeUser(function(userId, done) {
 
     db.users.findOne({'_id':userId}, function (err, newUser) {
@@ -31,14 +32,12 @@ module.exports = function(config, db) {
         
         db.users.findOne({'username': username}, function (err, user) {
 
-
-          req.checkBody('orgName', 'Event name should not be empty').notEmpty();
+          req.checkBody('orgName', 'Organization name should not be empty').notEmpty();
 
           var errors = req.validationErrors();
           var orgName = req.body.orgName.trim();
         
           if (err){
-          
             return done(err);
           }
 
