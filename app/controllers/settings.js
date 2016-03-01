@@ -4,11 +4,6 @@
 module.exports = function(config, db) {
   'use strict';
 
-  var express = require('express');
-  var request = require('superagent');
-  var async = require('async');
-  var fs = require('fs');
-  var passport = require('passport');
   var data = require('../services/data.js')(config, db);
   var util = require('../services/util.js')(config, db);
   var marked = require('marked');
@@ -40,19 +35,12 @@ module.exports = function(config, db) {
               user: user,
               mcapikey: key
             });
-
           })
-
         });
-
       });
-
-      
-      
     } else {
       res.redirect('/dashboard')
     }
-    
   };
 
   var updateSettings = function (req, res, next) {
@@ -75,7 +63,6 @@ module.exports = function(config, db) {
       });
 
       return;
-
     }
 
     var mailchimp = [];
@@ -156,8 +143,6 @@ module.exports = function(config, db) {
       } else if (org.logo) {
         logo = org.logo
       }
-
-      
 
 
       db.orgs.update({
@@ -252,12 +237,7 @@ module.exports = function(config, db) {
                       key: mcapikey,
                       orgId: org._id
                     }, function (err, key) {
-                      console.log('\n\n\n\n')
-                      console.log('--------')
-                      console.log('key added')
-                      console.log('--------')
-                      console.log('\n\n\n\n')
-
+                      
                       res.render('backend/settings', {
                         events: events,
                         errors: errors,
@@ -275,11 +255,7 @@ module.exports = function(config, db) {
                         key: mcapikey
                       }
                     }, function (err, num) {
-                      console.log('\n\n\n\n')
-                      console.log('--------')
-                      console.log('key updated: ' + num)
-                      console.log('--------')
-                      console.log('\n\n\n\n')
+                      
                       res.render('backend/settings', {
                         events: events,
                         errors: errors,
@@ -292,12 +268,7 @@ module.exports = function(config, db) {
                       });
                     })
                   }
-
-
-
                 });
-
-                
               });
             })
           });
