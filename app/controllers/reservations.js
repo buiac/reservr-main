@@ -4,19 +4,21 @@
 module.exports = function(config, db) {
   'use strict';
 
-  var express = require('express');
-  var request = require('superagent');
-  var async = require('async');
-  var fs = require('fs');
-  var passport = require('passport');
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   var moment = require('moment');
   var mcapi = require('../../node_modules/mailchimp-api-wherewolf/mailchimp');
   var q = require('q');
   var data = require('../services/data.js')(config, db);
+  var util = require('../services/util.js')(config, db);
   var marked = require('marked');
+  var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
+  // configure moment
+  moment.defaultFormat = 'YYYY-MM-DD LT';
+
+
+  // create an object with all the mailchimp api keys
   var mc = {}
 
   var addUserToMailingList = function (opts) {
@@ -49,39 +51,19 @@ module.exports = function(config, db) {
       console.log('mailchimp success')
       console.log(data);
       console.log('--------')
-      
 
     }, function(err) {
 
-      
       console.log('--------')
       console.log('mailchimp error')
       console.log(err);
-      console.log('--------')
-      
+      console.log('--------')      
 
     });
   };
 
-  // configure moment
-  moment.defaultFormat = 'YYYY-MM-DD LT';
-
-  var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
-
-  var getWordsBetweenCurlies = function (str) {
-    var results = []
-    var re = /{([^}]+)}/g
-    var text = re.exec(str)
-    while (text) {
-      results.push(text[1])
-      text = re.exec(str)
-    }
-    return results
-  };
-
   var notifyUser = function (reservation, event, partial) {
     // send waiting user a notification that a seat is available
-
 
     db.orgs.findOne({
       _id: event.orgId
@@ -105,8 +87,8 @@ module.exports = function(config, db) {
           bodyPartial: marked(org.userUpdateBodyPartial) // 'Salut, <br /><br /> S-au eliberat {seatsAvaialable} locuri pentru evenimentul "{eventName}" de {eventDate} asa ca te-am mutat pe lista invitatilor. <br /><br /> Stim ca doreai mai multe locuri :(. Daca se mai elibereaza vreunul te anuntam. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.',
         };
 
-        var bodyPlaceholders = getWordsBetweenCurlies(template.body);
-        var bodyPartialPlaceholders = getWordsBetweenCurlies(template.bodyPartial);
+        var bodyPlaceholders = util.getWordsBetweenCurlies(template.body);
+        var bodyPartialPlaceholders = util.getWordsBetweenCurlies(template.bodyPartial);
 
         bodyPlaceholders.forEach(function (item) {
           template.body = template.body.replace('{' + item + '}', params[item]);
@@ -165,18 +147,18 @@ module.exports = function(config, db) {
         }
 
         var template = {
-          userSubject: org.userSubject, // 'Rezervarea a fost facuta'
-          userSubjectWaiting: org.userSubjectWaiting, // 'Ai fost inclus pe lista de asteptare'
-          userBody: marked(org.userBody), // 'Salut, <br /><br /> Ai facut o rezervare de {seats} locuri pentru evenimentul "{eventName}" de {eventDate}. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /><br /> O zi cat mai buna iti dorim.'
-          userBodyWaiting: marked(org.userBodyWaiting), // 'Salut, <br /><br /> Ai fost inclus pe lista de asteptare pentru {seats} locuri la evenimentul "{eventName}" de {eventDate}. <br /><br /> Daca se elibereaza un loc te vom contacta. <br /><br /> Poti renunta oricand la rezervare dand click pe acest link: <a style="color:red" href="http://reservr.net/r/' + reservation._id + '">sterge rezervare</a> <br /> <br /> O zi cat mai buna iti dorim.'
+          userSubject: org.userSubject, 
+          userSubjectWaiting: org.userSubjectWaiting, 
+          userBody: marked(org.userBody), 
+          userBodyWaiting: marked(org.userBodyWaiting), 
           orgSubject: org.orgSubject,
           orgBody: marked(org.orgBody)
         };
 
-        var userPlaceholders = getWordsBetweenCurlies(template.userBody);
-        var userWaitingPlaceholders = getWordsBetweenCurlies(template.userBodyWaiting);
-        var orgPlaceholders = getWordsBetweenCurlies(template.orgBody);
-        var orgSubjectPlacholders = getWordsBetweenCurlies(template.orgSubject);
+        var userPlaceholders = util.getWordsBetweenCurlies(template.userBody);
+        var userWaitingPlaceholders = util.getWordsBetweenCurlies(template.userBodyWaiting);
+        var orgPlaceholders = util.getWordsBetweenCurlies(template.orgBody);
+        var orgSubjectPlacholders = util.getWordsBetweenCurlies(template.orgSubject);
 
         userPlaceholders.forEach(function (item) {
           template.userBody = template.userBody.replace('{' + item + '}', userParams[item]);
@@ -242,10 +224,6 @@ module.exports = function(config, db) {
 
     });
   };
-
-  var mergeReservations = function (eventId) {
-
-  }
 
   var distributeWaitingList = function (orgId, eventId, seats) {
     
@@ -437,13 +415,9 @@ module.exports = function(config, db) {
         fromDate: new Date()
       }).then(function (events) {
 
-        
-
         db.orgs.findOne({
           _id: req.params.orgId
         }, function (err, org) {
-
-
           db.events.findOne({
             _id: req.params.eventId
           }, function (err, event) {
@@ -457,15 +431,7 @@ module.exports = function(config, db) {
               events: events,
               event: event
             });
-
-            
           })
-
-          
-
-
-          
-
         });
       });
     });
@@ -513,31 +479,13 @@ module.exports = function(config, db) {
         upsert: true
       }, function (err, numReplaced, upsert) {
 
-
-        
-
-        if (!upsert) {
-          // update
-
-        } else {
-          // insert
-
-        }
-
         res.json({
           reservation: reservation,
           message: '',
           event: event
         })
-
       })
-      
     });
-      
-    
-
-    // notify user about the reservation
-
   }
 
   var updateReservation = function (req, res, next) {
@@ -580,7 +528,6 @@ module.exports = function(config, db) {
             prevReservation = prevReservations[0]
 
           }
-
 
           // send an error message if user has a previous reservation, is not waiting
           // and he wants to update to a greater number of seats
@@ -627,11 +574,8 @@ module.exports = function(config, db) {
                         apikey: key.key
                       })
                     }
-                    
-
+            
                   })
-
-                  
 
                   data.getEventReservationsByType({
                     eventId: event._id
@@ -650,11 +594,7 @@ module.exports = function(config, db) {
                       reservation: newReservation,
                       event: event
                     })
-
                   })
-                
-                  
-                  
                 })
                 return;
               }
@@ -830,6 +770,7 @@ module.exports = function(config, db) {
     });
   };
 
+  // updates the number of seats in reservations view (admin and user)
   var updateReservationJSON = function (req, res, next) {
 
     var requestedSeats = parseInt(req.body.seats)
@@ -919,11 +860,6 @@ module.exports = function(config, db) {
         }, function (err, num) {
 
           if (currentSeats > requestedSeats) {
-            console.log('\n\n\n\n')
-            console.log('----currentSeats - requestedSeats----')
-            console.log(currentSeats - requestedSeats)
-            console.log('--------')
-            console.log('\n\n\n\n')
             distributeWaitingList(reservation.orgId, reservation.eventId, currentSeats - requestedSeats)
           }
           
@@ -933,13 +869,8 @@ module.exports = function(config, db) {
           return;
 
         })
-
-
       })
-
     })
-
-    
   };
 
   return {
