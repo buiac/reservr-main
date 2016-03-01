@@ -1,15 +1,7 @@
 module.exports = function(config, db) {
-	var express = require('express');
-  var expressSession = require('express-session');
-  var expressValidator = require('express-validator');
-  var bCrypt = require('bcrypt-nodejs');
-  var bodyParser = require('body-parser');
-  var errorhandler = require('errorhandler');
-  var flash = require('connect-flash');
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
   var util = require('../services/util.js')(config, db);
-
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
@@ -183,9 +175,7 @@ module.exports = function(config, db) {
   };
 
   // helper methods
-  var isValidPassword = function(user, password){
-    return bCrypt.compareSync(password, user.password);
-  };
+  
 
   // passport signin method
   passport.use('signin', new LocalStrategy({
@@ -206,7 +196,7 @@ module.exports = function(config, db) {
 
         }
 
-        if (!isValidPassword(user, password)) {
+        if (!util.isValidPassword(user, password)) {
           return done(null, false, 
             req.flash('message', 'Invalid Password'));
         }
@@ -237,5 +227,4 @@ module.exports = function(config, db) {
     signinView: signinView,
     signin: signin
   };
-
 };

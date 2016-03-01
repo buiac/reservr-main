@@ -170,7 +170,6 @@ module.exports = (function() {
 
   // events
   var events = require('./app/controllers/events.js')(config, db);
-  var users = require('./app/controllers/users.js')(config, db);
   var reservations = require('./app/controllers/reservations.js')(config, db);
   var settings = require('./app/controllers/settings.js')(config, db);
   var reminders = require('./app/controllers/reminders.js')(config, db);
@@ -213,9 +212,6 @@ module.exports = (function() {
 
   // temoporary event
   app.get('/t/:orgId/event/:eventId', events.tempFrontEventView);
-
-  // update user
-  app.post('/updateUser', users.updateUser);
 
   // events
   app.get('/u/:orgName', events.listFrontEventsView);

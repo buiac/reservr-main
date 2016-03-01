@@ -11,8 +11,13 @@ module.exports = function(config, db) {
     return re.test(email);
   };
 
+  var isValidPassword = function(user, password){
+    return bCrypt.compareSync(password, user.password);
+  };
+
   return {
     createHash: createHash,
-    validateEmail: validateEmail
+    validateEmail: validateEmail,
+    isValidPassword: isValidPassword
   };
 }
