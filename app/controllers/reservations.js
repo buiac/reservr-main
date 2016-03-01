@@ -21,6 +21,10 @@ module.exports = function(config, db) {
 
   var addUserToMailingList = function (opts) {
 
+    if (!opts.apikey) {
+      return;
+    }
+
     if (!mc[opts.listId]) {
       mc[opts.listId] = new mcapi.Mailchimp(opts.apikey, true);  
     }
