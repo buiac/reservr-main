@@ -9,6 +9,7 @@ module.exports = function(config, db) {
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
   var newsletter = function (req, res, next) {
+    
     var userEmailConfig = {
       from: 'contact@reservr.net', // user.username
       to: 'contact@reservr.net',
@@ -17,11 +18,11 @@ module.exports = function(config, db) {
     };
 
     transport.sendMail(userEmailConfig, function (err, info) {
-      
       res.json({
         status: 'success'
       })
     });
+    
   }
     
   return {
