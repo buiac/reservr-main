@@ -176,13 +176,17 @@ module.exports = (function() {
   var superadmin = require('./app/controllers/superadmin.js')(config, db);
   var analytics = require('./app/controllers/analytics.js')(config, db);
   var subscribe = require('./app/controllers/subscribe.js')(config, db);
+  var dashboard = require('./app/controllers/dashboard.js')(config, db);
 
   // Backend routes
   // events
   app.get('/', function (req, res, next) {
     res.send('hello world');
   });
-  app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
+  
+  // app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
+
+  app.get('/dashboard', isAuthenticated, dashboard.view);
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);

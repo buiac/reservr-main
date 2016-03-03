@@ -91,7 +91,7 @@ module.exports = function(config, db) {
           _id: req.params.orgId
         }, function (err, org) {
 
-          res.render('backend/events', {
+          res.render('dashboard/events', {
             events: events,
             user: user,
             orgId: org._id,
@@ -259,7 +259,7 @@ module.exports = function(config, db) {
           }).exec(function (err, theEvent) {
 
             if(err) {
-              return res.render('backend/event-update', {errors: err});
+              return res.render('dashboard/event-update', {errors: err});
             }
 
             if (!theEvent) {
@@ -269,10 +269,10 @@ module.exports = function(config, db) {
             db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
               
               if(err) {
-                return res.render('backend/event-update', {errors: err});
+                return res.render('dashboard/event-update', {errors: err});
               }
 
-              res.render('backend/event-update', {
+              res.render('dashboard/event-update', {
                 errors: [],
                 events: events,
                 theEvent: theEvent,
@@ -290,10 +290,10 @@ module.exports = function(config, db) {
           db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
             
             if(err) {
-              return res.render('backend/event-update', {errors: err});
+              return res.render('dashboard/event-update', {errors: err});
             }
 
-            res.render('backend/event-update', {
+            res.render('dashboard/event-update', {
               errors: [],
               theEvent: {
                 date: '',
@@ -414,7 +414,7 @@ module.exports = function(config, db) {
           
           // TODO error handling
 
-          res.render('backend/event-update', {
+          res.render('dashboard/event-update', {
             theEvent: theEvent,
             orgId: orgId,
             org: org,
@@ -438,7 +438,7 @@ module.exports = function(config, db) {
 
         db.events.findOne({_id: eventId}, function (err, event) {
           if (err) {
-            res.render('backend/event-update', {
+            res.render('dashboard/event-update', {
               errors: err,
               theEvent: theEvent
             });
@@ -451,7 +451,7 @@ module.exports = function(config, db) {
           }, theEvent, function (err, num, newEvent) {
 
             if (err) {
-              res.render('backend/event-update', {
+              res.render('dashboard/event-update', {
                 errors: err,
                 theEvent: theEvent
               });
@@ -474,7 +474,7 @@ module.exports = function(config, db) {
         db.events.insert(theEvent, function (err, newEvent) {
 
           if (err) {
-            res.render('backend/event-update', {errors: err});
+            res.render('dashboard/event-update', {errors: err});
           }
 
           res.redirect('/dashboard');
@@ -492,7 +492,7 @@ module.exports = function(config, db) {
       
       if (errors) {
         
-        res.render('backend/event-update', {
+        res.render('dashboard/event-update', {
           theEvent: theEvent,
           orgId: orgId,
           errors: errors,
@@ -513,7 +513,7 @@ module.exports = function(config, db) {
 
       var updateEvent = function (err, num) {
         if (err) {
-         res.render('backend/event-update', {errors: err, user: user, orgId: orgId});
+         res.render('dashboard/event-update', {errors: err, user: user, orgId: orgId});
         }
 
         res.redirect('/dashboard');
@@ -522,7 +522,7 @@ module.exports = function(config, db) {
       var updateOrg = function (err, num) {
 
         if (err) {
-         res.render('backend/event-update', {errors: err});
+         res.render('dashboard/event-update', {errors: err});
         }
 
         //find event by org id and update the event
@@ -535,7 +535,7 @@ module.exports = function(config, db) {
       var updateUser = function (err, num) {
         
         if (err) {
-         res.render('backend/event-update', {errors: err});
+         res.render('dashboard/event-update', {errors: err});
         }
 
          //find org by user id and update org name

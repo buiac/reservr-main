@@ -1,0 +1,70 @@
+<%- include partials/header %>
+
+<div class="main">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2><i class="fa fa-list"></i>Events</h2>
+          <!-- <div class="panel-actions">
+            <a href="widgets.html#" class="btn-minimize"><i class="icon-arrow-up"></i></a>
+            <a href="widgets.html#" class="btn-close"><i class="icon-close"></i></a>
+          </div> -->
+        </div>
+        <div class="panel-body no-padding">
+          <ul class="users-list">
+            
+            <% events.forEach(function(event){ %>
+
+            <li>
+              
+              <div class="name">
+                <a href="/dashboard/<%= orgId %>/event/<%= event._id %>">
+                  <%= event.name %>
+                </a>
+                <div class="dropdown pull-right">
+                  <a class="fa fa-cogs" data-toggle="dropdown" href="widgets.html#"></a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <li><a href="widgets.html#"><i class="fa fa-check"></i> Accept</a></li>
+                    <li><a href="widgets.html#"><i class="fa fa-times"></i>Reject</a></li>
+                    <li><a href="widgets.html#"><i class="fa fa-minus-sign-alt"></i>Block</a></li>
+                    <li><a href="widgets.html#"><i class="fa fa-trash-o"></i>Delete</a></li>
+                  </ul>
+                </div>
+              </div>
+              <span class="time"><i class="fa fa-clock-o"></i>
+                <%= moment(event.date).format('dddd') %>
+                
+                <%= moment(event.date).format('DD') %>
+                
+                <%= moment(event.date).format('MMM') %>,
+                
+                <%= moment(event.date).format('HH:mm') %>,
+                
+                <%= moment(event.date).format('YYYY') %>
+              </span>
+
+              <span>
+                <i class="fa fa-ticket"></i>
+                <a href="/dashboard/<%= orgId %>/reservations/<%= event._id %>"><%= event.invited %> seats reservd</a>
+                  
+                  
+                    of <%= event.seats %>.
+                  
+                  
+                    <%= event.waiting %> waiting.
+              </span>
+              
+            </li>
+
+            <% }) %>
+            
+          </ul>
+        </div>
+      </div>
+    </div><!--/.col-->
+  </div>
+</div>
+
+<%- include partials/footer %>
+
