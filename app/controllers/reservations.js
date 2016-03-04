@@ -266,7 +266,7 @@ module.exports = function(config, db) {
                   notifyUser(reserv, event, false)
                 }
 
-                mergeReservations(event._id)
+                // mergeReservations(event._id)
 
               });
 
@@ -333,7 +333,7 @@ module.exports = function(config, db) {
                 // this will change the template of the message
                 notifyUser(reserv, event, true)
 
-                mergeReservations(event._id)
+                // mergeReservations(event._id)
 
               });
 
