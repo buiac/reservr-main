@@ -83,12 +83,34 @@
       reader.readAsDataURL(input.files[0]); 
     },
 
+    previewDescription: function (e) {
+      
+      e.preventDefault();
+
+      var $description = $('.event-description');
+      var $descriptionPreview = $description.find('.preview-description');
+      var descriptionText = $description.find('textarea').val();
+
+      $description.addClass('preview-description--show');
+      $descriptionPreview.html(marked(descriptionText))
+      $descriptionPreview.prepend('<a href="" class="close" style="font-size: 25px; color:#000">&times;</a>')
+    },
+
+    hidePreviewDescription: function (e) {
+      e.preventDefault();
+
+      var $description = $('.event-description');
+      $description.removeClass('preview-description--show');
+    },
+
     attachEventHandlers: function () {
       
       $('.event-image input').change(function(){
         Dashboard.readURL(this);
       });
 
+      $('a.preview-description').on('click', Dashboard.previewDescription);
+      $('body').on('click', '.event-description a.close', Dashboard.hidePreviewDescription)
     }
 
   }

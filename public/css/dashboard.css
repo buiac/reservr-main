@@ -1,3 +1,6 @@
+
+/* Dashboard event image
+*/
 .event-image {
   position: relative;
   display: table;
@@ -76,4 +79,32 @@
 
 .event-image.event-image--show-image .event-preview-image {
   display: block;
+}
+
+
+/* Dashboard event image
+*/
+
+a.preview-description {
+  margin-left: 10px;
+}
+
+.event-description {
+  position: relative;
+}
+
+.event-description .preview-description {
+  display: none;
+}
+
+.event-description.preview-description--show .preview-description {
+  display: block;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  padding: 6px 12px;
+  top: 0;
+  left: 0;
+  border: 1px solid #d1d4d7;
 }

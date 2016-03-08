@@ -133,13 +133,22 @@
                   </div>
 
                   <div class="form-group">
+
                     <label for="">Event description</label>
-                    <textarea name="description" id="" class="form-control"><%= theEvent.description || '' %></textarea>
+
+                    <a href="" class="pull-right preview-description">Preview description</a>
+                    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="pull-right">Text formatting options</a>
+                    <div class="cf"></div>
+                    
+                    <div class="event-description">
+                      <div class="preview-description"></div>
+                      
+                      <textarea name="description" id="" class="form-control"><%= theEvent.description || '' %></textarea>
+                    </div>
+
                   </div>
 
-                  <div class="cf">
-                    <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank" class="pull-right">Text formatting options</a>
-                  </div>
+                  
 
                   <div class="form-group">
                     
