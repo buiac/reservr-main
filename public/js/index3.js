@@ -397,9 +397,6 @@ $(document).ready(function () {
     if (timeElement) {
       var time = rome(timeElement, { date: false })
     }
-    
-    
-
   }
 
   function initBootstrapWidgets (argument) {

@@ -108,3 +108,27 @@ a.preview-description {
   left: 0;
   border: 1px solid #d1d4d7;
 }
+
+/* Rome datepicker
+*/
+
+.rd-day-body {
+  padding: 5px;
+}
+
+.rd-day-body:hover {
+  background: #eaeaea;
+}
+
+.rd-day-selected {
+  background: #A94442;
+}
+
+.rd-day-selected:hover {
+  background: #63c2de;
+}
+
+.rd-day-selected, .rd-time-option:hover, .rd-time-selected {
+  background: #63c2de;
+  border-radius: 3px; 
+}

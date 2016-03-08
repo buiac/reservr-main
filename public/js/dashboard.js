@@ -39,6 +39,7 @@
     init: function() {
       Dashboard.attachEventHandlers()
       Dashboard.initLibs()
+      Dashboard.dateTime()
     },
 
     initLibs: function () {
@@ -101,6 +102,20 @@
 
       var $description = $('.event-description');
       $description.removeClass('preview-description--show');
+    },
+
+    dateTime: function () {
+
+      var dateElement = $('[name="date"]')[0]
+      var timeElement = $('[name="time"]')[0]
+
+      if (dateElement) {
+        var date = rome(dateElement, { time: false })
+      }
+
+      if (timeElement) {
+        var time = rome(timeElement, { date: false })
+      }
     },
 
     attachEventHandlers: function () {
