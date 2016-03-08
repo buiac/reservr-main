@@ -42,6 +42,7 @@ $(document).ready(function () {
   function validateImageExtension(oInput) {
 
     var sFileName = oInput.value;
+    
     if (sFileName.length > 0) {
       var blnValid = false;
       for (var j = 0; j < _validFileExtensions.length; j++) {
