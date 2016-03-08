@@ -38,6 +38,14 @@
     // Initialization the functions
     init: function() {
       Dashboard.attachEventHandlers()
+      Dashboard.initLibs()
+    },
+
+    initLibs: function () {
+      
+      // this will resize the textareas to fit the text in them
+      autosize(document.querySelectorAll('textarea'));
+
     },
 
     readURL: function(input) {
@@ -87,6 +95,7 @@
 
   $(function() {
     Dashboard.init();
+
   });
 
 })(window.jQuery);
