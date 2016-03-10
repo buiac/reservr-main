@@ -1,3 +1,17 @@
+/* Clearfix
+*/
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+.cf:after {
+    clear: both;
+}
+.cf {
+    *zoom: 1;
+}
+
 
 /* Dashboard event image
 */
@@ -109,9 +123,9 @@ a.preview-description {
   border: 1px solid #d1d4d7;
 }
 
+
 /* Rome datepicker
 */
-
 .rd-day-body {
   padding: 5px;
 }
@@ -131,4 +145,26 @@ a.preview-description {
 .rd-day-selected, .rd-time-option:hover, .rd-time-selected {
   background: #63c2de;
   border-radius: 3px; 
+}
+
+
+/* Ticket / Pricing
+*/
+.event-price {
+  margin-bottom: 20px;
+}
+.event-price-group {
+  background: #F9F3F3;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.event-price-group:last-of-type {
+  margin-bottom: 10px;
+}
+
+/* Event update/create action buttons
+*/
+.btn-publish {
+  margin-left: 15px;
 }

@@ -30,8 +30,47 @@
       }
 
       return true;
+    },
+    cleanInputValues: function (el) {
+      var $inputs = $(el).find('input[type=text]')
+
+      $inputs.each(function (i, input) {
+        input.value = ''
+      })
+
+      return el;
     }
-  }
+  };
+
+  // var eventModel = {
+  //   name: 'Demo event title',
+  //   description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
+  //   images: [
+  //     {
+  //       path: '/images/reservr-placeholder-2.png'
+  //     }
+  //   ],
+  //   date: defaultEventDate,
+  //   seats: 120,
+  //   orgId: '',
+  //   temp: true,
+  //   published: false
+  // };
+
+  /*
+  
+  Event model:
+  - _id
+  - name
+  - description
+  - date
+  - images [{path: ''}]
+  - date
+  - seats
+  - prices
+  - location
+
+  */ 
 
   var Dashboard = {
     
@@ -40,6 +79,58 @@
       Dashboard.attachEventHandlers()
       Dashboard.initLibs()
       Dashboard.dateTime()
+      Dashboard.initEventModel()
+      Dashboard.parseFieldsOnLoad()
+    },
+
+    initEventModel: function () {
+      var $eventPage = $('.event-create-update');
+
+      if (!$eventPage.length) {
+        return;
+      }
+
+      Dashboard.eventModel = {
+        _id: '',
+        orgId: '',
+        temp: '',
+        published: '',
+        name: '',
+        description: '',
+        images: [{path: ''}],
+        existingImages: '',
+        date: '',
+        time: '',
+        seats: '',
+        prices: '',
+        location: '',
+        existingImages: '',
+        reminders: '',
+        reservationsOpen: '',
+        mailchimp: '',
+        toggleMailchimpOptin: ''
+      }
+    },
+
+    parseFieldsOnLoad: function () {
+      var $eventPage = $('.event-create-update');
+
+      if (!$eventPage.length) {
+        return;
+      }
+
+      var $inputs = $eventPage.find('[name]');
+
+      $.each($inputs, function (i, input) {
+        if (input.name) {
+          Dashboard.eventModel[input.name] = input.value
+        }
+
+        if (input.name === 'existingImages') {
+          eventModel.images = JSON.parse(input.value)
+        }
+      })
+      
     },
 
     initLibs: function () {
@@ -118,16 +209,123 @@
       }
     },
 
+    addPrice: function (e) {
+      e.preventDefault()
+
+      var $this = $(this);
+      var $price = $this.prev();
+      var $priceWrap = $this.parent();
+
+      var $priceTier = Util.cleanInputValues($price.clone());
+
+      $this.before($priceTier)
+
+    },
+
+    removePrice: function (e) {
+      e.preventDefault()
+
+      $(this).parent().remove()
+
+      if ($('.event-price .event-price-group').length === 1) {
+        $('.event-price .event-price-group').find('.event-remove-price').remove()
+      }
+    },
+
     attachEventHandlers: function () {
       
       $('.event-image input').change(function(){
         Dashboard.readURL(this);
       });
 
-      $('a.preview-description').on('click', Dashboard.previewDescription);
+      $('body').on('click', 'a.preview-description', Dashboard.previewDescription);
       $('body').on('click', '.event-description a.close', Dashboard.hidePreviewDescription)
-    }
+      $('body').on('click', '.event-add-price', Dashboard.addPrice)
+      $('body').on('click', '.event-remove-price', Dashboard.removePrice)
+    },
 
+    syncData: function() {
+
+      var eventId = $('[name=_id]')[0]
+
+      // add Prices to the event model
+      var prices = []
+
+      var $eventPrices = $('.event-price-group');
+
+      
+      $eventPrices.each(function (i, price) {
+        
+        var $price = $(price)
+        
+        var name = $price.find('.event-price-name').val()
+        var amount = $price.find('.event-price-amount').val()
+        var currency = $price.find('.event-price-currency').val()
+
+        var price = {
+          name: name,
+          amount: amount,
+          currency: currency,
+          eventId: eventId.value
+        }
+
+        if (price.name !== '' && price.amount !== '') {
+          prices.push(price)
+        }
+        
+      })
+
+      eventModel.prices = prices
+
+      // add the date
+      var date = $('[name="date"]').val()
+      var time = $('[name="time"]').val()
+      eventModel.date = date + ' ' + time
+
+      // add the location
+      var location = $('[name="location"]').val()
+      eventModel.location = location
+
+      // add the seats
+      var seats = $('[name="seats"]').val()
+      eventModel.seats = seats
+
+      // send the data to the server
+      $.ajax({
+        method: 'POST',
+        url: config.baseUrl + '/tempEvent',
+        data: {
+          event: eventModel
+        }
+      }).done(function (res) {
+        
+        // set the event orgId
+        eventModel.org = res.org
+        eventModel.orgId = res.orgId || res.org._id
+        eventModel._id = res.event._id
+        
+
+        if (res.event.published) {
+          // update the unique event url
+          updateEventUrl()
+
+          if (reloadPage) {
+            if (eventId && !eventId.value) {
+              window.location = window.location.href + '/' + res.event._id
+            } else if (eventId && eventId.value) {
+              window.location = window.location.href
+            }
+          }
+          
+        }
+
+      }).fail(function (err) {
+        
+        console.log('error')
+        console.log(err)
+
+      })
+    }
   }
 
   $(function() {

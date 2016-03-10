@@ -143,7 +143,7 @@ $(document).ready(function () {
 
     // show overlay
     $parent.addClass('event-publish--published')
-  }
+  },
 
   function syncData() {
 
