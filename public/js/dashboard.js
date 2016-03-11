@@ -1,3 +1,6 @@
+var Reservr = Reservr || {};
+
+
 (function($) {
 
   'use strict';
@@ -81,6 +84,19 @@
       Dashboard.dateTime()
       Dashboard.initEventModel()
       Dashboard.parseFieldsOnLoad()
+      Dashboard.initLocalVars()
+    },
+
+    initLocalVars: function () {
+      Dashboard.reloadPage = false;
+
+      Dashboard.config = {
+        baseUrl: ''
+      }
+
+      if (window.location.hostname.indexOf('localhost') !== -1) {
+        Dashboard.config.baseUrl = 'http://localhost:8080'
+      }
     },
 
     initEventModel: function () {
@@ -123,11 +139,15 @@
 
       $.each($inputs, function (i, input) {
         if (input.name) {
+          
+          console.log('--------')
+          console.log(input.name + ':' + input.value)
+          
           Dashboard.eventModel[input.name] = input.value
         }
 
         if (input.name === 'existingImages') {
-          eventModel.images = JSON.parse(input.value)
+          Dashboard.eventModel.images = JSON.parse(input.value)
         }
       })
       
@@ -239,9 +259,10 @@
       });
 
       $('body').on('click', 'a.preview-description', Dashboard.previewDescription);
-      $('body').on('click', '.event-description a.close', Dashboard.hidePreviewDescription)
-      $('body').on('click', '.event-add-price', Dashboard.addPrice)
-      $('body').on('click', '.event-remove-price', Dashboard.removePrice)
+      $('body').on('click', '.event-description a.close', Dashboard.hidePreviewDescription);
+      $('body').on('click', '.event-add-price', Dashboard.addPrice);
+      $('body').on('click', '.event-remove-price', Dashboard.removePrice);
+      $('body').on('click', '.btn-publish', Dashboard.publishEvent);
     },
 
     syncData: function() {
@@ -275,41 +296,41 @@
         
       })
 
-      eventModel.prices = prices
+      Dashboard.eventModel.prices = prices
 
       // add the date
       var date = $('[name="date"]').val()
       var time = $('[name="time"]').val()
-      eventModel.date = date + ' ' + time
+      Dashboard.eventModel.date = date + ' ' + time
 
       // add the location
       var location = $('[name="location"]').val()
-      eventModel.location = location
+      Dashboard.eventModel.location = location
 
       // add the seats
       var seats = $('[name="seats"]').val()
-      eventModel.seats = seats
+      Dashboard.eventModel.seats = seats
 
       // send the data to the server
       $.ajax({
         method: 'POST',
-        url: config.baseUrl + '/tempEvent',
+        url: Dashboard.config.baseUrl + '/tempEvent',
         data: {
-          event: eventModel
+          event: Dashboard.eventModel
         }
       }).done(function (res) {
         
         // set the event orgId
-        eventModel.org = res.org
-        eventModel.orgId = res.orgId || res.org._id
-        eventModel._id = res.event._id
+        Dashboard.eventModel.org = res.org
+        Dashboard.eventModel.orgId = res.orgId || res.org._id
+        Dashboard.eventModel._id = res.event._id
         
 
         if (res.event.published) {
           // update the unique event url
-          updateEventUrl()
+          // updateEventUrl()
 
-          if (reloadPage) {
+          if (Dashboard.reloadPage) {
             if (eventId && !eventId.value) {
               window.location = window.location.href + '/' + res.event._id
             } else if (eventId && eventId.value) {
@@ -325,6 +346,17 @@
         console.log(err)
 
       })
+    },
+    publishEvent: function (e) {
+      var $this = $(this)
+      var $parent = $this.parents('.event-publish')
+
+      $this.addClass('btn-state-loading')
+
+      Dashboard.eventModel.published = true;
+      Dashboard.reloadPage = true;
+
+      Dashboard.syncData()
     }
   }
 
