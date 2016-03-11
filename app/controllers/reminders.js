@@ -31,9 +31,6 @@ module.exports = function(config, db) {
               $lte: lte,
               $gte: gte
             },
-            waiting: {
-              $ne: true
-            },
             sent: {
               $ne: true
             },
@@ -46,7 +43,10 @@ module.exports = function(config, db) {
               
               // find the reservations for each of these events
               db.reservations.find({
-                eventId: event._id
+                eventId: event._id,
+                waiting: {
+                  $ne: true
+                },
               }, function (err, reservations) {
 
                 var arr = []
