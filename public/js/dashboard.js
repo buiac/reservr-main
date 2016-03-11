@@ -139,10 +139,6 @@ var Reservr = Reservr || {};
 
       $.each($inputs, function (i, input) {
         if (input.name) {
-          
-          console.log('--------')
-          console.log(input.name + ':' + input.value)
-          
           Dashboard.eventModel[input.name] = input.value
         }
 
@@ -185,6 +181,7 @@ var Reservr = Reservr || {};
         return;
       }
 
+      // show the image to the user
       var reader = new FileReader();
 
       reader.onload = function (e) {
@@ -192,7 +189,48 @@ var Reservr = Reservr || {};
         $image.removeAttr('style');
       }
 
-      reader.readAsDataURL(input.files[0]); 
+      reader.readAsDataURL(input.files[0]);
+
+      // attach image to object
+      Dashboard.eventModel.images = [{
+        path: '/media/' + input.files[0].name
+      }]
+
+      // send image to the server
+      var formData = new FormData()
+      formData.append('image', input.files[0])
+
+      if (Dashboard.eventModel.orgId) {
+        formData.append('orgId', Dashboard.eventModel.orgId)  
+      }
+      
+      if (Dashboard.eventModel._id) {
+        formData.append('eventId', Dashboard.eventModel._id)
+      }
+      
+      for (var key in Dashboard.eventModel) {
+        
+        if (key === 'images') {
+          formData.append('event[' + key + '][0][path]', Dashboard.eventModel[key][0].path)
+        } else {
+          formData.append('event[' + key + ']', Dashboard.eventModel[key])
+        }
+        
+      }
+
+      $.ajax({
+        url: Dashboard.config.baseUrl + '/tempEvent',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        success: function(res){
+          Dashboard.eventModel.orgId = res.org._id
+          Dashboard.eventModel._id = res.event._id
+        }
+      });
+
     },
 
     previewDescription: function (e) {
@@ -265,9 +303,8 @@ var Reservr = Reservr || {};
       $('body').on('click', '.btn-publish', Dashboard.publishEvent);
     },
 
-    syncData: function() {
-
-      var eventId = $('[name=_id]')[0]
+    parseEventSavePrices: function () {
+      var eventId = $('[name=_id]')[0].value
 
       // add Prices to the event model
       var prices = []
@@ -287,7 +324,7 @@ var Reservr = Reservr || {};
           name: name,
           amount: amount,
           currency: currency,
-          eventId: eventId.value
+          eventId: eventId
         }
 
         if (price.name !== '' && price.amount !== '') {
@@ -297,19 +334,71 @@ var Reservr = Reservr || {};
       })
 
       Dashboard.eventModel.prices = prices
+    },
 
+    parseEventSaveDate: function () {
       // add the date
       var date = $('[name="date"]').val()
       var time = $('[name="time"]').val()
       Dashboard.eventModel.date = date + ' ' + time
 
+    },
+
+    parseEventSaveLocation: function () {
+      
       // add the location
       var location = $('[name="location"]').val()
       Dashboard.eventModel.location = location
 
+    },
+
+    parseEventSaveSeats: function () {
+      
       // add the seats
       var seats = $('[name="seats"]').val()
+      
       Dashboard.eventModel.seats = seats
+    },
+
+    parseEventSaveName: function () {
+      // add the name
+      var name = $('[name="name"]').val()
+      
+      Dashboard.eventModel.name = name
+    },
+
+    parseEventSaveDescription: function () {
+      // add the name
+      var description = $('textarea[name="description"]').val()
+      
+      Dashboard.eventModel.description = description
+    },
+
+    parseEventSaveImages: function () {
+      var existingImages = $('input[name="existingImages"]').val()
+
+      Dashboard.eventModel.existingImages = existingImages
+    },
+
+    parseEventSave: function () {
+      Dashboard.parseEventSaveName()
+      Dashboard.parseEventSaveDescription()
+      Dashboard.parseEventSaveDate()
+      Dashboard.parseEventSaveLocation()
+      Dashboard.parseEventSaveSeats()
+      Dashboard.parseEventSavePrices()
+      Dashboard.parseEventSaveImages()
+    },
+
+    syncData: function() {
+
+      var eventId = $('[name=_id]')[0].value;
+
+      Dashboard.parseEventSave();
+
+      if (!eventId) {
+        delete Dashboard.eventModel._id;
+      }
 
       // send the data to the server
       $.ajax({
@@ -331,9 +420,9 @@ var Reservr = Reservr || {};
           // updateEventUrl()
 
           if (Dashboard.reloadPage) {
-            if (eventId && !eventId.value) {
+            if (eventId && !eventId) {
               window.location = window.location.href + '/' + res.event._id
-            } else if (eventId && eventId.value) {
+            } else if (eventId && eventId) {
               window.location = window.location.href
             }
           }

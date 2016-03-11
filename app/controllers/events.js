@@ -622,7 +622,14 @@ module.exports = function(config, db) {
       event.reminders = (event.reminders === 'true')
     }
 
-    // update the event image
+    
+    // for existing events,
+    // if we don't add any new images, leave the old ones alone.
+    if(req.body.event.existingImages) {
+
+      event.images = JSON.parse(req.body.event.existingImages);
+
+    }
 
     event.invited = 0
     event.waiting = 0
