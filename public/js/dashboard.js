@@ -130,6 +130,11 @@ var Reservr = Reservr || {};
 
     parseFieldsOnLoad: function () {
       var $eventPage = $('.event-create-update');
+      var $eventStatusInputs = $('.event-create-update .dropdown-menu').find('input')
+
+      $eventStatusInputs.each(function (e, input) {
+        Dashboard.eventModel[input.name] = input.checked
+      })
 
       if (!$eventPage.length) {
         return;
@@ -290,6 +295,76 @@ var Reservr = Reservr || {};
       }
     },
 
+    stopPropagation: function (e) {
+      e.stopPropagation()      
+    },
+
+    togglePublish: function (e) {
+      Dashboard.eventModel.published = e.target.checked
+
+      console.log('\n\n\n\n')
+      console.log('----toggle publish----')
+      console.log(Dashboard.eventModel.published)
+      console.log('--------')
+      console.log('\n\n\n\n')
+      
+      Dashboard.syncData()
+    },
+
+    toggleReminders: function (e) {
+      Dashboard.eventModel.reminders = e.target.checked
+
+      console.log('\n\n\n\n')
+      console.log('----toggle reminders----')
+      console.log(Dashboard.eventModel.reminders)
+      console.log('--------')
+      console.log('\n\n\n\n')
+
+      Dashboard.syncData()
+    },
+
+    toggleReservations: function (e) {
+      Dashboard.eventModel.reservationsOpen = e.target.checked
+
+      console.log('\n\n\n\n')
+      console.log('----toggle reservations----')
+      console.log(Dashboard.eventModel.reservationsOpen)
+      console.log('--------')
+      console.log('\n\n\n\n')
+
+      Dashboard.syncData()
+    },
+
+    toggleMailchimp: function (e) {
+      
+      $(this).parents('li').toggleClass('event-menu-drawer--open')
+
+      Dashboard.eventModel.toggleMailchimp = e.target.checked
+
+      console.log('\n\n\n\n')
+      console.log('----toggle toggle mailchimp----')
+      console.log(Dashboard.eventModel.toggleMailchimp)
+      console.log('--------')
+      console.log('\n\n\n\n')
+
+      if (Dashboard.eventModel.toggleMailchimp) {
+        Dashboard.eventModel.mailchimp = $(this).parents('li').find('select[name="mailchimp"]').val()
+      } else {
+        Dashboard.eventModel.mailchimp = ''
+      }
+
+      Dashboard.syncData()
+      
+    },
+
+    toggleMailchimpOptin: function (e) {
+      
+      Dashboard.eventModel.toggleMailchimpOptin = e.target.checked
+
+      Dashboard.syncData()
+      
+    },
+
     attachEventHandlers: function () {
       
       $('.event-image input').change(function(){
@@ -301,6 +376,13 @@ var Reservr = Reservr || {};
       $('body').on('click', '.event-add-price', Dashboard.addPrice);
       $('body').on('click', '.event-remove-price', Dashboard.removePrice);
       $('body').on('click', '.btn-publish', Dashboard.publishEvent);
+      $('body').on('click', '.switch-material', Dashboard.stopPropagation)
+
+      $('body').on('change', '[name="published"]', Dashboard.togglePublish)
+      $('body').on('change', '[name="reminders"]', Dashboard.toggleReminders)
+      $('body').on('change', '[name="reservationsOpen"]', Dashboard.toggleReservations)
+      $('body').on('change', '[name="toggleMailchimp"]', Dashboard.toggleMailchimp)
+      $('body').on('change', '[name="toggleMailchimpOptin"]', Dashboard.toggleMailchimpOptin)
     },
 
     parseEventSavePrices: function () {
@@ -380,6 +462,12 @@ var Reservr = Reservr || {};
       Dashboard.eventModel.existingImages = existingImages
     },
 
+    parseEventSaveToggles: function () {
+      $('.event-create-update .dropdown-menu').find('input').each(function (i, input) {
+        Dashboard.eventModel[input.name] = input.checked;
+      })
+    },
+
     parseEventSave: function () {
       Dashboard.parseEventSaveName()
       Dashboard.parseEventSaveDescription()
@@ -388,6 +476,7 @@ var Reservr = Reservr || {};
       Dashboard.parseEventSaveSeats()
       Dashboard.parseEventSavePrices()
       Dashboard.parseEventSaveImages()
+      Dashboard.parseEventSaveToggles()
     },
 
     syncData: function() {

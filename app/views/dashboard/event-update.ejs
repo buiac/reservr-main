@@ -11,7 +11,140 @@
       <div class="panel panel-default event-create-update">
           <div class="panel-heading cf">
               <h2><strong>Create or Update event</strong></h2>
-              <a href="/u/<%= org._id %>" class="pull-right" target="_blank">Preview Event</a>
+              <!-- <a href="/u/<%= org.name %>/event/<%= theEvent._id %>" class="pull-right" target="_blank">Preview Event</a> -->
+
+              <div class="dropdown pull-right">
+                <a class="fa fa-cogs" data-toggle="dropdown" href="widgets.html#"></a>
+
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <li class="cf">
+                              
+                    <label class="switch-light switch-material" onclick="" class="cf">
+
+                      <input type="checkbox" <% if (theEvent.published) { %> checked="checked" <% } %> name="published">
+
+                      <strong class="pull-left">
+                        Published    
+                      </strong>
+
+                      <span class="pull-right">
+                        <span>Off</span>
+                        <span>On</span>
+                        <a></a>
+                      </span>
+
+                    </label>
+
+                  </li>
+
+                  <li class="cf">
+
+                    <label class="switch-light switch-material" onclick="" class="cf">
+
+                      <input type="checkbox" <% if (theEvent.reminders) { %> checked="checked" <% } %> name="reminders">
+
+                      <strong class="pull-left">
+                        Reminders
+                      </strong>
+
+                      <span class="pull-right">
+                        <span>Off</span>
+                        <span>On</span>
+                        <a></a>
+                      </span>
+
+                    </label>
+
+                  </li>
+
+                  <li class="cf">
+
+                    <label class="switch-light switch-material" onclick="" class="cf">
+
+                      <input type="checkbox" <% if (theEvent.reservationsOpen || theEvent.reservationsOpen === undefined) { %> checked="checked" <% } %> name="reservationsOpen">
+
+                      <strong class="pull-left">
+                        Reservations Open
+                      </strong>
+
+                      <span class="pull-right">
+                        <span>Off</span>
+                        <span>On</span>
+                        <a></a>
+                      </span>
+
+                    </label>
+
+                  </li>
+
+                  <% if(org.mailchimp && org.mailchimp.length) { %>
+
+                  <li class="cf <% if (theEvent.toggleMailchimp) { %> event-menu-drawer--open <% } %>">
+
+                    <label class="switch-light switch-material" onclick="" class="cf">
+
+                      <input type="checkbox" name="toggleMailchimp" <% if (theEvent.toggleMailchimp) { %> checked="true" <% } %>>
+
+                      <strong class="pull-left">
+                        MailChimp
+                      </strong>
+
+                      <span class="pull-right">
+                        <span>Off</span>
+                        <span>On</span>
+                        <a></a>
+                      </span>
+
+                    </label>
+
+                    <div class="event-menu-drawer">
+
+                      <div class="form-group">
+                        <label for="">Select list</label>
+                        <select name="mailchimp" id="" class="form-control input-sm">
+                          
+                          <% org.mailchimp.forEach(function(mailchimp){ %>
+
+                            <option value="<%= mailchimp.account %>"> <%= mailchimp.name %> </option>
+
+                          <% }) %>
+
+                        </select>
+                      </div>
+
+                      <label class="switch-light switch-material" onclick="" class="cf">
+
+                      <input type="checkbox" name="toggleMailchimpOptin" <% if (theEvent.toggleMailchimpOptin) { %> checked="true" <% } %>>
+
+                      <strong class="pull-left">
+                        Show opt-in
+                      </strong>
+
+                      <span class="pull-right">
+                        <span>Off</span>
+                        <span>On</span>
+                        <a></a>
+                      </span>
+
+                    </label>
+
+                    </div>
+
+                  </li>
+
+                  <% } %>
+
+                  <% if (theEvent._id) { %> 
+                  
+                    <li>
+                      <a class="btn btn-default" target="_blank" href="/u/<%= org.name %>/event/<%= theEvent._id %>">
+                        Preview event
+                      </a>
+                    </li>
+
+                  <% } %>
+                </ul>
+              </div>
           </div>
           <div class="panel-body">
               <input type="hidden" name="_id" value="<%= theEvent._id || '' %>">

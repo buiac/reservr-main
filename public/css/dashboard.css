@@ -1,3 +1,14 @@
+
+/* CSS Toggle switch
+*/
+.switch-material.switch-light input:checked ~ span {
+  background: rgba(25, 133 ,172, .5);
+}
+
+.switch-material.switch-light input:checked ~ span a {
+  background: #1985ac;
+}
+
 /* Clearfix
 */
 .cf:before,
@@ -167,4 +178,41 @@ a.preview-description {
 */
 .btn-publish {
   margin-left: 15px;
+}
+
+/* Event Update event-menu
+*/
+
+.event-create-update .dropdown-menu {
+  
+}
+
+.event-create-update .dropdown-menu {
+  width: 250px;
+  padding: 20px;
+}
+
+.event-create-update .dropdown-menu li {
+  font-size: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+  color: #6F6A6A;
+}
+
+.event-create-update .dropdown-menu li:last-child {
+  border-bottom: 0 none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.event-create-update .dropdown-menu .event-menu-drawer {
+  background: #EAEAEA;
+  padding: 10px;
+  font-size: 12px;
+  margin-top: 15px;
+  display: none;
+}
+
+.event-create-update .dropdown-menu li.event-menu-drawer--open .event-menu-drawer {
+  display: block;
 }
