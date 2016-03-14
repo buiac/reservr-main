@@ -45,36 +45,6 @@ var Reservr = Reservr || {};
     }
   };
 
-  // var eventModel = {
-  //   name: 'Demo event title',
-  //   description: 'This is an event description that will take place in the heart of our beloved city. One of it\'s kind, it will be a transformative experience. Check out the items list:\n\n- some strings\n- glue\n- paper\n- [links are included](http://google.com)',
-  //   images: [
-  //     {
-  //       path: '/images/reservr-placeholder-2.png'
-  //     }
-  //   ],
-  //   date: defaultEventDate,
-  //   seats: 120,
-  //   orgId: '',
-  //   temp: true,
-  //   published: false
-  // };
-
-  /*
-  
-  Event model:
-  - _id
-  - name
-  - description
-  - date
-  - images [{path: ''}]
-  - date
-  - seats
-  - prices
-  - location
-
-  */ 
-
   var Dashboard = {
     
     // Initialization the functions
@@ -300,39 +270,24 @@ var Reservr = Reservr || {};
     },
 
     togglePublish: function (e) {
-      Dashboard.eventModel.published = e.target.checked
-
-      console.log('\n\n\n\n')
-      console.log('----toggle publish----')
-      console.log(Dashboard.eventModel.published)
-      console.log('--------')
-      console.log('\n\n\n\n')
       
+      Dashboard.eventModel.published = e.target.checked
       Dashboard.syncData()
+
     },
 
     toggleReminders: function (e) {
+      
       Dashboard.eventModel.reminders = e.target.checked
-
-      console.log('\n\n\n\n')
-      console.log('----toggle reminders----')
-      console.log(Dashboard.eventModel.reminders)
-      console.log('--------')
-      console.log('\n\n\n\n')
-
       Dashboard.syncData()
+
     },
 
     toggleReservations: function (e) {
+      
       Dashboard.eventModel.reservationsOpen = e.target.checked
-
-      console.log('\n\n\n\n')
-      console.log('----toggle reservations----')
-      console.log(Dashboard.eventModel.reservationsOpen)
-      console.log('--------')
-      console.log('\n\n\n\n')
-
       Dashboard.syncData()
+
     },
 
     toggleMailchimp: function (e) {
@@ -340,12 +295,6 @@ var Reservr = Reservr || {};
       $(this).parents('li').toggleClass('event-menu-drawer--open')
 
       Dashboard.eventModel.toggleMailchimp = e.target.checked
-
-      console.log('\n\n\n\n')
-      console.log('----toggle toggle mailchimp----')
-      console.log(Dashboard.eventModel.toggleMailchimp)
-      console.log('--------')
-      console.log('\n\n\n\n')
 
       if (Dashboard.eventModel.toggleMailchimp) {
         Dashboard.eventModel.mailchimp = $(this).parents('li').find('select[name="mailchimp"]').val()
@@ -360,7 +309,6 @@ var Reservr = Reservr || {};
     toggleMailchimpOptin: function (e) {
       
       Dashboard.eventModel.toggleMailchimpOptin = e.target.checked
-
       Dashboard.syncData()
       
     },
@@ -383,6 +331,7 @@ var Reservr = Reservr || {};
       $('body').on('change', '[name="reservationsOpen"]', Dashboard.toggleReservations)
       $('body').on('change', '[name="toggleMailchimp"]', Dashboard.toggleMailchimp)
       $('body').on('change', '[name="toggleMailchimpOptin"]', Dashboard.toggleMailchimpOptin)
+      $('body').on('click', '.btn-remove-item', Dashboard.removeItem)
     },
 
     parseEventSavePrices: function () {
@@ -479,13 +428,33 @@ var Reservr = Reservr || {};
       Dashboard.parseEventSaveToggles()
     },
 
+    removeItem: function (e) {
+      e.preventDefault()
+
+      var title = e.target.dataset.message
+      var href = e.target.href
+
+      swal({
+        title: title,
+        text: "You will not be able to recover the data after this.",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+      }, function() {
+        window.location = href
+      });
+    },
+
     syncData: function() {
 
-      var eventId = $('[name=_id]')[0].value;
+      var $eventId = $('[name=_id]')[0];
+
 
       Dashboard.parseEventSave();
 
-      if (!eventId) {
+      if (!$eventId.value) {
         delete Dashboard.eventModel._id;
       }
 
@@ -505,19 +474,11 @@ var Reservr = Reservr || {};
         
 
         if (res.event.published) {
-          // update the unique event url
-          // updateEventUrl()
-
-          console.log('\n\n\n\n')
-          console.log('--------')
-          console.log(Dashboard.reloadPage)
-          console.log('--------')
-          console.log('\n\n\n\n')
-          
           if (Dashboard.reloadPage) {
-            if (eventId && !eventId) {
+            
+            if ($eventId && !$eventId.value) {
               window.location = window.location.href + '/' + res.event._id
-            } else if (eventId && eventId) {
+            } else if ($eventId && $eventId.value) {
               window.location = window.location.href
             }
           }
@@ -534,11 +495,17 @@ var Reservr = Reservr || {};
     publishEvent: function (e) {
       var $this = $(this)
       var $parent = $this.parents('.event-publish')
+      var $publishInput = $('.event-create-update .dropdown-menu [name="published"]')
 
       $this.addClass('btn-state-loading')
 
       Dashboard.eventModel.published = true;
       Dashboard.reloadPage = true;
+
+      // update the Published input in the hidden menu
+      // this input is checked in the parseSave method before 
+      // data is synced to the server
+      $publishInput[0].checked = true;
 
       Dashboard.syncData()
     }

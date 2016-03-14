@@ -1,17 +1,14 @@
 <div class="panel panel-default">
-  <div class="panel-heading">
+  <div class="panel-heading cf">
     <h2><i class="fa fa-list"></i>Events</h2>
-    <!-- <div class="panel-actions">
-      <a href="widgets.html#" class="btn-minimize"><i class="icon-arrow-up"></i></a>
-      <a href="widgets.html#" class="btn-close"><i class="icon-close"></i></a>
-    </div> -->
+    <a href="/dashboard/EiUObqbCDKIxmWux/event" class="btn preview btn-info btn-xs pull-right" style="margin-top: 8px;">Create New Event</a>
   </div>
   <div class="panel-body no-padding">
-    <ul class="users-list">
+    <ul class="users-list events-list">
       
       <% events.forEach(function(event){ %>
 
-      <li>
+      <li class="<% if (theEvent && theEvent._id === event._id) { %> event-active <% } %>">
         
         <div class="name">
           <a href="/dashboard/<%= orgId %>/event/<%= event._id %>">

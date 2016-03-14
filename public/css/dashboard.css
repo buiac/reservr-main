@@ -216,3 +216,19 @@ a.preview-description {
 .event-create-update .dropdown-menu li.event-menu-drawer--open .event-menu-drawer {
   display: block;
 }
+
+/* Event list
+*/
+
+.events-list {
+
+}
+
+.events-list .event-active {
+  background: #A1DBEC;
+}
+
+.events-list .event-active a {
+  color: #070C0E;
+  text-decoration: underline;  
+}

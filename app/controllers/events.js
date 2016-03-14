@@ -43,7 +43,7 @@ module.exports = function(config, db) {
       _id: req.params.eventId
     }, function (err, num) {
       
-      res.redirect('/dashboard');
+      res.redirect('/dashboard/' + req.params.orgId + '/events');
 
     });
   };

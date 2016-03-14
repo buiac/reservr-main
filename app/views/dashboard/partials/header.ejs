@@ -77,6 +77,10 @@
       <li>
         <a href="/u/<%= org.name %>" target="_blank" class="btn preview btn-success">View Event List</a>
       </li>
+
+      <li>
+        <a href="/dashboard/<%= org._id %>/event" class="btn preview btn-info">Create New Event</a>
+      </li>
     
       <!-- <li><span class="timer"><i class="icon-clock"></i> <span id="clock">JavaScript clock will be displayed here, if you want to remove clock delete parent <li></span></span>
       </li> -->
@@ -217,7 +221,13 @@
       <div class="sidebar-menu">
         <ul class="nav nav-sidebar">
 
-          <li><a href="/dashboard"><i class="icon-speedometer"></i><span class="text"> Dashboard<span class="label label-info">NEW</span></span></a>
+          <li>
+            <a href="/dashboard">
+              <i class="icon-speedometer"></i>
+              <span class="text"> Dashboard
+                <!-- <span class="label label-info">NEW</span> -->
+              </span>
+            </a>
           </li>
 
           <li>
