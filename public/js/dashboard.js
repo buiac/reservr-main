@@ -508,6 +508,12 @@ var Reservr = Reservr || {};
           // update the unique event url
           // updateEventUrl()
 
+          console.log('\n\n\n\n')
+          console.log('--------')
+          console.log(Dashboard.reloadPage)
+          console.log('--------')
+          console.log('\n\n\n\n')
+          
           if (Dashboard.reloadPage) {
             if (eventId && !eventId) {
               window.location = window.location.href + '/' + res.event._id
