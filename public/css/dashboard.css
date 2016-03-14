@@ -232,3 +232,44 @@ a.preview-description {
   color: #070C0E;
   text-decoration: underline;  
 }
+
+
+/* Event button state loading
+*/
+.btn-state-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.btn-state-loading:before,
+.event-save--loading:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1099;
+  width: 100%;
+  height: 100%;
+  background-color: #20a8d8;
+}
+
+.btn-state-loading:after,
+.event-save--loading:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1100;
+  display: inline-block;
+  width: .5em;
+  height: .5em;
+  margin-left: -.25em;
+  margin-top: -.25em;
+
+  border-radius: 3px;
+  border: 2px solid #fff;
+
+  -webkit-animation: rotate 1.4s linear infinite;
+  -moz-animation: rotate 1.4s linear infinite;
+  animation: rotate 1.4s linear infinite;
+}

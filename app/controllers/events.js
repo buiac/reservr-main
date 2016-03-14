@@ -625,7 +625,7 @@ module.exports = function(config, db) {
     
     // for existing events,
     // if we don't add any new images, leave the old ones alone.
-    if(req.body.event.existingImages) {
+    if(req.body.event.existingImages && !req.body.event.images) {
 
       event.images = JSON.parse(req.body.event.existingImages);
 
