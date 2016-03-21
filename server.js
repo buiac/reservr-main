@@ -203,6 +203,19 @@ module.exports = (function() {
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
   app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
   
+  app.get('/dashboard/:orgId/settings/notifications', isAuthenticated, settings.notifications);
+  app.post('/dashboard/:orgId/settings/notifications', isAuthenticated, settings.saveNotifications);
+  app.get('/dashboard/:orgId/settings/profile', isAuthenticated, settings.profile);
+  app.post('/dashboard/:orgId/settings/profile', isAuthenticated, settings.saveProfile);
+  app.get('/dashboard/:orgId/settings/organization', isAuthenticated, settings.organization);
+  app.post('/dashboard/:orgId/settings/organization', isAuthenticated, settings.saveOrganization);
+  app.get('/dashboard/:orgId/settings/integrations', isAuthenticated, settings.integrations);
+  app.post('/dashboard/:orgId/settings/integrations', isAuthenticated, settings.saveIntegrations);
+  app.get('/dashboard/:orgId/settings/templates', isAuthenticated, settings.templates);
+  app.post('/dashboard/:orgId/settings/templates', isAuthenticated, settings.saveTemplates);
+
+
+  
   // reservations  
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservations);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);

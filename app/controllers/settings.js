@@ -27,7 +27,7 @@ module.exports = function(config, db) {
             orgId: org._id
           }, function (err, key) {
 
-            res.render('backend/settings', {
+            res.render('dashboard/settings', {
               errors: [],
               orgId: req.params.orgId,
               org: org,
@@ -277,6 +277,120 @@ module.exports = function(config, db) {
     });
   };
 
+   
+  
+
+  var notifications = function (req, res, next) {
+    db.orgs.findOne({
+      _id: req.params.orgId
+    },function (err, org) {
+
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        res.render('dashboard/settings/notifications',{
+          org: org,
+          user: user
+        })
+
+      })
+    })
+  };
+
+  var saveNotifications = function (req, res, next) {
+    res.render('dashboard/settings/notifications')
+  };
+
+  var profile = function (req, res, next) {
+    db.orgs.findOne({
+      _id: req.params.orgId
+    },function (err, org) {
+
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        res.render('dashboard/settings/profile',{
+          org: org,
+          user: user
+        })
+
+      })
+    })
+
+  };
+
+  var saveProfile = function (req, res, next) {
+    res.render('dashboard/settings/profile')
+  };
+
+  var organization = function (req, res, next) {
+    db.orgs.findOne({
+      _id: req.params.orgId
+    },function (err, org) {
+
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        res.render('dashboard/settings/organization',{
+          org: org,
+          user: user
+        })
+
+      })
+    })
+  };
+
+  var saveOrganization = function (req, res, next) {
+    res.render('dashboard/settings/organization')
+  };
+
+  var integrations = function (req, res, next) {
+    db.orgs.findOne({
+      _id: req.params.orgId
+    },function (err, org) {
+
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        res.render('dashboard/settings/integrations',{
+          org: org,
+          user: user
+        })
+
+      })
+    })
+  };
+
+  var saveIntegrations = function (req, res, next) {
+    
+  };
+
+  var templates = function (req, res, next) {
+    db.orgs.findOne({
+      _id: req.params.orgId
+    },function (err, org) {
+
+      db.users.findOne({
+        _id: org.userId
+      }, function (err, user) {
+        
+        res.render('dashboard/settings/templates',{
+          org: org,
+          user: user
+        })
+
+      })
+    })
+  };
+
+  var saveTemplates = function (req, res, next) {
+    res.render('dashboard/settings/templates')
+  };
+
   var deleteAccount = function (req, res, next) {
 
     db.users.findOne({
@@ -355,7 +469,17 @@ module.exports = function(config, db) {
   return {
     viewSettings: viewSettings,
     updateSettings: updateSettings,
-    deleteAccount: deleteAccount
+    deleteAccount: deleteAccount,
+    notifications: notifications,
+    profile: profile,
+    organization: organization,
+    integrations: integrations,
+    templates: templates,
+    saveNotifications: saveNotifications,
+    saveProfile: saveProfile,
+    saveOrganization: saveOrganization,
+    saveIntegrations: saveIntegrations,
+    saveTemplates: saveTemplates
   };
 
 };
