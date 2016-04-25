@@ -1698,7 +1698,8 @@ body.event-page .event-page .event-description {
   .table-reservations tbody tr td:last-child,
   .rsvr-dashboard .rzv-lightbox h2,
   .reservations-print,
-  .field-update-placeholder .btn {
+  .field-update-placeholder .btn,
+  .dashboard-reservation {
     display: none;
   }
 
@@ -1786,6 +1787,34 @@ body.event-page .event-page .event-description {
   font-family: 'Oswald', sans-serif;
   color: #02766C;
   font-weight: normal;
+}
+
+.dashboard-reservation {
+  margin: 20px 0;
+}
+
+.dashboard-reservation form {
+  display: none;
+}
+
+.dashboard-reservation form .btn-hide-form {
+  margin-right: 10px;
+}
+
+.dashboard-reservation.dashboard-reservation--show .btn-show-form{
+  display: none;
+}
+
+.dashboard-reservation.dashboard-reservation--show form {
+  display: block;
+}
+
+.seats-left-no-more {
+  display: none;
+}
+
+.show-error--seatsLeft .seats-left-no-more {
+  display: block;
 }
 
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }

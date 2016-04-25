@@ -422,15 +422,24 @@ module.exports = function(config, db) {
             _id: req.params.eventId
           }, function (err, event) {
 
-            res.render('backend/reservations-view',{
-              org: org,
-              orgId: req.params.orgId,
-              user: req.user,
-              reservations: reservations,
-              eventId: req.params.eventId,
-              events: events,
-              event: event
-            });
+            data.getEventReservationsByType({
+              eventId: event._id
+            }).then(function (reservationsByType) {
+
+              // update the event with invited and waiting seats
+              event.invited = reservationsByType.invited
+              event.waiting = reservationsByType.waiting
+
+              res.render('backend/reservations-view',{
+                org: org,
+                orgId: req.params.orgId,
+                user: req.user,
+                reservations: reservations,
+                eventId: req.params.eventId,
+                events: events,
+                event: event
+              });
+            })
           })
         });
       });
@@ -486,6 +495,59 @@ module.exports = function(config, db) {
         })
       })
     });
+  }
+
+  var updateDashboardReservation = function (req, res, next) {
+    var email = req.body.email;
+    var seats = parseInt(req.body.seats);
+    var eventId = req.params.eventId
+    var orgId = req.params.orgId
+
+    // get number of seats this event has
+    db.events.findOne({
+      _id: eventId
+    }, function (err, event) {
+      
+      var totalSeats = event.seats
+
+      // get the total reservations
+      data.getEventReservationsTotal({
+        eventId: eventId
+      }).then(function (totalReservations) {
+
+        var seatsLeft = totalSeats - totalReservations;
+        var newReservation = {
+          name: req.body.name,
+          email: email,
+          seats: seats,
+          timestamp: req.body.timestamp,
+          eventId: eventId,
+          orgId: orgId,
+          waiting: false
+        }
+
+        if (totalReservations >= event.seats) {
+          newReservation.waiting = true
+        }
+
+        db.reservations.insert(newReservation, function (err, reservation) {
+          if (err) {
+            res.json({
+              message: 'Error: ' + err
+            })
+            return
+          }
+
+          res.json({
+            message: 'Create successful.',
+            reservation: newReservation,
+            event: event
+          })
+        })
+
+      })
+    })
+
   }
 
   var updateReservation = function (req, res, next) {
@@ -879,7 +941,8 @@ module.exports = function(config, db) {
     deleteReservation: deleteReservation,
     userReservationsView: userReservationsView,
     updateReservationTmp: updateReservationTmp,
-    updateReservationJSON: updateReservationJSON
+    updateReservationJSON: updateReservationJSON,
+    updateDashboardReservation: updateDashboardReservation
   };
 
 };

@@ -14,6 +14,50 @@
 
       <h4><a href="/dashboard/<%= org._id %>/event/<%= event._id %>"><%= event.name %></a></h4>
       <span class="event-date"><%= moment(event.date).format('LLLL') %></span>
+      
+      <% if (event.seats - event.invited >= 0) { %>
+        <p>Seats left: <%= event.seats - event.invited %></p>
+      <% } else {%>
+        <p>Seats left: 0</p>
+      <% } %>
+
+      <div class="dashboard-reservation clearfix">
+        <a href="" class="btn btn-primary btn-show-form"> <i class="fa fa-plus"></i> Add a reservation</a>
+
+        <div class="row">
+          <div class="col-md-3">
+            <form action="" class="form-dashboard-reserve">
+
+              <div class="alert alert-danger seats-left-no-more">
+                <p>The number of seats you selected is bigger than the number of seats available (<%= event.seats - event.invited %> seats available)</p>
+              </div>
+              
+              <input type="hidden" name="email" value="<%= user.username %>">
+              <input type="hidden" name="orgId" value="<%= org._id %>">
+              <input type="hidden" name="eventId" value="<%= event._id %>">
+              <input type="hidden" name="seatsLeft" value="<%= event.seats - event.invited %>">
+
+              <div class="form-group">
+                <label for="">Name:</label>
+                <input type="text" name="name" id="" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label for="">Seats:</label>
+                <select name="seats" id="" class="form-control" required>
+                  <option value="" selected>-- Select number of seats --</option>
+                  <% for (var i = 1; i < 21; i++) { %>
+                    <option value="<%= i %>"><%= i %></option>
+                  <% } %>
+                </select>
+              </div>
+          
+              <button type="submit" class="btn btn-primary pull-right">Save reservation</button>
+              <a href="" class="btn btn-default btn-hide-form pull-right">Cancel</a>
+            </form>
+          </div>
+        </div>
+      </div>
 
       <div class="alert alert-warning alert-warning-seats">
         <a href="" class="close">&times;</a>

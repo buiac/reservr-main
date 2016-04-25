@@ -712,133 +712,7 @@ $(document).ready(function () {
     return false;
   }
 
-  var submitReserveForm = function() {
-      
-    var $this = $(this);
-
-    var $eventform = $this.parent();
-    var name = $this.find('.reserve-name').val();
-    var email = $this.find('.reserve-email').val();
-    var seats = parseInt($this.find('.reserve-seats').val(), 10);
-    var timestamp = $this.find('.reserve-timestamp').val()
-    var eventId = $this.find('.reserve-id').val();
-    var orgId = $this.find('.reserve-orgId').val();
-    var invited = parseInt($this.find('.reserve-invited').val(), 10);
-    var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
-    var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
-    var mclistid = $this.find('.reserve-newsletter').val();
-    var mcoptin = 'null';
-    var seatsLeft = totalSeats - invited;
-
-    if ($this.find('.reserve-newsletter-optin').length) {
-
-      mcoptin = $this.find('.reserve-newsletter-optin')[0].checked
-
-    }
-
-
-    if (seats <= seatsLeft || seatsLeft === 0 ) {
-
-      $eventform.removeClass('event-form--success event-form--error');
-      $eventform.addClass('event-form--loading');
-      
-      $.ajax({
-        url: '/u/' +orgId + '/reservations/' + eventId,
-        type: 'POST',
-        data: {
-          name: name,
-          email: email,
-          seats: seats,
-          timestamp: timestamp,
-          mclistid: mclistid,
-          mcoptin: mcoptin
-        }
-      }).done(function(res) {
-
-          $eventform.removeClass('event-form--loading');
-          $eventform.addClass('event-form--success');
-          
-
-          // update the number of seats invited
-          $('.seats-left').html(parseInt(res.event.seats, 10) - parseInt(res.event.invited, 10))
-
-          if ($('.seats-waiting')) {
-            $('.seats-waiting').html(res.event.waiting)            
-          }
-
-          // update the reservation link
-          $eventform.find('.form-success a').html('http://reservr.net/r/' + res.reservation._id).attr('href','http://reservr.net/r/' + res.reservation._id)
-
-          // if a reservation is made with the same email
-          if (res.resCode) {
-            var h4 = $eventform.find('.form-success h4')
-            var p = $('<p></p>').html(res.message)
-            h4.after(p)
-
-          }
-
-        }).fail(function (err) {
-          var error = JSON.parse(err.responseText)
-
-          $eventform.addClass('event-form--error');
-          $eventform.removeClass('event-form--loading');
-
-          $defaultErrorMessage = $('.form-error .reservation-message').html()
-          $tempErrorMessage = $('<p></p>').html(error.message)
-
-          $('.form-error .reservation-message').html($tempErrorMessage)
-
-          // allow me to try again 
-          setTimeout(function() {
-            
-            $eventform.removeClass('event-form--error event-form--success event-form--loading');
-            $('.form-error .reservation-message').html($defaultErrorMessage);
-            
-          }, 10000);
-
-        })
-        // error: function(err) {
-          
-        //   // $eventform.removeClass('event-form--loading');
-        //   // $eventform.addClass('event-form--error');
-          
-        //   // // allow me to try again 
-        //   // setTimeout(function() {
-            
-        //   //   $eventform.removeClass('event-form--loading event-form--error');
-            
-        //   // }, 5000);
-          
-        // },
-        // complete: function() {
-          
-        //   // setTimeout(function() {
-        //   //   $eventform.removeClass('event-form--error event-form--loading event-form--success');
-        //   // })
-        // }
-
-      // });
-
-    } else {
-
-      $eventform.addClass('event-form--error');
-
-      $defaultErrorMessage = $('.form-error .reservation-message').html()
-      $tempErrorMessage = $('<p></p>').html('Not enough seats left. Please select less seats.')
-
-      $('.form-error .reservation-message').html($tempErrorMessage)
-
-      // allow me to try again 
-      setTimeout(function() {
-        
-        $eventform.removeClass('event-form--error');
-        $('.form-error .reservation-message').html($defaultErrorMessage);
-        
-      }, 5000);
-    }
-
-    return false;
-  };
+  
 
   function closeAlert (e) {
     e.preventDefault();
@@ -1063,8 +937,167 @@ $(document).ready(function () {
     $(this).parents('.field-update').removeClass('field-update--show')
   }
 
+  function toggleDashboardReservationForm (e) {
+    e.preventDefault()
+    var $parent = $(this).parents('.dashboard-reservation')
+    $parent.toggleClass('dashboard-reservation--show')
+  }
+
+  var submitReserveForm = function() {
+      
+    var $this = $(this);
+
+    var $eventform = $this.parent();
+    var name = $this.find('.reserve-name').val();
+    var email = $this.find('.reserve-email').val();
+    var seats = parseInt($this.find('.reserve-seats').val(), 10);
+    var timestamp = $this.find('.reserve-timestamp').val()
+    var eventId = $this.find('.reserve-id').val();
+    var orgId = $this.find('.reserve-orgId').val();
+    var invited = parseInt($this.find('.reserve-invited').val(), 10);
+    var waiting = parseInt($this.find('.reserve-waiting').val(), 10);
+    var totalSeats = parseInt($this.find('.reserve-total-seats').val(), 10);
+    var mclistid = $this.find('.reserve-newsletter').val();
+    var mcoptin = 'null';
+    var seatsLeft = totalSeats - invited;
+
+    if ($this.find('.reserve-newsletter-optin').length) {
+
+      mcoptin = $this.find('.reserve-newsletter-optin')[0].checked
+
+    }
+
+
+    if (seats <= seatsLeft || seatsLeft === 0 ) {
+
+      $eventform.removeClass('event-form--success event-form--error');
+      $eventform.addClass('event-form--loading');
+      
+      $.ajax({
+        url: '/u/' +orgId + '/reservations/' + eventId,
+        type: 'POST',
+        data: {
+          name: name,
+          email: email,
+          seats: seats,
+          timestamp: timestamp,
+          mclistid: mclistid,
+          mcoptin: mcoptin
+        }
+      }).done(function(res) {
+
+          $eventform.removeClass('event-form--loading');
+          $eventform.addClass('event-form--success');
+          
+
+          // update the number of seats invited
+          $('.seats-left').html(parseInt(res.event.seats, 10) - parseInt(res.event.invited, 10))
+
+          if ($('.seats-waiting')) {
+            $('.seats-waiting').html(res.event.waiting)            
+          }
+
+          // update the reservation link
+          $eventform.find('.form-success a').html('http://reservr.net/r/' + res.reservation._id).attr('href','http://reservr.net/r/' + res.reservation._id)
+
+          // if a reservation is made with the same email
+          if (res.resCode) {
+            var h4 = $eventform.find('.form-success h4')
+            var p = $('<p></p>').html(res.message)
+            h4.after(p)
+
+          }
+
+        }).fail(function (err) {
+          var error = JSON.parse(err.responseText)
+
+          $eventform.addClass('event-form--error');
+          $eventform.removeClass('event-form--loading');
+
+          $defaultErrorMessage = $('.form-error .reservation-message').html()
+          $tempErrorMessage = $('<p></p>').html(error.message)
+
+          $('.form-error .reservation-message').html($tempErrorMessage)
+
+          // allow me to try again 
+          setTimeout(function() {
+            
+            $eventform.removeClass('event-form--error event-form--success event-form--loading');
+            $('.form-error .reservation-message').html($defaultErrorMessage);
+            
+          }, 10000);
+
+        })
+        
+
+    } else {
+
+      $eventform.addClass('event-form--error');
+
+      $defaultErrorMessage = $('.form-error .reservation-message').html()
+      $tempErrorMessage = $('<p></p>').html('Not enough seats left. Please select less seats.')
+
+      $('.form-error .reservation-message').html($tempErrorMessage)
+
+      // allow me to try again 
+      setTimeout(function() {
+        
+        $eventform.removeClass('event-form--error');
+        $('.form-error .reservation-message').html($defaultErrorMessage);
+        
+      }, 5000);
+    }
+
+    return false;
+  };
+
+  function submitDashboardReserveForm (e) {
+
+    e.preventDefault()
+    var $form = $(this)
+    var orgId = $form.find('[name="orgId"]').val()
+    var eventId = $form.find('[name="eventId"]').val()
+    var url = '/dashboard/' + orgId + '/event/' + eventId + '/';
+    var seatsLeft = parseInt($form.find('[name="seatsLeft"]').val())
+
+    // reservation data
+    var name = $form.find('[name="name"]').val()
+    var email = $form.find('[name="email"]').val()
+    var seats = parseInt($form.find('[name="seats"]').val(), 10)
+    var timestamp = new Date()
+    
+    var reservation =  {
+      name: name,
+      email: email,
+      seats: seats,
+      timestamp: timestamp
+    }
+
+    if ((seatsLeft > 0) && (seatsLeft - seats) < 0) {
+      // show error message
+      $form.addClass('show-error--seatsLeft')
+      return;
+    }
+
+    $.ajax({
+      url: url,
+      type: 'POST',
+      data: reservation
+    }).done(function(res) {
+
+      // Reload page
+      window.location = window.location.href
+
+    }).fail(function (err) {
+      var error = JSON.parse(err.responseText)
+
+    })
+  }
+
   $('body').on('submit', '.form-account', formAccountSubmit)
   $('body').on('submit', '.form-reserve', submitReserveForm);
+  $('body').on('submit', '.form-dashboard-reserve', submitDashboardReserveForm);
+
   $('body').on('click','.btn-toggle-fields', toggleFormFields)
   $('body').on('click', '.event-placeholder', toggleGroup);
   $('body').on('click', '.btn-event-save', saveData);
@@ -1094,14 +1127,14 @@ $(document).ready(function () {
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
   $('body').on('click', '.field-update-seats .btn-save', updateSeats)
+
+  $('body').on('click', '.dashboard-reservation .btn-show-form', toggleDashboardReservationForm)
+  $('body').on('click', '.dashboard-reservation .btn-hide-form', toggleDashboardReservationForm)
   
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
   $('body').on('click', '.field-update-placeholder .btn', showUpdateFields)
   
-
-  
-
   $('.event-image input').change(function(){
     readURL(this);
   });

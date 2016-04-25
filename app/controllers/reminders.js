@@ -14,7 +14,7 @@ module.exports = function(config, db) {
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
   var sendReminders = function (req, res, next) {
-    
+
     // if today it's 11 oclock in romania find all events taking place next day
     var date = new Date()
 
@@ -25,87 +25,95 @@ module.exports = function(config, db) {
       db.orgs.find({}, function (err, orgs) {
         orgs.forEach(function (org) {
           
-          db.events.find({
-            orgId: org._id,
-            date: {
-              $lte: lte,
-              $gte: gte
-            },
-            sent: {
-              $ne: true
-            },
-            reminders: {
-              $ne: false
-            }
-          }).exec(function (err, events) {
+          db.users.findOne({
+            _id: org.userId
+          }, function (err, user) {
 
-            events.forEach(function (event) {
-              
-              // find the reservations for each of these events
-              db.reservations.find({
-                eventId: event._id,
-                waiting: {
-                  $ne: true
-                },
-              }, function (err, reservations) {
+            db.events.find({
+              orgId: org._id,
+              date: {
+                $lte: lte,
+                $gte: gte
+              },
+              sent: {
+                $ne: true
+              },
+              reminders: {
+                $ne: false
+              }
+            }).exec(function (err, events) {
 
-                var arr = []
+              events.forEach(function (event) {
+                
+                // find the reservations for each of these events
+                db.reservations.find({
+                  eventId: event._id,
+                  email: {
+                    $ne: user.username
+                  },
+                  waiting: {
+                    $ne: true
+                  },
+                }, function (err, reservations) {
 
-                reservations.forEach(function (reservation) {
+                  var arr = []
 
-                  if ((arr.indexOf(reservation.email) === -1)) {
-                    
-                    var params = {
-                      eventName: event.name,
-                      eventLocation: event.location,
-                      eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
-                      deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
+                  reservations.forEach(function (reservation) {
+
+                    if ((arr.indexOf(reservation.email) === -1)) {
+                      
+                      var params = {
+                        eventName: event.name,
+                        eventLocation: event.location,
+                        eventDate: moment(event.date).format('dddd, Do MMMM YYYY, HH:mm'),
+                        deleteReservationLink: '<a style="color:red" href="http://reservr.net/r/' + reservation._id + '">Delete Reservation</a>'
+                      }
+
+                      var template = {
+                        subject: org.remindSubject,
+                        body: org.remindBody
+                      };
+
+                      var bodyPlaceholders = util.getWordsBetweenCurlies(template.body)
+                      var subjectPlaceholders = util.getWordsBetweenCurlies(template.body)
+
+                      bodyPlaceholders.forEach(function (item) {
+                        template.body = template.body.replace('{' + item + '}', params[item]);
+                      });
+
+                      subjectPlaceholders.forEach(function (item) {
+                        template.subject = template.subject.replace('{' + item + '}', params[item]);
+                      });
+
+                      var reminderEmailConfig = {
+                        from: 'contact@reservr.net', // user.username
+                        to: reservation.email,
+                        subject: template.subject,
+                        html: marked(template.body)
+                      };
+
+                      transport.sendMail(reminderEmailConfig, function (err, info) {
+                        console.log(err);
+                        console.log(info);
+                      });
+
                     }
 
-                    var template = {
-                      subject: org.remindSubject,
-                      body: org.remindBody
-                    };
+                    arr.push(reservation.email)
 
-                    var bodyPlaceholders = util.getWordsBetweenCurlies(template.body)
-                    var subjectPlaceholders = util.getWordsBetweenCurlies(template.body)
-
-                    bodyPlaceholders.forEach(function (item) {
-                      template.body = template.body.replace('{' + item + '}', params[item]);
-                    });
-
-                    subjectPlaceholders.forEach(function (item) {
-                      template.subject = template.subject.replace('{' + item + '}', params[item]);
-                    });
-
-                    var reminderEmailConfig = {
-                      from: 'contact@reservr.net', // user.username
-                      to: reservation.email,
-                      subject: template.subject,
-                      html: marked(template.body)
-                    };
-
-                    transport.sendMail(reminderEmailConfig, function (err, info) {
-                      console.log(err);
-                      console.log(info);
-                    });
-
-                  }
-
-                  arr.push(reservation.email)
-
+                  });
                 });
-              });
 
-              // update event so we know that is has already sent out notifications
-              db.events.update({
-                _id: event._id
-              }, {
-                $set: {
-                  sent: true
-                }
-              })
-            });
+                // update event so we know that is has already sent out notifications
+                db.events.update({
+                  _id: event._id
+                }, {
+                  $set: {
+                    sent: true
+                  }
+                })
+              });
+            })
           })
         })
       })
