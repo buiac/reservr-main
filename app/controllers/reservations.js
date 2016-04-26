@@ -13,10 +13,15 @@ module.exports = function(config, db) {
   var util = require('../services/util.js')(config, db);
   var marked = require('marked');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
+  
+  // Mailgun configuration
+  var Mailgun = require('mailgun-js');
+  var mailgun_api_key = config.mailgun.apikey;
+  var domain = 'reservr.net';
+  var mailgun = new Mailgun({apiKey: mailgun_api_key, domain: domain});
 
   // configure moment
   moment.defaultFormat = 'YYYY-MM-DD LT';
-
 
   // create an object with all the mailchimp api keys
   var mc = {}
@@ -107,7 +112,33 @@ module.exports = function(config, db) {
 
         if (partial) {
           userEmailConfig.html = template.bodyPartial;
-        } 
+        }
+
+        var mailgun = new Mailgun({apiKey: api_key, domain: domain});
+
+        //Invokes the method to send emails given the above data with the helper library
+        mailgun.messages().send(userEmailConfig, function (err, body) {
+            //If there is an error, render the error page
+            if (err) {
+                // res.render('error', { error : err});
+                console.log('\n\n\n\n')
+                console.log('----error mailgun----')
+                console.log("got an error: ", err);
+                console.log('--------')
+                console.log('\n\n\n\n')
+            }
+            //Else we can greet    and leave
+            else {
+                // //Here "submitted.jade" is the view file for this landing page 
+                // //We pass the variable "email" from the url parameter in an object rendered by Jade
+                // res.render('submitted', { email : req.params.mail });
+                console.log('\n\n\n\n')
+                console.log('----success mailgun----')
+                console.log(body);
+                console.log('--------')
+                console.log('\n\n\n\n')
+            }
+        });
 
         transport.sendMail(userEmailConfig, function (err, info) {
           console.log('notifyUser')
@@ -198,13 +229,65 @@ module.exports = function(config, db) {
           html: template.orgBody
         };
 
+        
         if (reservation.waiting) {
+          
+
+          //Invokes the method to send emails given the above data with the helper library
+          mailgun.messages().send(userWaitingEmailConfig, function (err, body) {
+              //If there is an error, render the error page
+              if (err) {
+                  // res.render('error', { error : err});
+                  console.log('\n\n\n\n')
+                  console.log('----error mailgun----')
+                  console.log("got an error: ", err);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+              //Else we can greet    and leave
+              else {
+                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //We pass the variable "email" from the url parameter in an object rendered by Jade
+                  // res.render('submitted', { email : req.params.mail });
+                  console.log('\n\n\n\n')
+                  console.log('----success mailgun----')
+                  console.log(body);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+          });
+
           transport.sendMail(userWaitingEmailConfig, function (err, info) {
             
             console.log(err);
             console.log(info);
           });
         } else {
+
+          //Invokes the method to send emails given the above data with the helper library
+          mailgun.messages().send(userEmailConfig, function (err, body) {
+              //If there is an error, render the error page
+              if (err) {
+                  // res.render('error', { error : err});
+                  console.log('\n\n\n\n')
+                  console.log('----error mailgun----')
+                  console.log("got an error: ", err);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+              //Else we can greet    and leave
+              else {
+                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //We pass the variable "email" from the url parameter in an object rendered by Jade
+                  // res.render('submitted', { email : req.params.mail });
+                  console.log('\n\n\n\n')
+                  console.log('----success mailgun----')
+                  console.log(body);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+          });
+
           transport.sendMail(userEmailConfig, function (err, info) {
             
             console.log(err);
@@ -213,6 +296,31 @@ module.exports = function(config, db) {
         }
 
         if (org.notifications) {
+
+          //Invokes the method to send emails given the above data with the helper library
+          mailgun.messages().send(orgEmailConfig, function (err, body) {
+              //If there is an error, render the error page
+              if (err) {
+                  // res.render('error', { error : err});
+                  console.log('\n\n\n\n')
+                  console.log('----error mailgun----')
+                  console.log("got an error: ", err);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+              //Else we can greet    and leave
+              else {
+                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //We pass the variable "email" from the url parameter in an object rendered by Jade
+                  // res.render('submitted', { email : req.params.mail });
+                  console.log('\n\n\n\n')
+                  console.log('----success mailgun----')
+                  console.log(body);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+          });
+
           transport.sendMail(orgEmailConfig, function (err, info) {
             
             console.log(err);
