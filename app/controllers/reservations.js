@@ -114,8 +114,6 @@ module.exports = function(config, db) {
           userEmailConfig.html = template.bodyPartial;
         }
 
-        var mailgun = new Mailgun({apiKey: api_key, domain: domain});
-
         //Invokes the method to send emails given the above data with the helper library
         mailgun.messages().send(userEmailConfig, function (err, body) {
             //If there is an error, render the error page

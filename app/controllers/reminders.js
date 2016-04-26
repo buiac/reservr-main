@@ -13,6 +13,12 @@ module.exports = function(config, db) {
   var smtpTransport = require('nodemailer-smtp-transport');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
 
+  // Mailgun configuration
+  var Mailgun = require('mailgun-js');
+  var mailgun_api_key = config.mailgun.apikey;
+  var domain = 'reservr.net';
+  var mailgun = new Mailgun({apiKey: mailgun_api_key, domain: domain});
+
   var sendReminders = function (req, res, next) {
 
     // if today it's 11 oclock in romania find all events taking place next day
@@ -91,6 +97,30 @@ module.exports = function(config, db) {
                         subject: template.subject,
                         html: marked(template.body)
                       };
+
+                      //Invokes the method to send emails given the above data with the helper library
+                      mailgun.messages().send(reminderEmailConfig, function (err, body) {
+                          //If there is an error, render the error page
+                          if (err) {
+                              // res.render('error', { error : err});
+                              console.log('\n\n\n\n')
+                              console.log('----error mailgun----')
+                              console.log("got an error: ", err);
+                              console.log('--------')
+                              console.log('\n\n\n\n')
+                          }
+                          //Else we can greet    and leave
+                          else {
+                              // //Here "submitted.jade" is the view file for this landing page 
+                              // //We pass the variable "email" from the url parameter in an object rendered by Jade
+                              // res.render('submitted', { email : req.params.mail });
+                              console.log('\n\n\n\n')
+                              console.log('----success mailgun----')
+                              console.log(body);
+                              console.log('--------')
+                              console.log('\n\n\n\n')
+                          }
+                      });
 
                       transport.sendMail(reminderEmailConfig, function (err, info) {
                         console.log(err);
