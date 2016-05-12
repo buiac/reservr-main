@@ -203,8 +203,6 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservations);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);
   app.post('/dashboard/:orgId/event/:eventId/', isAuthenticated, reservations.updateDashboardReservation);
-  
-
 
   /* Front-end routes
   */

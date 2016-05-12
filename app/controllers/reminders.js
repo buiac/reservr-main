@@ -122,10 +122,10 @@ module.exports = function(config, db) {
                           }
                       });
 
-                      transport.sendMail(reminderEmailConfig, function (err, info) {
-                        console.log(err);
-                        console.log(info);
-                      });
+                      // transport.sendMail(reminderEmailConfig, function (err, info) {
+                      //   console.log(err);
+                      //   console.log(info);
+                      // });
 
                     }
 

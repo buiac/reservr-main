@@ -138,11 +138,11 @@ module.exports = function(config, db) {
             }
         });
 
-        transport.sendMail(userEmailConfig, function (err, info) {
-          console.log('notifyUser')
-          console.log(err);
-          console.log(info);
-        });
+        // transport.sendMail(userEmailConfig, function (err, info) {
+        //   console.log('notifyUser')
+        //   console.log(err);
+        //   console.log(info);
+        // });
       });
     });
   };
@@ -255,11 +255,11 @@ module.exports = function(config, db) {
               }
           });
 
-          transport.sendMail(userWaitingEmailConfig, function (err, info) {
+          // transport.sendMail(userWaitingEmailConfig, function (err, info) {
             
-            console.log(err);
-            console.log(info);
-          });
+          //   console.log(err);
+          //   console.log(info);
+          // });
         } else {
 
           //Invokes the method to send emails given the above data with the helper library
@@ -286,11 +286,11 @@ module.exports = function(config, db) {
               }
           });
 
-          transport.sendMail(userEmailConfig, function (err, info) {
+          // transport.sendMail(userEmailConfig, function (err, info) {
             
-            console.log(err);
-            console.log(info);
-          });
+          //   console.log(err);
+          //   console.log(info);
+          // });
         }
 
         if (org.notifications) {
@@ -319,11 +319,11 @@ module.exports = function(config, db) {
               }
           });
 
-          transport.sendMail(orgEmailConfig, function (err, info) {
+          // transport.sendMail(orgEmailConfig, function (err, info) {
             
-            console.log(err);
-            console.log(info);
-          });  
+          //   console.log(err);
+          //   console.log(info);
+          // });  
         }
 
       });
