@@ -121,6 +121,14 @@ module.exports = function(config, db) {
         _id: req.params.eventId
       }, function (err, event) {
 
+        console.log('\n\n\n\n')
+        console.log('---err-----')
+        console.log(err)
+        console.log('---event-----')
+        console.log(event)
+        console.log('--------')
+        console.log('\n\n\n\n')
+
         // TODO error handling
         
         event.waiting = 0;
