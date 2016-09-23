@@ -16,7 +16,7 @@
 
         <div class="col-md-6 <% if ((event.seats - event.invited) === 0) { %> event-reserv--sold-out<% } %>">
 
-          <a class="btn btn-toggle-fields btn-primary btn-lg">Reserv seats</a>
+          <a class="btn btn-toggle-fields btn-primary btn-lg">Rezervare locuri</a>
           <a class="btn btn-toggle-fields btn-gray btn-lg">Click here for Waiting list</a>
           
           <% if (event.temp) { %>
@@ -177,7 +177,7 @@
               <% } %>
 
               <div class="form-group">
-                <button type="submit" class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Reserv seats</button>
+                <button type="submit" class="btn btn-reserv btn-primary btn-lg <% if (event.temp) { %> disabled <% } %>">Rezervare locuri</button>
 
                 <button type="submit" class="btn btn-reserv btn-gray btn-lg <% if (event.temp) { %> disabled <% } %>">Waiting list</button>
               </div>
