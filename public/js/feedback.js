@@ -37,6 +37,7 @@
     var loadingClass = 'btn-state-loading'
     var successClass = 'rsv-form-success'
     var errorClass = 'rsv-form-error'
+    var disabledClass = 'disabled'
     var url = '/f/feedback'
 
     var data = {
@@ -57,6 +58,8 @@
       data: data
     }).done(function (res) {
       $button.removeClass(loadingClass)
+      $button.addClass(disabledClass)
+      
       $form.addClass(successClass)
 
       setTimeout(function () {
@@ -64,6 +67,8 @@
         $email.val('')
         $message.val('')
 
+        $button.removeClass(disabledClass)
+        
         $form.removeClass(successClass)
         $form.removeClass(errorClass)
         $container.removeClass('rsv-feedback-form')

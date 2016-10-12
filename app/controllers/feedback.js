@@ -34,7 +34,7 @@ module.exports = function(config, db) {
           var html = 'New message from ' + email + '\n\n' + '"' + message + '"';
           
           if (event && event.name) {
-            html = html + '\n\nMessage sent from ' + event.name + 'page.'
+            html = html + '\n\nMessage sent from ' + event.name + ' page.'
           }
 
           var emailMessage = {
