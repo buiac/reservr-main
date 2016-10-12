@@ -27,33 +27,42 @@ module.exports = function(config, db) {
         _id: org.userId
       }, function (err, user) {
 
-        var emailMessage = {
-          from: 'contact@reservr.net', // user.username
-          to: user.username,
-          subject: 'new message from site Reservr.net',
-          html: marked('New message from' + email + '\n\n' + '"' + message + '"')
-        };
+        db.events.findOne({
+          _id: eventId
+        }, function (err, event) {
+          var html = 'New message from' + email + '\n\n' + '"' + message + '"';
+          event ? html + '\n\nMessage sent from ' + event.name + 'page.'
 
-        //Invokes the method to send emails given the above data with the helper library
-        mailgun.messages().send(emailMessage, function (err, body) {
-            //If there is an error, render the error page
-            if (err) {
-                console.log('\n\n\n\n')
-                console.log('----error mailgun----')
-                console.log("got an error: ", err);
-                console.log('--------')
-                console.log('\n\n\n\n')
-            } else {
-                console.log('\n\n\n\n')
-                console.log('----success mailgun----')
-                console.log(body);
-                console.log('--------')
-                console.log('\n\n\n\n')
-            }
-        });
+          var emailMessage = {
+            from: 'contact@reservr.net',
+            to: user.username,
+            subject: 'new message from site Reservr.net',
+            html: marked(html)
+          };
 
-        res.status(200).send({
-          message: 'success'
+
+
+          //Invokes the method to send emails given the above data with the helper library
+          mailgun.messages().send(emailMessage, function (err, body) {
+              //If there is an error, render the error page
+              if (err) {
+                  console.log('\n\n\n\n')
+                  console.log('----error mailgun----')
+                  console.log("got an error: ", err);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              } else {
+                  console.log('\n\n\n\n')
+                  console.log('----success mailgun----')
+                  console.log(body);
+                  console.log('--------')
+                  console.log('\n\n\n\n')
+              }
+          });
+
+          res.status(200).send({
+            message: 'success'
+          })
         })
       })
     })
