@@ -31,8 +31,11 @@ module.exports = function(config, db) {
           _id: eventId
         }, function (err, event) {
 
-          var html = 'New message from' + email + '\n\n' + '"' + message + '"';
-          event ? html + '\n\nMessage sent from ' + event.name + 'page.' : ''
+          var html = 'New message from ' + email + '\n\n' + '"' + message + '"';
+          
+          if (event && event.name) {
+            html = html + '\n\nMessage sent from ' + event.name + 'page.'
+          }
 
           var emailMessage = {
             from: 'contact@reservr.net',
