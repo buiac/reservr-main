@@ -54,7 +54,7 @@ module.exports = (function() {
     
     if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
-        username: 'spatiureactor@gmail.com'
+        username: 'sebi.kovacs@gmail.com'
       }, function (err, user) {
 
         req.user = user;
@@ -176,6 +176,7 @@ module.exports = (function() {
   var superadmin = require('./app/controllers/superadmin.js')(config, db);
   var analytics = require('./app/controllers/analytics.js')(config, db);
   var subscribe = require('./app/controllers/subscribe.js')(config, db);
+  var feedback = require('./app/controllers/feedback.js')(config, db);
 
   // Backend routes
   // events
@@ -232,6 +233,9 @@ module.exports = (function() {
 
   // subscribe
   app.post('/s/subscribe', subscribe.newsletter);
+
+  // send feedback
+  app.post('/f/feedback', feedback.send)
 
 
   /* Reminders

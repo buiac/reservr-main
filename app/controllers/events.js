@@ -121,8 +121,10 @@ module.exports = function(config, db) {
         _id: req.params.eventId
       }, function (err, event) {
 
-        if (!event){
+
+        if (err || !event){
           res.redirect('/')
+          return
         }
 
         // TODO error handling

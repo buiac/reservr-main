@@ -1,0 +1,127 @@
+.rsv-feedback {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 90%;
+}
+
+.rsv-feedback-button,
+.rsv-feedback-header {
+  background: repeating-linear-gradient(
+    45deg,
+    #606dbc,
+    #606dbc 10px,
+    #465298 10px,
+    #465298 20px
+  );
+
+  color: #FFF;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 0 50px 0 0;
+  text-shadow: rgba(0,0,0, .5) 0 0 4px;
+}
+
+.rsv-feedback-button {
+  cursor: pointer;
+}
+
+.rsv-feedback-button i.fa {
+  margin-right: 10px;
+  top: -2px;
+  position: relative;
+}
+
+.rsv-feedback.rsv-feedback-form .rsv-feedback-button {
+  display: none;
+}
+
+.rsv-feedback.rsv-feedback-form .rsv-feedback-container{
+  display: block;
+}
+
+.rsv-feedback .rsv-feedback-button {
+  display: block;
+}
+
+.rsv-feedback .rsv-feedback-container {
+  display: none;
+}
+
+.rsv-feedback-body {
+  padding: 10px 20px;
+  background: #fff;
+  box-shadow: rgba(0,0,0, .5) 0 0 5px;
+}
+
+.rsv-feedback-footer {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.rsv-feedback-footer button {
+  margin-left: 10px;
+}
+
+.rsv-feedback-footer a {
+  margin-top: 7px;
+}
+
+.rsv-feedback-form .alert-success, 
+.rsv-feedback-form .alert-danger {
+  display: none;
+}
+
+.rsv-feedback-form.rsv-form-success .alert-success, 
+.rsv-feedback-form.rsv-form-error .alert-danger {
+  display: block;
+}
+
+@media screen and (min-width: 768px) {
+    .rsv-feedback {
+      width: 50%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .rsv-feedback {
+      width: 30%;
+    }
+}
+
+.btn-state-loading:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1099;
+  width: 100%;
+  height: 100%;
+  background-color: #02766C;
+}
+
+.btn-state-loading:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1100;
+  display: inline-block;
+  width: .7em;
+  height: .72em;
+  margin-left: -.25em;
+  margin-top: -.35em;
+
+  border-radius: 3px;
+  border: 2px solid #fff;
+
+  -webkit-animation: rotate 1.4s linear infinite;
+  -moz-animation: rotate 1.4s linear infinite;
+  animation: rotate 1.4s linear infinite;
+}
+
+@-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); }}
