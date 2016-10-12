@@ -30,8 +30,9 @@ module.exports = function(config, db) {
         db.events.findOne({
           _id: eventId
         }, function (err, event) {
+
           var html = 'New message from' + email + '\n\n' + '"' + message + '"';
-          event ? html + '\n\nMessage sent from ' + event.name + 'page.'
+          event ? html + '\n\nMessage sent from ' + event.name + 'page.' : ''
 
           var emailMessage = {
             from: 'contact@reservr.net',
@@ -39,8 +40,6 @@ module.exports = function(config, db) {
             subject: 'new message from site Reservr.net',
             html: marked(html)
           };
-
-
 
           //Invokes the method to send emails given the above data with the helper library
           mailgun.messages().send(emailMessage, function (err, body) {
