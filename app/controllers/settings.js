@@ -66,7 +66,7 @@ module.exports = function(config, db) {
     }
 
     var mailchimp = [];
-    var orgName = req.body.orgName.trim();
+    // var orgName = req.body.orgName.trim();
     var username = req.body.username;
     var orgId = req.params.orgId;
     var location = req.body.location;
@@ -77,9 +77,9 @@ module.exports = function(config, db) {
 
 
     // format the org name
-    orgName = orgName.replace(/\s/g, '-');
-    orgName = orgName.replace(/\//g, '');
-    orgName = orgName.replace(/\'/g, '');
+    // orgName = orgName.replace(/\s/g, '-');
+    // orgName = orgName.replace(/\//g, '');
+    // orgName = orgName.replace(/\'/g, '');
 
     
     // templates 
@@ -148,7 +148,7 @@ module.exports = function(config, db) {
       db.orgs.update({
         _id: orgId
       }, {$set: { 
-        name: orgName, 
+        // name: orgName,
         location: location, 
         locale: locale,
         logo: logo,
