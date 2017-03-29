@@ -38,9 +38,9 @@
 }
 
 .event-date .fa-calendar {
-  margin-right: 5px; 
-  position:relative; 
-  top: -1px; 
+  margin-right: 5px;
+  position:relative;
+  top: -1px;
   display: inline-block;
 }
 
@@ -188,7 +188,7 @@ textarea {
 }
 
 .event-name h1 {
-  font-size: 22px;  
+  font-size: 22px;
   margin: 0;
 }
 
@@ -407,7 +407,7 @@ textarea {
 .event-link {
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
   margin-bottom: 10px;
   display: block;
   padding: 10px;
@@ -461,15 +461,15 @@ textarea {
 }
 
 .event-save :-moz-placeholder { /* Firefox 18- */
-   color: #fff;  
+   color: #fff;
 }
 
 .event-save ::-moz-placeholder {  /* Firefox 19+ */
-   color: #fff;  
+   color: #fff;
 }
 
-.event-save :-ms-input-placeholder {  
-   color: #fff;  
+.event-save :-ms-input-placeholder {
+   color: #fff;
 }
 
 .event-save .btn-create-account {
@@ -495,7 +495,7 @@ textarea {
 }
 
 .rd-day-selected, .rd-time-option:hover, .rd-time-selected {
-  background: #A94442; 
+  background: #A94442;
 }
 
 .btn-state-loading {
@@ -800,14 +800,14 @@ textarea {
 ::-webkit-scrollbar {
     width: 10px;
 }
- 
+
 /* Track */
 ::-webkit-scrollbar-track {
     /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
     -webkit-border-radius: 10px;
     border-radius: 10px;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
@@ -815,7 +815,7 @@ textarea {
     background: rgba(0,0,0,0.5);
 }
 ::-webkit-scrollbar-thumb:window-inactive {
-  background: transparent; 
+  background: transparent;
 }
 
 
@@ -942,7 +942,7 @@ textarea {
 
 .event-form .event-price {
   font-size: 14px;
-  
+
   display: block;
 }
 
@@ -1209,7 +1209,7 @@ textarea {
 .event-page .event-description {
   overflow: hidden;
   max-height: 165px;
-  
+
   text-overflow: ellipsis;
 }
 
@@ -1233,7 +1233,7 @@ body.event-page .event-page .event-toggle-description {
   display: none;
 }
 body.event-page .event-page .event-description {
-  max-height: none;  
+  max-height: none;
 }
 
 .event-page .event-item {
@@ -1378,7 +1378,7 @@ body.event-page .event-page .event-description {
   line-height: 212%;
   font-weight: normal;
   margin: 0 auto 10px;
-  
+
   color: #02766C;
   font-family: 'Oswald', sans-serif;
 }
@@ -1494,14 +1494,14 @@ body.event-page .event-page .event-description {
   .event-page .event-name h1 {
     margin-top: 0;
   }
-  
+
   .event-page .event-item {
     border-bottom: 0;
   }
-  
+
 }
 @media (min-width: 1200px) {
-  
+
 }
 
 .event-temporary-overlay {
@@ -1540,7 +1540,7 @@ body.event-page .event-page .event-description {
 }
 
 .event-price-text {
-  margin: 30px 0 0 0;  
+  margin: 30px 0 0 0;
 }
 
 .event-has-price .event-price-text {
@@ -1619,7 +1619,7 @@ body.event-page .event-page .event-description {
 */
 
 .form-group-notification-email {
-  display: block;  
+  display: block;
 }
 
 .rzv-notifications--disabled .form-group-notification-email{
@@ -1632,8 +1632,8 @@ body.event-page .event-page .event-description {
 }
 
 .rzv-panel .rzv-panel-title {
-  border-bottom: 1px solid #ccc; 
-  margin-bottom: 20px; 
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
   padding-bottom: 20px;
 }
 
@@ -1652,7 +1652,7 @@ body.event-page .event-page .event-description {
 
 .rzv-panel-action {
   height: 60px;
-  
+
 }
 
 .event-static {
@@ -1722,7 +1722,7 @@ body.event-page .event-page .event-description {
     width: 150px;
     margin: 0 auto 30px;
   }
-  
+
 }
 
 .events-prev {
@@ -1765,7 +1765,7 @@ body.event-page .event-page .event-description {
 }
 
 .circle-wrap {
-  width: 170px; 
+  width: 170px;
   text-align: center;
   float: left;
   margin-top: 40px;
@@ -1824,3 +1824,75 @@ body.event-page .event-page .event-description {
 
 
 
+.notifications {
+    border: 1px solid #FFF;
+    border-radius: 4px;
+    display: block;
+    position: relative;
+}
+
+.notifications:hover {
+    text-decoration: none;
+    opacity: .9    ;
+}
+
+.notifications .fa-bell,
+.notifications .fa-bell-o {
+    font-size: 30px;
+    padding: 10px;
+    color: #FFF;
+}
+
+.notifications .fa-bell {
+    display: none;
+}
+
+.notifications.notifications-active .fa-bell-o {
+    display: none;
+}
+.notifications.notifications-active .fa-bell {
+    display: block;
+}
+
+.notifications-open .notifications .fa-bell {
+    color: #000;
+}
+
+.notifications-open .notifications {
+    background: #FFF;
+}
+
+.notifications-open .notifications-dropdown {
+    display: block;
+}
+
+.notifications-dropdown {
+    position: absolute;
+    display: none;
+    top: 59px;
+    right: 17px;
+    width: 320px;
+    background: #FFF;
+    z-index: 35;
+    border: 1px solid #ccc;
+
+    border-radius: 4px;
+}
+
+.notifications-dropdown li {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    display: block;
+}
+
+.notifications-dropdown li:last-child {
+    border-bottom: 0;
+}
+
+.notifications-dropdown li .notification-date {
+    font-size: 11px;
+}
+
+.notifications-dropdown li.notification-seen {
+    color: #999;
+}

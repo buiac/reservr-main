@@ -62,7 +62,7 @@ $(document).ready(function () {
         return false;
       }
     }
-    
+
 
     return true;
 
@@ -153,11 +153,11 @@ $(document).ready(function () {
 
     var $eventPrices = $('.event-price-group');
 
-    
+
     $eventPrices.each(function (i, price) {
-      
+
       var $price = $(price)
-      
+
       var name = $price.find('.event-price-name').val()
       var amount = $price.find('.event-price-amount').val()
       var currency = $price.find('.event-price-currency').val()
@@ -172,7 +172,7 @@ $(document).ready(function () {
       if (price.name !== '' && price.amount !== '') {
         prices.push(price)
       }
-      
+
     })
 
     eventModel.prices = prices
@@ -198,12 +198,12 @@ $(document).ready(function () {
         event: eventModel
       }
     }).done(function (res) {
-      
+
       // set the event orgId
       eventModel.org = res.org
       eventModel.orgId = res.orgId || res.org._id
       eventModel._id = res.event._id
-      
+
 
       if (res.event.published) {
         // update the unique event url
@@ -216,11 +216,11 @@ $(document).ready(function () {
             window.location = window.location.href
           }
         }
-        
+
       }
 
     }).fail(function (err) {
-      
+
       console.log('error')
       console.log(err)
 
@@ -235,13 +235,13 @@ $(document).ready(function () {
     var field = $parent.find('[name]')[0]
     var toggleClass = 'event-group--toggle-placeholder'
     var value = $(field).val()
-    
+
     if (!$icon.length) {
       $icon = $placeholder.find('.icomoon')
     }
 
     if (value && field.type === 'textarea') {
-      
+
       $placeholder.html(marked($(field).val()))
 
     } else {
@@ -249,13 +249,13 @@ $(document).ready(function () {
       if (field.name === 'date') {
         setTimeout(function () {
           $placeholder.html(moment($(field).val()).format('LLLL'))
-          
+
           if ($icon) {
             $placeholder.prepend($icon)
           }
         }, 100)
       }
-      
+
     }
 
     if ($parent.hasClass('event-seats') && $placeholder.html().indexOf < 0) {
@@ -265,8 +265,8 @@ $(document).ready(function () {
     if ($icon) {
       $placeholder.prepend($icon)
     }
-    
-    
+
+
 
     if ($parent.hasClass(toggleClass)) {
       $parent.removeClass(toggleClass)
@@ -291,9 +291,9 @@ $(document).ready(function () {
   $eventGroups.each(function (i, group) {
     var $group = $(group)
     var $fields = $group.find('[name]')
-  
+
     $fields.each(function (i, field) {
-      
+
       $(field).blur(saveData)
       $(field).blur(hideGroup)
       $(field).keypress(saveDataEnter)
@@ -323,16 +323,16 @@ $(document).ready(function () {
       var $placeholder = $(eventGroup).find('.event-placeholder')
       var value = $(field).val()
       var $icon = $(eventGroup).find('.fa')[0] || $(eventGroup).find('.icomoon')[0]
-      
+
       eventModel[field.name] = field.value
 
       if (field.name === 'existingImages') {
         eventModel.images = JSON.parse(field.value)
       }
-    
+
       if ($(eventGroup).hasClass('event-seats')) {
         if (value && (value !== 'Event seats')) {
-          $placeholder.append(' seats')  
+          $placeholder.append(' seats')
         } else {
 
           $placeholder.html(' Event seats')
@@ -350,7 +350,7 @@ $(document).ready(function () {
 
 
 
-        
+
         if (field.type === 'textarea') {
           $placeholder.html(marked(value))
         } else {
@@ -358,19 +358,19 @@ $(document).ready(function () {
           $placeholder.html(value)
 
           if (field.name === 'date') {
-            $placeholder.html(moment(value).format('LLLL'))            
+            $placeholder.html(moment(value).format('LLLL'))
           }
 
-          
+
 
           if ($(eventGroup).hasClass('event-seats')) {
             if (value && (value !== 'Event seats')) {
-              $placeholder.append(' seats')  
+              $placeholder.append(' seats')
             } else {
-              $placeholder.html('Event seats')              
+              $placeholder.html('Event seats')
             }
           }
-          
+
           if ($icon) {
             $placeholder.prepend($icon)
           }
@@ -396,8 +396,8 @@ $(document).ready(function () {
     if (timeElement) {
       var time = rome(timeElement, { date: false })
     }
-    
-    
+
+
 
   }
 
@@ -412,9 +412,9 @@ $(document).ready(function () {
 
     if (isHomepage) {
       $date = $('[name=date]')
-      $date.val(moment(defaultEventDate).format('LLLL'))  
+      $date.val(moment(defaultEventDate).format('LLLL'))
     }
-    
+
   }
 
   function updateHiddenFields () {
@@ -422,13 +422,13 @@ $(document).ready(function () {
 
     $hidden.each(function (i, field) {
       if (field.name === 'temp' || field.name === 'published') {
-        eventModel[field.name] = (field.value === 'true')  
+        eventModel[field.name] = (field.value === 'true')
       } else {
         if (field.value !== '') {
           eventModel[field.name] = field.value
         }
       }
-      
+
     });
   }
 
@@ -455,18 +455,18 @@ $(document).ready(function () {
       if (num > 0) {
         $eventList.find('.event-summary').each(function (i, event) {
           $(event).css('z-index', num - i)
-        })                  
+        })
       }
     }
   }
 
   function initTableSorter () {
     if ($('.table-reservations').length) {
-      $('.table-reservations').tablesorter()     
+      $('.table-reservations').tablesorter()
     }
 
     if ($('.sa-table').length) {
-      $('.sa-table').tablesorter()      
+      $('.sa-table').tablesorter()
     }
   }
 
@@ -480,7 +480,7 @@ $(document).ready(function () {
     scrollEventList()
     fixListZindex()
     initTableSorter()
-    
+
   }
 
   function updateEventPrice (e) {
@@ -528,8 +528,8 @@ $(document).ready(function () {
         orgId: eventModel.orgId
       }
     }).done(function (res) {
-      
-      $form.removeClass(loadingClass)      
+
+      $form.removeClass(loadingClass)
       $form.addClass(successClass)
 
       // update href of the dashboard redirect link
@@ -557,7 +557,7 @@ $(document).ready(function () {
 
     if (input.files && input.files[0]) {
 
-      
+
       if (!validateImageExtension(input)) {
         return
       }
@@ -575,7 +575,7 @@ $(document).ready(function () {
 
       //   return;
       // }
-      
+
 
       eventModel.images = [{
         path: '/media/' + input.files[0].name
@@ -592,21 +592,21 @@ $(document).ready(function () {
       formData.append('image', input.files[0])
 
       if (eventModel.orgId) {
-        formData.append('orgId', eventModel.orgId)  
+        formData.append('orgId', eventModel.orgId)
       }
-      
+
       if (eventModel._id) {
         formData.append('eventId', eventModel._id)
       }
-      
+
       for (var key in eventModel) {
-        
+
         if (key === 'images') {
           formData.append('event[' + key + '][0][path]', eventModel[key][0].path)
         } else {
           formData.append('event[' + key + ']', eventModel[key])
         }
-        
+
       }
 
       $.ajax({
@@ -631,9 +631,9 @@ $(document).ready(function () {
 
     $eventDescription.toggleClass('event-description--show')
   }
-    
+
   function toggleFormFields (e) {
-    
+
     var $this = $(this)
     var $form = $this.parents('.event-form')
 
@@ -644,21 +644,21 @@ $(document).ready(function () {
         title: 'You\'ll need a FREE account for that',
         text: "This way you can check who signed up for your awesome event.",
         type: "warning"
-      }); 
+      });
     }
   }
 
   function preventSubmitOnEnter (e) {
-    
+
     var code = e.keyCode || e.which;
-    if (code == 13) { 
+    if (code == 13) {
       e.preventDefault();
       return false;
     }
   }
 
   function formAccountSubmit (e) {
-    
+
     var $form = $(this)
     var email = $form.find('[name=email]').val()
     var orgName = $form.find('[name=orgname]').val()
@@ -679,8 +679,8 @@ $(document).ready(function () {
         orgName: orgName
       }
     }).done(function (res) {
-      
-      $form.removeClass(loadingClass)      
+
+      $form.removeClass(loadingClass)
       $form.addClass(successClass)
 
       // update url with org name and redirect to it
@@ -712,7 +712,7 @@ $(document).ready(function () {
     return false;
   }
 
-  
+
 
   function closeAlert (e) {
     e.preventDefault();
@@ -721,7 +721,7 @@ $(document).ready(function () {
 
   function togglePublish (e) {
     eventModel.published = e.target.checked
-    
+
     syncData()
   }
 
@@ -738,7 +738,7 @@ $(document).ready(function () {
   }
 
   function toggleMailchimp (e) {
-    
+
     $(this).parents('li').toggleClass('event-menu-drawer--open')
 
     eventModel.toggleMailchimp = e.target.checked
@@ -750,15 +750,15 @@ $(document).ready(function () {
     }
 
     syncData()
-    
+
   }
 
   function toggleMailchimpOptin (e) {
-    
+
     eventModel.toggleMailchimpOptin = e.target.checked
 
     syncData()
-    
+
   }
 
   function removeItem (e) {
@@ -796,7 +796,7 @@ $(document).ready(function () {
     var panelName = $(this).attr('href').slice(1)
     var $navListEls = $('.rzv-vnav li a')
 
-    
+
     // remove previous classes
     classes.forEach(function (className) {
       $panelContainer.removeClass(className)
@@ -887,7 +887,7 @@ $(document).ready(function () {
         seats: seats
       }
     }).done(function (res) {
-      
+
       $btn.removeClass('btn-state-loading')
 
       // show success message
@@ -906,7 +906,7 @@ $(document).ready(function () {
     }).fail(function (err) {
 
       $btn.removeClass('btn-state-loading')
-      
+
       // show error message
       $alertWarning.find('p').html(err.responseJSON.message)
       $alertWarning.show()
@@ -944,7 +944,7 @@ $(document).ready(function () {
   }
 
   var submitReserveForm = function() {
-      
+
     var $this = $(this);
 
     var $eventform = $this.parent();
@@ -972,7 +972,7 @@ $(document).ready(function () {
 
       $eventform.removeClass('event-form--success event-form--error');
       $eventform.addClass('event-form--loading');
-      
+
       $.ajax({
         url: '/u/' +orgId + '/reservations/' + eventId,
         type: 'POST',
@@ -988,13 +988,13 @@ $(document).ready(function () {
 
           $eventform.removeClass('event-form--loading');
           $eventform.addClass('event-form--success');
-          
+
 
           // update the number of seats invited
           $('.seats-left').html(parseInt(res.event.seats, 10) - parseInt(res.event.invited, 10))
 
           if ($('.seats-waiting')) {
-            $('.seats-waiting').html(res.event.waiting)            
+            $('.seats-waiting').html(res.event.waiting)
           }
 
           // update the reservation link
@@ -1019,16 +1019,16 @@ $(document).ready(function () {
 
           $('.form-error .reservation-message').html($tempErrorMessage)
 
-          // allow me to try again 
+          // allow me to try again
           setTimeout(function() {
-            
+
             $eventform.removeClass('event-form--error event-form--success event-form--loading');
             $('.form-error .reservation-message').html($defaultErrorMessage);
-            
+
           }, 10000);
 
         })
-        
+
 
     } else {
 
@@ -1039,12 +1039,12 @@ $(document).ready(function () {
 
       $('.form-error .reservation-message').html($tempErrorMessage)
 
-      // allow me to try again 
+      // allow me to try again
       setTimeout(function() {
-        
+
         $eventform.removeClass('event-form--error');
         $('.form-error .reservation-message').html($defaultErrorMessage);
-        
+
       }, 5000);
     }
 
@@ -1065,7 +1065,7 @@ $(document).ready(function () {
     var email = $form.find('[name="email"]').val()
     var seats = parseInt($form.find('[name="seats"]').val(), 10)
     var timestamp = new Date()
-    
+
     var reservation =  {
       name: name,
       email: email,
@@ -1123,18 +1123,18 @@ $(document).ready(function () {
   $('body').on('change', '[name="reservationsOpen"]', toggleReservations)
   $('body').on('change', '[name="toggleMailchimp"]', toggleMailchimp)
   $('body').on('change', '[name="toggleMailchimpOptin"]', toggleMailchimpOptin)
-  
+
   $('body').on('click', '.event-menu-button', toggleEventContextMenu)
   $('body').on('click', '.event-menu-dropdown a', preventPropagation)
   $('body').on('click', '.field-update-seats .btn-save', updateSeats)
 
   $('body').on('click', '.dashboard-reservation .btn-show-form', toggleDashboardReservationForm)
   $('body').on('click', '.dashboard-reservation .btn-hide-form', toggleDashboardReservationForm)
-  
+
   $('.event-update-form').on('keyup keypress', preventSubmitOnEnter);
 
   $('body').on('click', '.field-update-placeholder .btn', showUpdateFields)
-  
+
   $('.event-image input').change(function(){
     readURL(this);
   });

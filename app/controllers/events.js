@@ -12,10 +12,10 @@ module.exports = function(config, db) {
   moment.defaultFormat = 'YYYY-MM-DD LT';
 
   var eventDeleteImage = function(req, res, next) {
-    
+
     var eventId = req.params.eventId;
     var pictureIndex = req.params.pictureIndex;
-    
+
     db.events.findOne({
       _id: eventId
     }).exec(function (err, event) {
@@ -23,7 +23,7 @@ module.exports = function(config, db) {
       if(event.images && event.images.length) {
         event.images.splice(pictureIndex, 1);
       }
-        
+
       db.events.update({
         '_id': eventId
       }, event, function (err, num, newEvent) {
@@ -33,16 +33,16 @@ module.exports = function(config, db) {
       });
 
     });
-    
+
   };
 
   var deleteEvent = function (req, res, next) {
-    
+
     // delete event from db
     db.events.remove({
       _id: req.params.eventId
     }, function (err, num) {
-      
+
       res.redirect('/dashboard');
 
     });
@@ -72,21 +72,21 @@ module.exports = function(config, db) {
 
   // list events in dashboard
   var listEventsView = function (req, res, next) {
-    
+
     if (!req.user) {
       res.redirect('/');
     }
 
     var user = req.user;
     user.validEmail = util.validateEmail(user.username);
-    
+
     if (user.validEmail) {
 
       data.getOrgEvents({
         orgId: req.params.orgId,
         fromDate: new Date()
       }).then(function (events) {
-        
+
         db.orgs.findOne({
           _id: req.params.orgId
         }, function (err, org) {
@@ -105,12 +105,12 @@ module.exports = function(config, db) {
     } else {
       res.redirect('/dashboard')
     }
-    
+
   };
 
   // one event in front end
   var frontEventView = function (req, res, next) {
-    
+
     db.orgs.findOne({
       name: req.params.orgName
     }, function (err, org) {
@@ -128,7 +128,7 @@ module.exports = function(config, db) {
         }
 
         // TODO error handling
-        
+
         event.waiting = 0;
         event.invited = 0;
 
@@ -136,11 +136,11 @@ module.exports = function(config, db) {
           eventId: event._id
         }, function (err, reservations) {
 
-          
+
           // TODO error handling
-          
+
           reservations.forEach(function (reservation) {
-            
+
             if (reservation.waiting) {
 
               event.waiting = event.waiting + reservation.seats;
@@ -156,7 +156,7 @@ module.exports = function(config, db) {
           res.render('frontend/event', {
             event: event,
             org: org
-          }); 
+          });
         });
 
       })
@@ -174,9 +174,9 @@ module.exports = function(config, db) {
         orgId: org._id,
         fromDate: new Date() // render events starting from now
       }).then(function (events) {
-        
+
         var arr = [];
-        
+
         events.forEach(function (event) {
           arr.push(data.getEventReservations({
             eventId: event._id
@@ -187,14 +187,14 @@ module.exports = function(config, db) {
 
           // get all reservations
           var reservations = [].concat.apply([], rez);
-          
+
           events.forEach(function (event) {
-            
+
             event.invited = 0;
             event.waiting = 0;
 
             reservations.forEach(function (reservation) {
-              
+
               if (reservation.eventId === event._id) {
 
                 if (reservation.waiting) {
@@ -219,8 +219,8 @@ module.exports = function(config, db) {
         });
       });
     }).catch(function (err) {
-      
-      
+
+
       res.redirect('/');
 
     })
@@ -230,11 +230,11 @@ module.exports = function(config, db) {
   var redirectToEventsList = function (req, res, next) {
 
     db.orgs.findOne({'userId': req.user._id}, function (err, org) {
-      
+
       if (!org) {
         res.send({error: 'error'}, 400);
       }
-      
+
       if (org) {
 
         res.redirect('/dashboard/' + org._id + '/events');
@@ -273,7 +273,7 @@ module.exports = function(config, db) {
             }
 
             db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-              
+
               if(err) {
                 return res.render('backend/event-update', {errors: err});
               }
@@ -294,7 +294,7 @@ module.exports = function(config, db) {
         } else {
 
           db.orgs.findOne({ _id: req.params.orgId}, function (err, org) {
-            
+
             if(err) {
               return res.render('backend/event-update', {errors: err});
             }
@@ -330,7 +330,7 @@ module.exports = function(config, db) {
 
     var errors = req.validationErrors();
     var images = [];
-    
+
     var name = (req.body.name) ? req.body.name.trim() : '';
     var description = (req.body.description) ? req.body.description.trim() : '';
     var eventId = (req.body._id) ? req.body._id.trim() : '';
@@ -366,10 +366,10 @@ module.exports = function(config, db) {
     if (eventId !== '') {
       theEvent._id = eventId;
     }
-    
+
     // check if there's an image
     if (!req.files.images) {
-            
+
       // for existing events,
       // if we don't add any new images, leave the old ones alone.
       if(req.body.existingImages) {
@@ -382,16 +382,16 @@ module.exports = function(config, db) {
 
         // errors.push({
         //   msg: 'Please upload an event image'
-        // });  
+        // });
 
         theEvent.images = [{path: '/images/reservr-placeholder-2.png'}]
-        
+
       }
 
     } else if (!req.files.images.length) {
 
       images.push({
-        path: '/media/' + req.files.images.originalname 
+        path: '/media/' + req.files.images.originalname
       });
 
     } else if (req.files.images.length) {
@@ -411,13 +411,13 @@ module.exports = function(config, db) {
       db.orgs.findOne({
         _id: orgId
       }, function (err, org) {
-        
+
         // TODO error handling
-        
+
         db.events.find({
           orgId: org._id
         }, function (err, events) {
-          
+
           // TODO error handling
 
           res.render('backend/event-update', {
@@ -439,7 +439,7 @@ module.exports = function(config, db) {
     user.validEmail = util.validateEmail(user.username);
 
     if (user.validEmail) {
-      
+
       if (eventId) {
 
         db.events.findOne({_id: eventId}, function (err, event) {
@@ -464,14 +464,14 @@ module.exports = function(config, db) {
             }
 
             if (num > 0) {
-              
+
               res.redirect('/dashboard');
 
             }
 
           });
 
-        });        
+        });
 
       } else {
         theEvent.reservedSeats = 0;
@@ -488,16 +488,16 @@ module.exports = function(config, db) {
         });
 
       }
-    
+
     } else {
 
       // change username, org name and password and after that save the event
       req.checkBody('username', 'Username should not be empty').notEmpty();
       req.checkBody('org_name', 'Organization name should not be empty').notEmpty();
       req.checkBody('password', 'Password should not be empty').notEmpty();
-      
+
       if (errors) {
-        
+
         res.render('backend/event-update', {
           theEvent: theEvent,
           orgId: orgId,
@@ -539,7 +539,7 @@ module.exports = function(config, db) {
       };
 
       var updateUser = function (err, num) {
-        
+
         if (err) {
          res.render('backend/event-update', {errors: err});
         }
@@ -566,11 +566,11 @@ module.exports = function(config, db) {
     user.validEmail = util.validateEmail(user.username);
 
     db.orgs.findOne({userId: req.user._id}, function (err, org) {
-          
+
       if (!org) {
         res.status(400).send({error: 'error'});
       }
-      
+
       if (org) {
 
         db.events.findOne({orgId: org._id}, function (err, ev) {
@@ -606,8 +606,8 @@ module.exports = function(config, db) {
         event.timecreated = moment(event.timecreated).add(7, 'hours').toDate()
       }
     }
-    
-    
+
+
     // turn the string into a boolean
     event.reservationsOpen = (event.reservationsOpen === 'true')
     event.published = (event.published === 'true')
@@ -619,7 +619,7 @@ module.exports = function(config, db) {
     if (typeof event.published === 'string') {
       event.published = (event.published === 'true')
     }
-    
+
     if (typeof event.temp === 'string') {
       event.temp = (event.temp === 'true')
     }
@@ -634,7 +634,7 @@ module.exports = function(config, db) {
     event.waiting = 0
 
     if (!event._id && !event.orgId) {
-    
+
       // this is a new event so we need to create a user and an org
       db.users.insert({
         timecreated: new Date(),
@@ -644,7 +644,7 @@ module.exports = function(config, db) {
       }, function (err, user) {
 
         // TODO error handling
-        
+
         db.orgs.insert({
           name: 'guest-' + new Date().getTime(),
           userId: user._id,
@@ -678,7 +678,7 @@ module.exports = function(config, db) {
         }, function (err, org) {
 
           // TODO error handling
-          
+
           // update event org id
           event.orgId = org._id
           event.timecreated = new Date()
@@ -686,7 +686,7 @@ module.exports = function(config, db) {
           db.events.insert(event, function (err, newEvent) {
 
             // TODO error handling
-            
+
             res.json({
               userId: user._id,
               org: org,
@@ -706,7 +706,7 @@ module.exports = function(config, db) {
         db.users.findOne({
           _id: org.userId
         }, function (err, user) {
-          
+
           // TODO error handling
 
           if (event._id) {
@@ -715,13 +715,13 @@ module.exports = function(config, db) {
             }, event, function (err, num) {
 
               // TODO error handling
-              
+
               db.events.findOne({
                 _id: event._id
               }, function (err, theEvent) {
 
                 // TODO error handling
-                
+
                 res.json({
                   userId: user._id,
                   org: org,
@@ -735,13 +735,13 @@ module.exports = function(config, db) {
             db.events.insert(event, function (err, num) {
 
               // TODO error handling
-              
+
               db.events.findOne({
                 _id: event._id
               }, function (err, theEvent) {
 
                 // TODO error handling
-                
+
                 res.json({
                   userId: user._id,
                   org: org,
@@ -752,9 +752,9 @@ module.exports = function(config, db) {
             })
 
           }
-          
 
-          
+
+
 
         })
       })
@@ -765,7 +765,7 @@ module.exports = function(config, db) {
     db.events.findOne({
       _id: req.params.eventId
     }, function (err, event) {
-      
+
       db.orgs.findOne({
         _id: req.params.orgId
       }, function (err, org) {
@@ -773,18 +773,18 @@ module.exports = function(config, db) {
         res.render('frontend/event', {
           event: event,
           org: org
-        }); 
+        });
 
       })
     })
   }
 
   var duplicateEvent = function (req, res, next) {
-    
+
     db.orgs.findOne({
       _id: req.params.orgId
     }, function (err, org) {
-      
+
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
@@ -795,14 +795,14 @@ module.exports = function(config, db) {
             $gte: new Date()
           }
         }, function (err, events) {
-          
+
           db.events.findOne({
             _id: req.params.eventId
           }, function (err, event) {
-            
+
             // duplicate event
             var duplicateEvent = JSON.parse(JSON.stringify(event));
-            
+
             // remove id
             delete duplicateEvent._id
 
@@ -814,7 +814,7 @@ module.exports = function(config, db) {
             db.events.insert(duplicateEvent, function (err, newEvent) {
 
               res.redirect('/dashboard/' + req.params.orgId + '/event/' + newEvent._id);
-              
+
             });
           });
         })
@@ -839,7 +839,7 @@ module.exports = function(config, db) {
         db.events.find({
           orgId: org._id
         }, function (err, allEvents) {
-          
+
           db.events.find({
             orgId: org._id
           }).sort({
@@ -858,9 +858,9 @@ module.exports = function(config, db) {
           })
 
         })
-        
+
       })
-      
+
     })
 
   }
