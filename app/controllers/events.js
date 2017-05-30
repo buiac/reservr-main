@@ -7,6 +7,7 @@ module.exports = function(config, db) {
     var q = require('q');
     var data = require('../services/data.js')(config, db);
     var util = require('../services/util.js')(config, db);
+    var reservationUtilities = require('../services/reservationUtilities.js')(config, db);
 
     moment.defaultFormat = 'YYYY-MM-DD LT';
 
@@ -690,7 +691,7 @@ module.exports = function(config, db) {
                         }, function(err, theEvent) {
                             // TODO error handling
 
-                            redistributeSeats( theEvent );
+                            reservationUtilities.redistributeSeats( theEvent._id, theEvent.seats );
 
                             res.json({
                                 userId: user._id,
@@ -823,45 +824,6 @@ module.exports = function(config, db) {
         })
 
     }
-
-    var redistributeSeats = function( event ) {
-        db.reservations.find( {
-            eventId: event._id
-        }, function( err, reservations ) {
-            var totalSeats = event.seats;
-            var takenSeats = getTakenSeats( reservations );
-            var waitingSeats = getWaitingSeats( reservations );
-
-            if ( totalSeats > takenSeats ) {
-                db.reservations.find( {
-                    eventId: event._id,
-                    waiting: true
-                }, function( err, reservations ) {
-
-                } )
-            }
-        } );
-    }
-
-    var getTakenSeats = function ( reservations ) {
-        return reservations.filter( function( reservation ) {
-            return !reservation.waiting;
-        } ).map( function( reservation ) {
-            return reservation[ "seats" ];
-        } ).reduce( function( acc, value ) {
-            return acc + value;
-        }, 0 );
-    };
-
-    var getWaitingSeats = function( reservations ) {
-        return reservations.filter( function( reservation ) {
-            return reservation.waiting;
-        } ).map( function( reservation ) {
-            return reservation[ "seats" ];
-        } ).reduce( function( acc, value ) {
-            return acc + value;
-        }, 0 );
-    };
 
     return {
         listEventsView: listEventsView,
