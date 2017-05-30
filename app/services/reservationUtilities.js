@@ -1,4 +1,6 @@
-module.exports = function(config, db) {
+module.exports = function( config, db ) {
+    var mailerUtilities = require( "./mailerUtilities.js" )( config, db );
+
     var redistributeSeats = function( eventId, eventSeats ) {
         db.reservations.find( {
             eventId: eventId
@@ -12,8 +14,22 @@ module.exports = function(config, db) {
                     eventId: eventId,
                     waiting: true
                 }, function( err, reservations ) {
+                    reservations.sort( function( a, b ) {
+                        var dateA = new Date( a.timestamp ).getTime();
+                        var dateB = new Date( b.timestamp ).getTime();
+                        if ( dateA < dateB) {
+                            return -1;
+                        }
+                        if (dateA > dateB) {
+                            return 1;
+                        }
+
+                        // names must be equal
+                        return 0;
+                    } );
                     reservations.forEach( function( reservation ) {
                         var seatsLeft = totalSeats - takenSeats;
+
                         if ( seatsLeft <= 0 ) {
                             return;
                         }
@@ -40,26 +56,27 @@ module.exports = function(config, db) {
             $set: {
                 waiting: false
             }
-        }, function( err, reservation) {
+        }, function( err ) {
             if ( err ) {
                 console.log( err );
             }
+
+            mailerUtilities.sendUpgradeNotification( reservation );
         } );
     };
 
     var splitReservation = function( reservation, seats ) {
-        console.log( "split reservation" );
         updateWaitingReservation( reservation, seats );
         insertNewReservation( reservation, seats );
     };
 
     var updateWaitingReservation = function( reservation, seats ) {
-        console.log( 'updateWaitingReservation' )
+        var availableSeats = reservation.seats - seats;
         db.reservations.update( {
             _id: reservation._id
         }, {
             $set: {
-                seats: reservation.seats - seats
+                seats: availableSeats
             }
         }, function( err, updated ) {
             if ( err ) {
@@ -78,6 +95,8 @@ module.exports = function(config, db) {
             if ( err ) {
                 console.log( err );
             }
+
+            mailerUtilities.sendPartialUpgradeNotification( clonedReservation, seats );
         } );
     };
 

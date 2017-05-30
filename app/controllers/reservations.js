@@ -13,7 +13,7 @@ module.exports = function(config, db) {
   var util = require('../services/util.js')(config, db);
   var marked = require('marked');
   var transport = nodemailer.createTransport(smtpTransport(config.mandrill));
-  
+
   // Mailgun configuration
   var Mailgun = require('mailgun-js');
   var mailgun_api_key = config.mailgun.apikey;
@@ -33,7 +33,7 @@ module.exports = function(config, db) {
     }
 
     if (!mc[opts.listId]) {
-      mc[opts.listId] = new mcapi.Mailchimp(opts.apikey, true);  
+      mc[opts.listId] = new mcapi.Mailchimp(opts.apikey, true);
     }
 
     var params = {
@@ -51,7 +51,7 @@ module.exports = function(config, db) {
     };
 
     mc[opts.listId].lists.subscribe(params, function(data) {
-      
+
       console.log('--------')
       console.log('mailchimp success')
       console.log(data);
@@ -62,7 +62,7 @@ module.exports = function(config, db) {
       console.log('--------')
       console.log('mailchimp error')
       console.log(err);
-      console.log('--------')      
+      console.log('--------')
 
     });
   };
@@ -73,7 +73,7 @@ module.exports = function(config, db) {
     db.orgs.findOne({
       _id: event.orgId
     }, function (err, org) {
-      
+
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
@@ -127,7 +127,7 @@ module.exports = function(config, db) {
             }
             //Else we can greet    and leave
             else {
-                // //Here "submitted.jade" is the view file for this landing page 
+                // //Here "submitted.jade" is the view file for this landing page
                 // //We pass the variable "email" from the url parameter in an object rendered by Jade
                 // res.render('submitted', { email : req.params.mail });
                 console.log('\n\n\n\n')
@@ -148,11 +148,11 @@ module.exports = function(config, db) {
   };
 
   var sendConfirmationEmails = function (reservation, event) {
-    
+
     db.orgs.findOne({
       _id: event.orgId
     }, function (err, org) {
-      
+
       db.users.findOne({
         _id: org.userId
       }, function (err, user) {
@@ -176,10 +176,10 @@ module.exports = function(config, db) {
         }
 
         var template = {
-          userSubject: org.userSubject, 
-          userSubjectWaiting: org.userSubjectWaiting, 
-          userBody: marked(org.userBody), 
-          userBodyWaiting: marked(org.userBodyWaiting), 
+          userSubject: org.userSubject,
+          userSubjectWaiting: org.userSubjectWaiting,
+          userBody: marked(org.userBody),
+          userBodyWaiting: marked(org.userBodyWaiting),
           orgSubject: org.orgSubject,
           orgBody: marked(org.orgBody)
         };
@@ -205,7 +205,7 @@ module.exports = function(config, db) {
           template.orgSubject = template.orgSubject.replace('{' + item + '}', orgParams[item]);
         });
 
-        
+
         var userEmailConfig = {
           from: 'contact@reservr.net',
           to: reservation.email,
@@ -227,9 +227,9 @@ module.exports = function(config, db) {
           html: template.orgBody
         };
 
-        
+
         if (reservation.waiting) {
-          
+
 
           //Invokes the method to send emails given the above data with the helper library
           mailgun.messages().send(userWaitingEmailConfig, function (err, body) {
@@ -244,7 +244,7 @@ module.exports = function(config, db) {
               }
               //Else we can greet    and leave
               else {
-                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //Here "submitted.jade" is the view file for this landing page
                   // //We pass the variable "email" from the url parameter in an object rendered by Jade
                   // res.render('submitted', { email : req.params.mail });
                   console.log('\n\n\n\n')
@@ -256,7 +256,7 @@ module.exports = function(config, db) {
           });
 
           // transport.sendMail(userWaitingEmailConfig, function (err, info) {
-            
+
           //   console.log(err);
           //   console.log(info);
           // });
@@ -275,7 +275,7 @@ module.exports = function(config, db) {
               }
               //Else we can greet    and leave
               else {
-                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //Here "submitted.jade" is the view file for this landing page
                   // //We pass the variable "email" from the url parameter in an object rendered by Jade
                   // res.render('submitted', { email : req.params.mail });
                   console.log('\n\n\n\n')
@@ -287,7 +287,7 @@ module.exports = function(config, db) {
           });
 
           // transport.sendMail(userEmailConfig, function (err, info) {
-            
+
           //   console.log(err);
           //   console.log(info);
           // });
@@ -308,7 +308,7 @@ module.exports = function(config, db) {
               }
               //Else we can greet    and leave
               else {
-                  // //Here "submitted.jade" is the view file for this landing page 
+                  // //Here "submitted.jade" is the view file for this landing page
                   // //We pass the variable "email" from the url parameter in an object rendered by Jade
                   // res.render('submitted', { email : req.params.mail });
                   console.log('\n\n\n\n')
@@ -320,10 +320,10 @@ module.exports = function(config, db) {
           });
 
           // transport.sendMail(orgEmailConfig, function (err, info) {
-            
+
           //   console.log(err);
           //   console.log(info);
-          // });  
+          // });
         }
 
       });
@@ -332,7 +332,7 @@ module.exports = function(config, db) {
   };
 
   var distributeWaitingList = function (orgId, eventId, seats) {
-    
+
     db.orgs.findOne({
       _id: orgId
     }, function (err, org) {
@@ -348,10 +348,10 @@ module.exports = function(config, db) {
           timestamp: 1
         }).exec(function (err, reservations) {
 
-          // loop throgh the waiting reservations until you 
+          // loop throgh the waiting reservations until you
           // remain out of seats
           reservations.some(function (reserv) {
-            
+
             if (seats >= reserv.seats) {
 
               // number of free seats is greater than the number of needed
@@ -367,7 +367,7 @@ module.exports = function(config, db) {
                   waiting: false
                 }
               }, function (err, num) {
-                
+
                 if (!err) {
                   notifyUser(reserv, event, false)
                 }
@@ -380,7 +380,7 @@ module.exports = function(config, db) {
               return false;
 
             } else if ((seats !== 0) && (seats < reserv.seats)) {
-              
+
               // number of seats available is less than the number of needed
               // by next on the waiting list
 
@@ -399,10 +399,10 @@ module.exports = function(config, db) {
                 eventId: eventId,
                 waiting: false
               }, function (err, reservation) {
-                
+
                 if (reservation) {
                   db.reservations.update({
-                    _id: reservation._id    
+                    _id: reservation._id
                   },{
                     $set: {
                       seats: reservation.seats + seats
@@ -413,14 +413,14 @@ module.exports = function(config, db) {
 
                   // // add the available seats to the cloned model
                   clonedReserv.seats = seats;
-                  
+
                   // // insert the model into the database
                   db.reservations.insert(clonedReserv);
 
                 }
               })
 
-              // update the waiting reservation's seat number 
+              // update the waiting reservation's seat number
               // by subtracting the seats that have been redistributed
               db.reservations.update({
                 _id: reserv._id
@@ -429,9 +429,9 @@ module.exports = function(config, db) {
                   seats: reserv.seats - seats
                 }
               }, function (err, num) {
-                
+
                 // add the number of seats that have been attributed to
-                // the waiting user so it can be used in the 
+                // the waiting user so it can be used in the
                 // email message that is sent to notify her
                 reserv.seatsAvailable = seats;
 
@@ -447,8 +447,8 @@ module.exports = function(config, db) {
 
             }
 
-          });        
-          
+          });
+
         });
       });
     });
@@ -464,35 +464,35 @@ module.exports = function(config, db) {
         res.redirect('/');
         return;
       }
-      
+
       db.reservations.remove({
         _id: req.params.reservationId
       }, function (err, num) {
 
         if (!rez.waiting) {
-          distributeWaitingList(rez.orgId, rez.eventId, rez.seats)  
+          distributeWaitingList(rez.orgId, rez.eventId, rez.seats)
         }
-        
+
 
         db.orgs.findOne({
           _id: rez.orgId
         }, function (err, org) {
-          
+
           db.events.findOne({
             _id: rez.eventId
           }, function (err, event) {
-            
+
             if (req.user) {
-              
+
               res.redirect('/dashboard/' + org._id + '/reservations/' + event._id);
-            
+
             } else {
 
               res.render('frontend/user-reservation-deleted',{
                 org: org,
                 event: event
               });
-            
+
             }
 
           })
@@ -553,7 +553,7 @@ module.exports = function(config, db) {
   };
 
   var updateReservationTmp = function (req, res, next) {
-    
+
     req.checkBody('name', 'Please add your name.').notEmpty();
     req.checkBody('email', 'Please add your email address.').notEmpty();
     req.checkBody('seats', 'Please select number of seats.').notEmpty();
@@ -585,7 +585,7 @@ module.exports = function(config, db) {
       })
 
       event = event[0]
-      
+
       db.reservations.update({
         email: req.body.email.trim()
       }, {
@@ -613,7 +613,7 @@ module.exports = function(config, db) {
     db.events.findOne({
       _id: eventId
     }, function (err, event) {
-      
+
       var totalSeats = event.seats
 
       // get the total reservations
@@ -657,7 +657,7 @@ module.exports = function(config, db) {
   }
 
   var updateReservation = function (req, res, next) {
-    
+
     var email = req.body.email;
     var seats = parseInt(req.body.seats);
     var mclistid = req.body.mclistid
@@ -669,20 +669,20 @@ module.exports = function(config, db) {
     db.events.findOne({
       _id: eventId
     }, function (err, event) {
-      
+
       var totalSeats = event.seats
 
       // get the total reservations
       data.getEventReservationsTotal({
         eventId: eventId
       }).then(function (totalReservations) {
-        
+
         // does this person have a  reservation already?
         db.reservations.find({
           email: email,
           eventId: eventId
         }, function (err, prevReservations) {
-          
+
           var prevReservation;
 
           if (prevReservations.length > 1) {
@@ -716,7 +716,7 @@ module.exports = function(config, db) {
 
             // has a previous reservation and is not on the waiting list
             if (!prevReservation.waiting) {
-              
+
               // is the user downgrading?
               if (newReservation.seats < prevReservation.seats) {
 
@@ -736,13 +736,13 @@ module.exports = function(config, db) {
 
                     if (key) {
                       addUserToMailingList({
-                        email:email, 
+                        email:email,
                         name: req.body.name,
                         listId: mclistid,
                         apikey: key.key
                       })
                     }
-            
+
                   })
 
                   data.getEventReservationsByType({
@@ -786,13 +786,13 @@ module.exports = function(config, db) {
 
                     if (key) {
                       addUserToMailingList({
-                        email:email, 
+                        email:email,
                         name: req.body.name,
                         listId: mclistid,
                         apikey: key.key
                       })
                     }
-                    
+
                   })
 
                   data.getEventReservationsByType({
@@ -802,7 +802,7 @@ module.exports = function(config, db) {
                     // update the event with invited and waiting seats
                     event.invited = reservationsByType.invited
                     event.waiting = reservationsByType.waiting
-              
+
                     res.json({
                       message: 'Update successful.',
                       reservation: newReservation,
@@ -810,7 +810,7 @@ module.exports = function(config, db) {
                     })
 
                   })
-                  
+
                 })
                 return;
 
@@ -844,7 +844,7 @@ module.exports = function(config, db) {
 
                 if (key) {
                   addUserToMailingList({
-                    email:email, 
+                    email:email,
                     name: req.body.name,
                     listId: mclistid,
                     apikey: key.key
@@ -852,13 +852,13 @@ module.exports = function(config, db) {
                 }
 
               })
-              
+
               res.json({
                 message: 'Update successful.',
                 reservation: newReservation,
                 event: event
               })
-              
+
 
             })
             return;
@@ -880,19 +880,19 @@ module.exports = function(config, db) {
 
               if (key) {
                 addUserToMailingList({
-                  email:email, 
+                  email:email,
                   name: req.body.name,
                   listId: mclistid,
                   apikey: key.key
                 })
               }
-              
+
             })
 
             data.getEventReservationsByType({
               eventId: event._id
             }).then(function (reservationsByType) {
-              
+
               // update the event with invited and waiting seats
               event.invited = reservationsByType.invited
               event.waiting = reservationsByType.waiting
@@ -915,7 +915,7 @@ module.exports = function(config, db) {
     db.reservations.findOne({
       _id: req.params.reservationId
     }, function (err, reservation) {
-      
+
       if (!reservation) {
         res.redirect('/')
         return;
@@ -924,7 +924,7 @@ module.exports = function(config, db) {
       db.events.findOne({
         _id: reservation.eventId
       }, function (err, event) {
-        
+
         db.orgs.findOne({
           _id: event.orgId
         }, function (err, org) {
@@ -979,7 +979,7 @@ module.exports = function(config, db) {
             seats: requestedSeats
           }
         }, function (err, num) {
-          
+
           res.json({
             message: 'Your seats have been successfully updated.'
           });
@@ -1030,7 +1030,7 @@ module.exports = function(config, db) {
           if (currentSeats > requestedSeats) {
             distributeWaitingList(reservation.orgId, reservation.eventId, currentSeats - requestedSeats)
           }
-          
+
           res.json({
             message: 'Your seats have been successfully updated.'
           });
