@@ -28,11 +28,11 @@ module.exports = (function() {
   var easyimg = require('easyimage');
 
   var app = express();
-  
+
   app.use(expressSession({
     secret: 'mySecretKey',
     saveUninitialized: true,
-    resave: true 
+    resave: true
   }));
 
   app.use(flash());
@@ -43,15 +43,15 @@ module.exports = (function() {
   var config;
 
   if (process.env.OPENSHIFT_APP_NAME) {
-    config = require('../data/config.js');  
+    config = require('../data/config.js');
   } else {
-    config = require('./data/config.js');  
+    config = require('./data/config.js');
   }
-  
+
 
   // Chekcs if user is authenticated
   var isAuthenticated = function (req,res,next){
-    
+
     if (req.hostname === 'localhost') { // req.hostname === 'localhost'
       db.users.findOne({
         username: 'sebi.kovacs@gmail.com'
@@ -59,7 +59,7 @@ module.exports = (function() {
 
         req.user = user;
         return next()
-        
+
       })
 
     } else {
@@ -67,7 +67,7 @@ module.exports = (function() {
       if (req.isAuthenticated()){
         return next();
       } else {
-        res.redirect("/signin"); 
+        res.redirect("/signin");
       }
     }
 
@@ -75,7 +75,7 @@ module.exports = (function() {
 
   var adminAuth = basicAuth(function(user, pass, callback) {
     var admin = false;
-    
+
     // if(process.env.OPENSHIFT_APP_NAME) {
     //   admin = (user === config.superadmin.user && pass === config.superadmin.pass);
     // } else {
@@ -84,7 +84,7 @@ module.exports = (function() {
 
 
     admin = (user === config.superadmin.user && pass === config.superadmin.pass);
-    
+
 
     callback(null, admin);
   });
@@ -199,8 +199,8 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
   app.get('/dashboard/delete-account/:userId', isAuthenticated, settings.deleteAccount);
   app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
-  
-  // reservations  
+
+  // reservations
   app.get('/dashboard/:orgId/reservations/:eventId', isAuthenticated, reservations.viewReservations);
   app.get('/dashboard/:orgId/event/:eventId/delete/:reservationId', isAuthenticated, reservations.deleteReservation);
   app.post('/dashboard/:orgId/event/:eventId/', isAuthenticated, reservations.updateDashboardReservation);
@@ -242,13 +242,13 @@ module.exports = (function() {
   */
 
   app.get('/remind', reminders.sendReminders);
-  
+
   /* Auth routes
   */
 
   var auth = require('./app/controllers/authenticate.js')(config, db);
-  
-  // signup 
+
+  // signup
   app.post('/createTempUser', auth.signup);
 
   app.get('/signin', auth.signinView);
