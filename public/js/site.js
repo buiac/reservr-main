@@ -1,95 +1,77 @@
-$(document).ready(function () {
-
+$( document ).ready( function () {
    // toggle full description
-  var toggleDescription = function() {
-    
-    var $this = $(this);
-    var $description = $this.prev('.event-description');
-    
-    $description.toggleClass('event-description--show');
-    
-  };
-  
-  $('.event-toggle-description').on('click', toggleDescription);
+    var toggleDescription = function() {
+        var $this = $( this );
+        var $description = $this.prev( ".event-description" );
 
-  var toggleReservationBox = function() {
+        $description.toggleClass( "event-description--show" );
+    };
 
-    var $container = $(this).parent('.container-reserve');
-    
-    $container.toggleClass('container-reserve--active');
+    $( ".event-toggle-description" ).on( "click", toggleDescription );
 
-  };
+    var toggleReservationBox = function() {
+        var $container = $( this ).parent( ".container-reserve" );
 
-  $('.container-reserve-btn').on('click', toggleReservationBox);
+        $container.toggleClass( "container-reserve--active" );
+    };
 
-  var submitReserveForm = function() {
-    
-    var $this = $(this);
-    var name = $this.find('.reserve-name').val();
-    var email = $this.find('.reserve-email').val();
-    var seats = parseInt($this.find('.reserve-seats').val(), 10);
-    var eventId = $this.find('.reserve-id').val();
-    var orgId = $this.find('.reserve-orgId').val();
-    var waiting = $this.find('.reserve-waiting').val();
-    var mclistid = $this.find('.reserve-newsletter').val();
-    var seatsLeft = parseInt($($this.parents('.reserve-actions')).find('#seats-left').html(), 10);
-  
+    $( ".container-reserve-btn" ).on( "click", toggleReservationBox );
 
-    if (seats <= seatsLeft || seatsLeft === 0 ) {
+    var submitReserveForm = function() {
+        var $this = $( this );
+        var name = $this.find( ".reserve-name" ).val();
+        var email = $this.find( ".reserve-email" ).val();
+        var seats = parseInt( $this.find( ".reserve-seats" ).val(), 10 );
+        var eventId = $this.find( ".reserve-id" ).val();
+        var orgId = $this.find( ".reserve-orgId" ).val();
+        var waiting = $this.find( ".reserve-waiting" ).val();
+        var mclistid = $this.find( ".reserve-newsletter" ).val();
+        var seatsLeft = parseInt( $( $this.parents( ".reserve-actions" ) ).find( "#seats-left" ).html(), 10 );
 
-      $this.removeClass('container-reserve-form--success container-reserve-form--error');
-      
-      $this.addClass('container-reserve-form--loading');
-      
-      $.ajax('/u/' +orgId + '/reservations/' + eventId, {
-        type: 'POST',
-        data: {
-          name: name,
-          email: email,
-          seats: seats,
-          mclistid: mclistid
-        },
-        success: function(res) {
+        if ( seats <= seatsLeft || seatsLeft === 0 ) {
+            $this.removeClass( "container-reserve-form--success container-reserve-form--error" );
 
-          $this.addClass('container-reserve-form--success');
+            $this.addClass( "container-reserve-form--loading" );
 
-          seatsLeft = parseInt(res.event.seats) - (res.event.invited + res.event.waiting);
-          $('#seats-left').html(Math.abs(seatsLeft));
-        },
-        error: function(err) {
-          
-          $this.addClass('container-reserve-form--error');
-          
-          // allow me to try again 
-          setTimeout(function() {
-            
-            $this.removeClass('container-reserve-form--error');
-            
-          }, 5000);
-          
-        },
-        complete: function() {
-         
-          $this.removeClass('container-reserve-form--loading');
-          
+            $.ajax( "/u/" +orgId + "/reservations/" + eventId, {
+                type: "POST",
+                data: {
+                    name: name,
+                    email: email,
+                    seats: seats,
+                    mclistid: mclistid
+                },
+                success: function( res ) {
+                    $this.addClass( "container-reserve-form--success" );
+
+                    seatsLeft = parseInt( res.event.seats ) - ( res.event.invited + res.event.waiting );
+                    $( "#seats-left" ).html( Math.abs( seatsLeft ) );
+                },
+                error: function( err ) {
+                    $this.addClass( "container-reserve-form--error" );
+
+          // allow me to try again
+                    setTimeout( function() {
+                        $this.removeClass( "container-reserve-form--error" );
+                    }, 5000 );
+                },
+                complete: function() {
+                    $this.removeClass( "container-reserve-form--loading" );
+                }
+            } );
+        } else {
+            $this.addClass( "container-reserve-form--error" );
+            $( "span.container-reserve-form-error" ).html( "Numarul locurilor rezervate nu poate fi mai mare decat numarul locurilor disponibile" );
+
+      // allow me to try again
+            setTimeout( function() {
+                $this.removeClass( "container-reserve-form--error" );
+                $( "span.container-reserve-form-error" ).html( "Rezervarea a esuat. Incercati mai tarziu." );
+            }, 5000 );
         }
-      });
-    } else {
-      $this.addClass('container-reserve-form--error');
-      $('span.container-reserve-form-error').html('Numarul locurilor rezervate nu poate fi mai mare decat numarul locurilor disponibile');
 
-      // allow me to try again 
-      setTimeout(function() {
-        
-        $this.removeClass('container-reserve-form--error');
-        $('span.container-reserve-form-error').html('Rezervarea a esuat. Incercati mai tarziu.');
-        
-      }, 5000);
-    }
+        return false;
+    };
 
-    return false;
-  };
-
-  $('.container-reserve form').on('submit', submitReserveForm);
-
-});
+    $( ".container-reserve form" ).on( "submit", submitReserveForm );
+} );

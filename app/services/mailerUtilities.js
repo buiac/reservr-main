@@ -1,10 +1,10 @@
-module.exports = function(config, db) {
+module.exports = function( config, db ) {
     // Mailgun configuration
     var Mailgun = require( "mailgun-js" );
     var moment = require( "moment" );
     var marked = require( "marked" );
     var util = require( "./util.js" )( config, db );
-    var domain = 'reservr.net';
+    var domain = "reservr.net";
     var mailgun_api_key = config.mailgun.apikey;
     var mailgun = new Mailgun( {
         apiKey: mailgun_api_key,
@@ -58,61 +58,60 @@ module.exports = function(config, db) {
             } );
         } );
 
-
         //sendMessage( message );
     };
 
     var buildUpgradeMessage = function( event, org, reservation ) {
         var params = {
-          seats: reservation.seats,
-          eventName: event.name,
-          eventDate: moment( event.date ).format( "dddd, Do MMMM YYYY, HH:mm" ),
-          deleteReservationLink: "<a style='color:red' href='http://reservr.net/r/" + reservation._id + "'>Delete Reservation</a>"
+            seats: reservation.seats,
+            eventName: event.name,
+            eventDate: moment( event.date ).format( "dddd, Do MMMM YYYY, HH:mm" ),
+            deleteReservationLink: "<a style='color:red' href='http://reservr.net/r/" + reservation._id + "'>Delete Reservation</a>"
         };
 
         var template = {
-          subject: org.userUpdateSubject,
-          body: marked( org.userUpdateBody )
+            subject: org.userUpdateSubject,
+            body: marked( org.userUpdateBody )
         };
 
         var bodyPlaceholders = util.getWordsBetweenCurlies( template.body );
 
         bodyPlaceholders.forEach( function ( item ) {
-          template.body = template.body.replace( "{" + item + "}", params[ item ] );
+            template.body = template.body.replace( "{" + item + "}", params[ item ] );
         } );
 
         return {
-          from: 'contact@reservr.net',
-          to: reservation.email,
-          subject: template.subject,
-          html: template.body
+            from: "contact@reservr.net",
+            to: reservation.email,
+            subject: template.subject,
+            html: template.body
         };
     };
 
     var buildPartialUpgradeMessage = function( event, org, reservation, availableSeats ) {
         var params = {
-          seatsAvailable: availableSeats,
-          eventName: event.name,
-          eventDate: moment( event.date ).format( "dddd, Do MMMM YYYY, HH:mm" ),
-          deleteReservationLink: "<a style='color:red' href='http://reservr.net/r/" + reservation._id + "'>Delete Reservation</a>"
+            seatsAvailable: availableSeats,
+            eventName: event.name,
+            eventDate: moment( event.date ).format( "dddd, Do MMMM YYYY, HH:mm" ),
+            deleteReservationLink: "<a style='color:red' href='http://reservr.net/r/" + reservation._id + "'>Delete Reservation</a>"
         };
 
         var template = {
-          subject: org.userUpdateSubject,
-          body: marked( org.userUpdateBodyPartial )
+            subject: org.userUpdateSubject,
+            body: marked( org.userUpdateBodyPartial )
         };
 
         var bodyPlaceholders = util.getWordsBetweenCurlies( template.body );
 
         bodyPlaceholders.forEach( function ( item ) {
-          template.body = template.body.replace( "{" + item + "}", params[ item ] );
+            template.body = template.body.replace( "{" + item + "}", params[ item ] );
         } );
 
         return {
-          from: 'contact@reservr.net',
-          to: reservation.email,
-          subject: template.subject,
-          html: template.body
+            from: "contact@reservr.net",
+            to: reservation.email,
+            subject: template.subject,
+            html: template.body
         };
     };
 
@@ -134,25 +133,25 @@ module.exports = function(config, db) {
     var sendMessage = function( message ) {
         mailgun.messages().send( message, function ( err, body ) {
             if ( err ) {
-                console.log('\n\n\n\n')
-                console.log('----error mailgun----')
-                console.log("got an error: ", err);
-                console.log('--------')
-                console.log('\n\n\n\n')
+                console.log( "\n\n\n\n" );
+                console.log( "----error mailgun----" );
+                console.log( "got an error: ", err );
+                console.log( "--------" );
+                console.log( "\n\n\n\n" );
             }
             else {
-                console.log('\n\n\n\n')
-                console.log('----success mailgun----')
-                console.log(body);
-                console.log('--------')
-                console.log('\n\n\n\n')
+                console.log( "\n\n\n\n" );
+                console.log( "----success mailgun----" );
+                console.log( body );
+                console.log( "--------" );
+                console.log( "\n\n\n\n" );
             }
-        });
-    }
+        } );
+    };
 
     return {
         sendMessage: sendMessage,
         sendUpgradeNotification: sendUpgradeNotification,
         sendPartialUpgradeNotification: sendPartialUpgradeNotification
     };
-}
+};

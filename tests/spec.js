@@ -1,31 +1,26 @@
-var request = require('supertest');
-var should = require('should');
+var request = require( "supertest" );
+var should = require( "should" );
 
-describe('loading express', function () {
+describe( "loading express", function () {
+    var server;
 
-  var server;
-  
-  beforeEach(function () {
-    server = require('../server');
-  });
-  
+    beforeEach( function () {
+        server = require( "../server" );
+    } );
+
   // afterEach(function () {
   //   server.close();
   // });
 
-  it('responds to /', function testSlash(done) {
+    it( "responds to /", function testSlash( done ) {
+        request( server )
+      .get( "/" )
+      .expect( 200, done );
+    } );
 
-    request(server)
-      .get('/')
-      .expect(200, done);
-
-  });
-
-  it('404 everything else', function testPath(done) {
-    
-    request(server)
-      .get('/foo/bar')
-      .expect(404, done);
-
-  });
-});
+    it( "404 everything else", function testPath( done ) {
+        request( server )
+      .get( "/foo/bar" )
+      .expect( 404, done );
+    } );
+} );

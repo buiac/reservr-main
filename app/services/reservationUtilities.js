@@ -17,10 +17,10 @@ module.exports = function( config, db ) {
                     reservations.sort( function( a, b ) {
                         var dateA = new Date( a.timestamp ).getTime();
                         var dateB = new Date( b.timestamp ).getTime();
-                        if ( dateA < dateB) {
+                        if ( dateA < dateB ) {
                             return -1;
                         }
-                        if (dateA > dateB) {
+                        if ( dateA > dateB ) {
                             return 1;
                         }
 
@@ -126,7 +126,7 @@ module.exports = function( config, db ) {
         }, 0 );
     };
 
-  return {
-    redistributeSeats: redistributeSeats
-  };
-}
+    return {
+        redistributeSeats: redistributeSeats
+    };
+};

@@ -1,31 +1,23 @@
-var validateEmail = function (email) {
-  var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-  return re.test(email);
+var validateEmail = function ( email ) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test( email );
 };
 
-$(document).ready(function () {
+$( document ).ready( function () {
+    var $datePicker = document.querySelector( ".event-date" );
 
-  var $datePicker = document.querySelector('.event-date');
-  
-  if($datePicker) {
-  
+    if( $datePicker ) {
     // init rome datetime picker
-    rome($datePicker, {
-      weekStart: 1
-    });
-  
-  };
-  
-  $('body').on('click', '.event-images .event-image-thumb .th', function (e) {
-    
-    e.preventDefault();
-    $(this).parent().children().each(function (el) {
-      $(this).removeClass('active-image');
-    });
-    $(this).addClass('active-image');
+        rome( $datePicker, {
+            weekStart: 1
+        } );
+    };
 
-  });
-
-
-
-})
+    $( "body" ).on( "click", ".event-images .event-image-thumb .th", function ( e ) {
+        e.preventDefault();
+        $( this ).parent().children().each( function ( el ) {
+            $( this ).removeClass( "active-image" );
+        } );
+        $( this ).addClass( "active-image" );
+    } );
+} );

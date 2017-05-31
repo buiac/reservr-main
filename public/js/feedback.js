@@ -1,89 +1,88 @@
-(function ($) {
+( function ( $ ) {
+    var org = {
+        name: "",
+        eventId: ""
+    };
 
-  var org = {
-    name: '',
-    eventId: ''
-  }
+    var getOrgDetails = function () {
+        var path = window.location.pathname.split( "/" );
 
-  var getOrgDetails = function () {
-    var path = window.location.pathname.split('/')
+        org.name = path[ 2 ];
 
-    org.name = path[2]
-    
-    if (path.length > 3) {
-      org.eventId = path[4]
-    }
-  }
+        if ( path.length > 3 ) {
+            org.eventId = path[ 4 ];
+        }
+    };
 
-  var showFeedback = function (e) {
-    $(this).parent().addClass('rsv-feedback-form')
-  }
+    var showFeedback = function ( e ) {
+        $( this ).parent().addClass( "rsv-feedback-form" );
+    };
 
-  var closeFeedback = function (e) {
-    e.preventDefault()
+    var closeFeedback = function ( e ) {
+        e.preventDefault();
 
-    $(this).parents('.rsv-feedback').removeClass('rsv-feedback-form') 
-  }
+        $( this ).parents( ".rsv-feedback" ).removeClass( "rsv-feedback-form" );
+    };
 
-  var submitFeedback = function (e) {
-    e.preventDefault()
-    
-    var $container = $(this).parents('.rsv-feedback');
-    var $form = $(this);
-    var $email = $form.find('input')
-    var $message = $form.find('textarea')
-    var $button = $form.find('button')
+    var submitFeedback = function ( e ) {
+        e.preventDefault();
 
-    var loadingClass = 'btn-state-loading'
-    var successClass = 'rsv-form-success'
-    var errorClass = 'rsv-form-error'
-    var disabledClass = 'disabled'
-    var url = '/f/feedback'
+        var $container = $( this ).parents( ".rsv-feedback" );
+        var $form = $( this );
+        var $email = $form.find( "input" );
+        var $message = $form.find( "textarea" );
+        var $button = $form.find( "button" );
 
-    var data = {
-      email: $email.val(),
-      message: $message.val(),
-      orgName: org.name,
-      eventId: org.eventId
-    }
+        var loadingClass = "btn-state-loading";
+        var successClass = "rsv-form-success";
+        var errorClass = "rsv-form-error";
+        var disabledClass = "disabled";
+        var url = "/f/feedback";
 
-    $form.removeClass(successClass)
-    $form.removeClass(errorClass)
+        var data = {
+            email: $email.val(),
+            message: $message.val(),
+            orgName: org.name,
+            eventId: org.eventId
+        };
 
-    $button.addClass(loadingClass)
+        $form.removeClass( successClass );
+        $form.removeClass( errorClass );
 
-    $.ajax({
-      url: url,
-      method: 'POST',
-      data: data
-    }).done(function (res) {
-      $button.removeClass(loadingClass)
-      $button.addClass(disabledClass)
-      
-      $form.addClass(successClass)
+        $button.addClass( loadingClass );
 
-      setTimeout(function () {
+        $.ajax( {
+            url: url,
+            method: "POST",
+            data: data
+        } ).done( function ( res ) {
+            $button.removeClass( loadingClass );
+            $button.addClass( disabledClass );
+
+            $form.addClass( successClass );
+
+            setTimeout( function () {
         // clear form and hide
-        $email.val('')
-        $message.val('')
+                $email.val( "" );
+                $message.val( "" );
 
-        $button.removeClass(disabledClass)
-        
-        $form.removeClass(successClass)
-        $form.removeClass(errorClass)
-        $container.removeClass('rsv-feedback-form')
-      }, 4000)
-    }).fail(function (err) {
-      $button.removeClass(loadingClass)
-      $form.addClass(errorClass)
-    })
+                $button.removeClass( disabledClass );
 
-    return false;
-  }
+                $form.removeClass( successClass );
+                $form.removeClass( errorClass );
+                $container.removeClass( "rsv-feedback-form" );
+            }, 4000 );
+        } ).fail( function ( err ) {
+            $button.removeClass( loadingClass );
+            $form.addClass( errorClass );
+        } );
 
-  getOrgDetails()
+        return false;
+    };
 
-  $('body').on('click', '.rsv-feedback-button', showFeedback)
-  $('body').on('click', '.rsv-feedback-close', closeFeedback)
-  $('.rsv-feedback-form').on('submit', submitFeedback)
-})(jQuery)
+    getOrgDetails();
+
+    $( "body" ).on( "click", ".rsv-feedback-button", showFeedback );
+    $( "body" ).on( "click", ".rsv-feedback-close", closeFeedback );
+    $( ".rsv-feedback-form" ).on( "submit", submitFeedback );
+} )( jQuery );
