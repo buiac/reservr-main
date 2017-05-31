@@ -62,7 +62,7 @@
             $form.addClass( successClass );
 
             setTimeout( function () {
-        // clear form and hide
+                // clear form and hide
                 $email.val( "" );
                 $message.val( "" );
 

@@ -134,14 +134,11 @@ $( document ).ready( function () {
             } );
         }
 
-    // show overlay
         $parent.addClass( "event-publish--published" );
     }
 
     function syncData() {
         var eventId = $( "[name=_id]" )[ 0 ];
-
-    // add Prices to the event model
         var prices = [];
 
         var $eventPrices = $( ".event-price-group" );
@@ -167,20 +164,16 @@ $( document ).ready( function () {
 
         eventModel.prices = prices;
 
-    // add the date
         var date = $( "[name=\"date\"]" ).val();
         var time = $( "[name=\"time\"]" ).val();
         eventModel.date = date + " " + time;
 
-    // add the location
         var location = $( "[name=\"location\"]" ).val();
         eventModel.location = location;
 
-    // add the seats
         var seats = $( "[name=\"seats\"]" ).val();
         eventModel.seats = seats;
 
-    // send the data to the server
         $.ajax( {
             method: "POST",
             url: config.baseUrl + "/tempEvent",
@@ -188,13 +181,13 @@ $( document ).ready( function () {
                 event: eventModel
             }
         } ).done( function ( res ) {
-      // set the event orgId
+            // set the event orgId
             eventModel.org = res.org;
             eventModel.orgId = res.orgId || res.org._id;
             eventModel._id = res.event._id;
 
             if ( res.event.published ) {
-        // update the unique event url
+                // update the unique event url
                 updateEventUrl();
 
                 if ( reloadPage ) {
@@ -361,7 +354,6 @@ $( document ).ready( function () {
     }
 
     function initBootstrapWidgets ( argument ) {
-    // Bootstrap widgets
         $( ".event-free" ).tooltip();
         $( ".fa-info-circle" ).tooltip();
     }
@@ -484,7 +476,7 @@ $( document ).ready( function () {
             $form.removeClass( loadingClass );
             $form.addClass( successClass );
 
-      // update href of the dashboard redirect link
+            // update href of the dashboard redirect link
             $dashboardlink.attr( "href", config.baseUrl + "/signin?email=" + email );
         } ).fail( function ( err ) {
             $form.removeClass( loadingClass );
@@ -496,9 +488,6 @@ $( document ).ready( function () {
                 $form.removeClass( errorClass );
             }, 4000 );
         } );
-
-    // $form.removeClass(loadingClass)
-    // $form.addClass(successClass)
     }
 
     function readURL( input ) {
@@ -508,18 +497,6 @@ $( document ).ready( function () {
             }
 
             var reader = new FileReader();
-
-      // if ((input.files[0].size / 1000) > 100) {
-      //   // if file is bigger than 100kb
-      //   swal({
-      //     title: 'Try a smaller image!',
-      //     text: 'Image file is too big (' + parseInt(input.files[0].size / 1000, 10) + 'kb). Max. size is 100kb.',
-      //     type: 'error',
-      //     confirmButtonText: 'Oke, got it'
-      //   });
-
-      //   return;
-      // }
 
             eventModel.images = [ {
                 path: "/media/" + input.files[ 0 ].name
@@ -620,7 +597,7 @@ $( document ).ready( function () {
             $form.removeClass( loadingClass );
             $form.addClass( successClass );
 
-      // update url with org name and redirect to it
+            // update url with org name and redirect to it
             var oldOrgName = window.location.pathname.split( "/" )[ 2 ];
             var newPath = window.location.pathname.replace( oldOrgName, res.orgName );
             var origin = window.location.origin;
@@ -639,12 +616,8 @@ $( document ).ready( function () {
                 $form.removeClass( errorClass );
             }, 4000 );
         } );
-
-    // // $form.removeClass(loadingClass)
-    // // $form.addClass(successClass)
-
         return false;
-    }
+    };
 
     function closeAlert ( e ) {
         e.preventDefault();
@@ -653,7 +626,6 @@ $( document ).ready( function () {
 
     function togglePublish ( e ) {
         eventModel.published = e.target.checked;
-
         syncData();
     }
 
@@ -724,15 +696,14 @@ $( document ).ready( function () {
         var panelName = $( this ).attr( "href" ).slice( 1 );
         var $navListEls = $( ".rzv-vnav li a" );
 
-    // remove previous classes
         classes.forEach( function ( className ) {
             $panelContainer.removeClass( className );
         } );
 
-    // add name of the panel to parent element
+        // add name of the panel to parent element
         $panelContainer.addClass( "rzv-panel--" + panelName );
 
-    // update nav list
+        // update nav list
         $navListEls.removeClass( "active-item" );
 
         $( this ).addClass( "active-item" );
@@ -799,7 +770,7 @@ $( document ).ready( function () {
         var $alertSuccess = $( ".alert-success-seats" );
         var $alertWarning = $( ".alert-warning-seats" );
 
-    // add loading state
+        // add loading state
         $btn.addClass( "btn-state-loading" );
 
         $alertSuccess.hide();
@@ -814,11 +785,11 @@ $( document ).ready( function () {
         } ).done( function ( res ) {
             $btn.removeClass( "btn-state-loading" );
 
-      // show success message
+            // show success message
             $alertSuccess.find( "p" ).html( res.message );
             $alertSuccess.show();
 
-      // hide fields
+            // hide fields
             $btn.parents( ".field-update" ).removeClass( "field-update--show" );
             $btn.parents( ".field-update" ).find( "span.seats" ).html( seats );
 
@@ -828,7 +799,7 @@ $( document ).ready( function () {
         } ).fail( function ( err ) {
             $btn.removeClass( "btn-state-loading" );
 
-      // show error message
+            // show error message
             $alertWarning.find( "p" ).html( err.responseJSON.message );
             $alertWarning.show();
 
@@ -961,7 +932,7 @@ $( document ).ready( function () {
         var url = "/dashboard/" + orgId + "/event/" + eventId + "/";
         var seatsLeft = parseInt( $form.find( "[name=\"seatsLeft\"]" ).val() );
 
-    // reservation data
+        // reservation data
         var name = $form.find( "[name=\"name\"]" ).val();
         var email = $form.find( "[name=\"email\"]" ).val();
         var seats = parseInt( $form.find( "[name=\"seats\"]" ).val(), 10 );
@@ -975,7 +946,7 @@ $( document ).ready( function () {
         };
 
         if ( ( seatsLeft > 0 ) && ( seatsLeft - seats ) < 0 ) {
-      // show error message
+            // show error message
             $form.addClass( "show-error--seatsLeft" );
             return;
         }
@@ -985,7 +956,7 @@ $( document ).ready( function () {
             type: "POST",
             data: reservation
         } ).done( function( res ) {
-      // Reload page
+            // Reload page
             window.location = window.location.href;
         } ).fail( function ( err ) {
             var error = JSON.parse( err.responseText );
