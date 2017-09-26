@@ -40,27 +40,27 @@ module.exports = function( config, db ) {
     };
 
     var updateSettings = function ( req, res, next ) {
-        req.checkBody( "username", "Username should not be empty" ).notEmpty();
-        req.checkBody( "orgName", "Organization name should not be empty" ).notEmpty();
-        req.checkBody( "locale", "Date locale name should not be empty" ).notEmpty();
+        // req.checkBody( "username", "Username should not be empty" ).notEmpty();
+        // req.checkBody( "orgName", "Organization name should not be empty" ).notEmpty();
+        // req.checkBody( "locale", "Date locale name should not be empty" ).notEmpty();
 
-    // TODO get the org and user and do the rest there so you can send a
+        // TODO get the org and user and do the rest there so you can send a
 
-        var errors = req.validationErrors();
+        var errors = null;
 
-        if ( errors ) {
-            res.render( "backend/settings", {
-                errors: errors,
-                orgId: req.params.orgId,
-                org: org,
-                user: user
-            } );
-
-            return;
-        }
+        // if ( errors ) {
+        //     res.render( "backend/settings", {
+        //         errors: errors,
+        //         orgId: req.params.orgId,
+        //         org: org,
+        //         user: user
+        //     } );
+        //
+        //     return;
+        // }
 
         var mailchimp = [];
-    // var orgName = req.body.orgName.trim();
+        // var orgName = req.body.orgName.trim();
         var username = req.body.username;
         var orgId = req.params.orgId;
         var location = req.body.location;
@@ -69,12 +69,12 @@ module.exports = function( config, db ) {
         var notifications = false;
         var mcapikey = req.body.mcapikey;
 
-    // format the org name
-    // orgName = orgName.replace(/\s/g, '-');
-    // orgName = orgName.replace(/\//g, '');
-    // orgName = orgName.replace(/\'/g, '');
+        // format the org name
+        // orgName = orgName.replace(/\s/g, '-');
+        // orgName = orgName.replace(/\//g, '');
+        // orgName = orgName.replace(/\'/g, '');
 
-    // templates
+        // templates
         var userSubject = req.body.userSubject;
         var userSubjectWaiting = req.body.userSubjectWaiting;
         var userBody = req.body.userBody;
@@ -82,15 +82,15 @@ module.exports = function( config, db ) {
         var orgSubject = req.body.orgSubject;
         var orgBody = req.body.orgBody;
 
-    // reservation update templates
+        // reservation update templates
         var userUpdateSubject = req.body.userUpdateSubject;
         var userUpdateBody = req.body.userUpdateBody;
 
-    // reservation reminder templates
+        // reservation reminder templates
         var remindSubject = req.body.remindSubject;
         var remindBody = req.body.remindBody;
 
-    // TODO create a subject for the partial as well
+        // TODO create a subject for the partial as well
         var userUpdateBodyPartial = req.body.userUpdateBodyPartial;
 
         if ( req.body.notifications ) {
@@ -138,7 +138,7 @@ module.exports = function( config, db ) {
             db.orgs.update( {
                 _id: orgId
             }, { $set: {
-        // name: orgName,
+                // name: orgName,
                 location: location,
                 locale: locale,
                 logo: logo,
@@ -180,7 +180,7 @@ module.exports = function( config, db ) {
                         return;
                     }
 
-          // validate user email
+                    // validate user email
 
                     var validEmail = util.validateEmail( username );
 
@@ -214,7 +214,7 @@ module.exports = function( config, db ) {
                                     $gte: new Date()
                                 }
                             }, function ( err, events ) {
-                // update api key
+                                // update api key
                                 db.mcapikeys.findOne( {
                                     orgId: org._id
                                 }, function ( err, key ) {

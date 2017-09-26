@@ -263,7 +263,6 @@ module.exports = function( config, db ) {
     };
 
     var updateEvent = function( req, res, next ) {
-        console.log( "this is where it happens" );
         req.checkBody( "name", "Event name should not be empty" ).notEmpty();
         req.checkBody( "description", "Event description should not be empty" ).notEmpty();
         req.checkBody( "seats", "Event seats should not be empty" ).notEmpty();
